@@ -20,6 +20,7 @@ class Feed extends Component {
   // this row corresponds to a post in this.state.posts with the index supplied (done by scrolling)
   renderRow(index){
     let item = this.dataSource[index];
+
     return (
       <Ons.Card key = {item.title + index}>
         <img src = {item.picUrl} alt = {item.title} style = {{width:"100%", height:"100%"}} />

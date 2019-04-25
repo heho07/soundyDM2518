@@ -40,8 +40,9 @@ class TabContainer extends Component {
           picUrl:'https://i.imgur.com/TNDmju5.png',
           postedBy:'David'
         }
-      ]
+      ],
     };
+
   }
 
   componentDidMount() {
