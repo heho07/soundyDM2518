@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://heho07.github.io/soundydm2518",
   "dependencies": {
+    "firebase": "^5.10.0",
     "react": "^16.8.6",
     "react-audio-recorder": "^2.2.0",
     "react-dom": "^16.8.6",
