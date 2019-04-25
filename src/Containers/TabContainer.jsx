@@ -76,7 +76,7 @@ class TabContainer extends Component {
     return unsplashResult.results[0].urls.thumb;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
   //   redirectWhenOAuthChanges(this.props.history);
   //   firebase.auth().onAuthStateChanged(user => {
   //     if (user) {
@@ -100,7 +100,8 @@ class TabContainer extends Component {
 
     for (var post of this.state.posts){
       console.log(post);
-      this.updateImagesFromUnsplash(post.title).then(res => post.picUrl = res);
+      let res = await this.updateImagesFromUnsplash(post.title)
+       post.picUrl = res;
     }
 
 
