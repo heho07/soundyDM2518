@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import CreateLogin from "./CreateLogin";
 import Start from "./Start";
-//import Feed from "./Feed";
-//import MyProfile from "./MyProfile";
-//import Upload from "./Upload";
 import Loading from "./Loading";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
@@ -19,7 +16,6 @@ import TabContainer from "./Containers/TabContainer";
 class App extends Component {
   render() {
     return (
-
       <div className="App">
         {/*<header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
@@ -35,8 +31,7 @@ class App extends Component {
             Learn React
           </a>
         </header>*/}
-        <TabContainer/>
-
+        <TabContainer />
       </div>
     );
   }

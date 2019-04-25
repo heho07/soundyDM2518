@@ -17,7 +17,7 @@ var config = {
   messagingSenderId: "431756069486"
 };
 
-var app = firebase.initializeApp(config);
+firebase.initializeApp(config);
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
