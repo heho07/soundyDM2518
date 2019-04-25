@@ -18,6 +18,7 @@ class TabContainer extends Component {
 
   // in the this.state.posts array we can save the results from our database queries
   // these can then automatically be shown in Feed.jsx by passing the state as a prop
+  // By saving the data here we don't have to do a new API call every time we switch tabs 
   constructor(props) {
     super(props);
     this.state = {
@@ -89,7 +90,7 @@ class TabContainer extends Component {
                   <Feed posts = {this.state.posts} />
                 </Ons.Page>
               ),
-              tab: <Ons.Tab label="Feed" icon="fa-info-circle" key="FeedTab" />
+              tab: <Ons.Tab label="Feed" icon="fa-headphones" key="FeedTab" />
             },
             {
               content: (
@@ -97,7 +98,7 @@ class TabContainer extends Component {
                   <p>upload</p>
                 </Ons.Page>
               ),
-              tab: <Ons.Tab label="Upload" icon="fa-child" key="UploadTab" />
+              tab: <Ons.Tab label="Upload" icon="fa-microphone" key="UploadTab" />
             },
             {
               content: (
@@ -105,7 +106,7 @@ class TabContainer extends Component {
                   <p>Profile</p>
                 </Ons.Page>
               ),
-              tab: <Ons.Tab label="Profile" icon="fa-grin" key="ProfileTab" />
+              tab: <Ons.Tab label="Profile" icon="fa-user" key="ProfileTab" />
             }
           ]}
         />
