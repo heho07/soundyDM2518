@@ -12,61 +12,63 @@ class Feed extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts:this.props.posts,
+      posts: this.props.posts
     };
   }
 
   // renders a specific row from the dataSource in the LazyList
   // this row corresponds to a post in this.state.posts with the index supplied (done by scrolling)
-  renderRow(index){
+  renderRow(index) {
     let item = this.dataSource[index];
 
     return (
-      <Ons.Card key = {item.title + index}>
-        <img src = {item.picUrl} alt = {item.title} style = {{width:"100%", height:"100%"}} />
-        <p>{item.title}</p>
+      <Ons.Card key={item.title + index}>
+        <img
+          src={item.picUrl}
+          alt={item.title}
+          style={{ width: "100%", height: "100%" }}
+        />
+        <div className="title right">{item.title}</div>
         <p>posted by: {item.postedBy}</p>
       </Ons.Card>
-    );  
-  }
-
-  // Renders a LazyList https://onsen.io/v2/api/react/LazyList.html
-  renderLazyList(){
-    return (
-      <Ons.LazyList
-        dataSource = {this.state.posts}
-        length = {this.state.posts.length}
-        renderRow = {this.renderRow}
-        calculateItemHeight={() => 44}
-      />
-      
     );
   }
 
+  // Renders a LazyList https://onsen.io/v2/api/react/LazyList.html
+  renderLazyList() {
+    return (
+      <Ons.LazyList
+        dataSource={this.state.posts}
+        length={this.state.posts.length}
+        renderRow={this.renderRow}
+        calculateItemHeight={() => 44}
+      />
+    );
+  }
 
   // If we don't want to use a LazyList. NOT USED
-  renderPost(){
+  renderPost() {
     return (
       <div>
-        { this.state.posts.map((item, index) => {
+        {this.state.posts.map((item, index) => {
           return (
-            <Ons.Card key = {item.title + index}>
-              <img src = {item.picUrl} alt = {item.title} style = {{width:"100%", height:"100%"}} />
+            <Ons.Card key={item.title + index}>
+              <img
+                src={item.picUrl}
+                alt={item.title}
+                style={{ width: "100%", height: "100%" }}
+              />
               <p>{item.title}</p>
               <p>posted by: {item.postedBy}</p>
             </Ons.Card>
-        );
+          );
         })}
       </div>
     );
   }
 
   render() {
-    return (
-      <Ons.Page>
-        {this.renderLazyList()}
-      </Ons.Page>
-    );
+    return <Ons.Page>{this.renderLazyList()}</Ons.Page>;
   }
 }
 

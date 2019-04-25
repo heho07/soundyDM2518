@@ -119,56 +119,87 @@ class CreateLogin extends Component {
       });
   };
 
+  renderToolbar() {
+    return (
+      <Ons.Toolbar>
+        <div className="center">Welcome</div>
+      </Ons.Toolbar>
+    );
+  }
+
   render() {
     return (
-      <div className="App">
-        <div className="header">Create user</div>
-        <p>
-          <input
-            className="loginInput"
-            placeholder="Email"
-            type="text"
-            value={this.state.email}
-            onChange={event => {
-              this.setState({ email: event.target.value });
-            }}
-          />
-        </p>
+      <Ons.Page renderToolbar={this.renderToolbar}>
+        <section style={{ textAlign: "center", margin: "5vw" }}>
+          <h1>Soundy</h1>
+          <p>
+            <Ons.Input
+              value={this.state.email}
+              onChange={event => {
+                this.setState({ email: event.target.value });
+              }}
+              modifier="material"
+              float
+              placeholder="Email"
+              style={{ width: "80vw" }}
+            />
+          </p>
 
-        <p>
-          <input
-            className="loginInput"
-            placeholder="Password"
-            type="password"
-            value={this.state.password}
-            onChange={event => {
-              this.setState({ password: event.target.value });
-            }}
-          />
-        </p>
-        <div className="inputContainer">
           <p>
-            <ons-button modifier="large" onClick={this.loginClicked}>
+            <Ons.Input
+              value={this.state.password}
+              onChange={event => {
+                this.setState({ password: event.target.value });
+              }}
+              modifier="material"
+              type="password"
+              float
+              placeholder="Password"
+              style={{ width: "80vw" }}
+            />
+          </p>
+          <br />
+          <p>
+            <Ons.Button
+              onClick={this.loginClicked}
+              modifier="material"
+              style={{ width: "60vw" }}
+            >
               Log in
-            </ons-button>
+            </Ons.Button>
           </p>
           <p>
-            <ons-button modifier="large" onClick={this.createClick}>
+            <Ons.Button
+              onClick={this.createClick}
+              modifier="material"
+              style={{ width: "60vw" }}
+            >
               Create Account
-            </ons-button>
+            </Ons.Button>
+          </p>
+          <br />
+          <p>
+            <Ons.Button
+              className=".fb-google-button"
+              modifier="material"
+              style={{ width: "60vw" }}
+              onClick={this.signInWithGoogle}
+            >
+              <Ons.Icon icon="google" /> Sign in with Google
+            </Ons.Button>
           </p>
           <p>
-            <ons-button modifier="large" onClick={this.signInWithGoogle}>
-              Sign in with Google
-            </ons-button>
+            <Ons.Button
+              className=".fb-google-button"
+              modifier="material"
+              style={{ width: "60vw" }}
+              onClick={this.signInWithFacebook}
+            >
+              <Ons.Icon icon="facebook" /> Sign in with Facebook
+            </Ons.Button>
           </p>
-          <p>
-            <ons-button modifier="large" onClick={this.signInWithFacebook}>
-              Sign in with Facebook
-            </ons-button>
-          </p>
-        </div>
-      </div>
+        </section>
+      </Ons.Page>
     );
   }
 }

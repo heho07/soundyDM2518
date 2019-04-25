@@ -19,15 +19,3 @@
   justify-content: center;
   align-items: flex-start;
 }
-
-.loginInput {
-  width: 80vw;
-  padding: 0.2rem;
-  font-size: 16px;
-  height: 31px;
-  font-weight: 400;
-  border-radius: 3px;
-  text-align: center;
-  font-family: -apple-system, "Helvetica Neue", "Helvetica", "Arial",
-    "Lucida Grande", sans-serif;
-}

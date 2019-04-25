@@ -15,10 +15,9 @@ import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
 class TabContainer extends Component {
-
   // in the this.state.posts array we can save the results from our database queries
   // these can then automatically be shown in Feed.jsx by passing the state as a prop
-  // By saving the data here we don't have to do a new API call every time we switch tabs 
+  // By saving the data here we don't have to do a new API call every time we switch tabs
   constructor(props) {
     super(props);
     this.state = {
@@ -26,23 +25,22 @@ class TabContainer extends Component {
       index: 0,
       posts: [
         {
-          title:'foo',
-          picUrl:'https://i.imgur.com/Cm919US.jpg',
-          postedBy:'Herman'
+          title: "foo",
+          picUrl: "https://i.imgur.com/Cm919US.jpg",
+          postedBy: "Herman"
         },
         {
-          title:'bar',
-          picUrl:'https://i.imgur.com/1Yd8RQ2.png',
-          postedBy:'OtherUser'
+          title: "bar",
+          picUrl: "https://i.imgur.com/1Yd8RQ2.png",
+          postedBy: "OtherUser"
         },
         {
-          title:'LMAO',
-          picUrl:'https://i.imgur.com/TNDmju5.png',
-          postedBy:'David'
+          title: "LMAO",
+          picUrl: "https://i.imgur.com/TNDmju5.png",
+          postedBy: "David"
         }
-      ],
+      ]
     };
-
   }
 
   componentDidMount() {
@@ -68,16 +66,17 @@ class TabContainer extends Component {
       });
   };
 
+  renderToolbar() {
+    return (
+      <Ons.Toolbar>
+        <div className="center">Soundy</div>
+      </Ons.Toolbar>
+    );
+  }
+
   render() {
     return (
-      <Ons.Page>
-        <ons-toolbar>
-          <div className="center">Soundy</div>
-
-          <div className="right">
-            <ons-toolbar-button icon="sign-out-alt" onClick={this.signOut} />
-          </div>
-        </ons-toolbar>
+      <Ons.Page renderToolbar={this.renderToolbar}>
         <Ons.Tabbar
           onPreChange={({ index }) => this.setState({ index: index })}
           onPostChange={() => console.log("postChange")}
@@ -88,7 +87,7 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Feed">
-                  <Feed posts = {this.state.posts} />
+                  <Feed posts={this.state.posts} />
                 </Ons.Page>
               ),
               tab: <Ons.Tab label="Feed" icon="fa-headphones" key="FeedTab" />
@@ -99,12 +98,15 @@ class TabContainer extends Component {
                   <p>upload</p>
                 </Ons.Page>
               ),
-              tab: <Ons.Tab label="Upload" icon="fa-microphone" key="UploadTab" />
+              tab: (
+                <Ons.Tab label="Upload" icon="fa-microphone" key="UploadTab" />
+              )
             },
             {
               content: (
                 <Ons.Page key="Profile">
                   <p>Profile</p>
+                  <Ons.Button icon="sign-out-alt" onClick={this.signOut} />
                 </Ons.Page>
               ),
               tab: <Ons.Tab label="Profile" icon="fa-user" key="ProfileTab" />

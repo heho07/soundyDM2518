@@ -7,15 +7,6 @@ import * as serviceWorker from "./serviceWorker";
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
-var config = {
-  apiKey: "AIzaSyAJZXBhqNSQG9VplYDMM-v0cADz10r16-M",
-  authDomain: "soundy-dm2518.firebaseapp.com",
-  databaseURL: "https://soundy-dm2518.firebaseio.com",
-  projectId: "soundy-dm2518",
-  storageBucket: "soundy-dm2518.appspot.com",
-  messagingSenderId: "431756069486"
-};
-
 firebase.initializeApp(config);
 
 ReactDOM.render(<App />, document.getElementById("root"));
