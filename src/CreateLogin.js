@@ -21,6 +21,7 @@ class CreateLogin extends Component {
   }
 
   componentDidMount() {
+    console.log(Ons);
     redirectWhenOAuthChanges(this.props.history);
   }
 
@@ -100,6 +101,10 @@ class CreateLogin extends Component {
       .catch(error => {
         console.log(this.state.email);
         console.error("Error signing in! " + error.code + " " + error.message);
+        Ons.notification.alert({
+          message: "test",
+          buttonLabel: "OK"
+        });
       });
   };
 

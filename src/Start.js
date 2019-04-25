@@ -38,17 +38,6 @@ class Start extends Component {
       });
   };
 
-  renderTabs = () => {
-    return (
-      {
-        tab: <ons-tab label="Home" icon="md-home" />
-      },
-      {
-        tab: <ons-tab label="Settings" icon="md-settings" />
-      }
-    );
-  };
-
   render() {
     const { currentUser } = this.state;
     return (
