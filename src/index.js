@@ -3,10 +3,10 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-// import config from "./Config.js";
+import config from "./Config.js";
 import * as firebase from "firebase/app";
 import "firebase/auth";
-import config from "./secrets";
+// import config from "./secrets";
 
 firebase.initializeApp(config);
 
