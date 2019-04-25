@@ -9,17 +9,37 @@ import Feed from "./Feed";
 
 // imports for OnsenUI
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
-//import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
+// import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
 // Webpack CSS import
 import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
 class TabContainer extends Component {
+
+  // in the this.state.posts array we can save the results from our database queries
+  // these can then automatically be shown in Feed.jsx by passing the state as a prop
   constructor(props) {
     super(props);
     this.state = {
       currentUser: null,
-      index: 0
+      index: 0,
+      posts: [
+        {
+          title:'foo',
+          picUrl:'https://i.imgur.com/Cm919US.jpg',
+          postedBy:'Herman'
+        },
+        {
+          title:'bar',
+          picUrl:'https://i.imgur.com/1Yd8RQ2.png',
+          postedBy:'OtherUser'
+        },
+        {
+          title:'LMAO',
+          picUrl:'https://i.imgur.com/TNDmju5.png',
+          postedBy:'David'
+        }
+      ]
     };
   }
 
@@ -66,7 +86,7 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Feed">
-                  <Feed />
+                  <Feed posts = {this.state.posts} />
                 </Ons.Page>
               ),
               tab: <Ons.Tab label="Feed" icon="fa-info-circle" key="FeedTab" />
