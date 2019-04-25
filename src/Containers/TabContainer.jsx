@@ -32,8 +32,8 @@ class TabContainer extends Component {
     // connecting to Unsplash to get images automatically
     const Unsplash = require('unsplash-js').default;
     let unsplash = new Unsplash({
-      applicationId: "2a745e3aed8f6d1704ea605cf1714be80d3fdf38fabf4e6c09a098b770cf97a6",
-      secret: "33be076d60849f65a6bf319f8b9631b63b4ca166ae5bdbf941cfb381960564e0"
+      applicationId: "INSERT_ACCES_KEY",
+      secret: "INSERT_SECRET_KEY"
     });
 
     this.state = {
