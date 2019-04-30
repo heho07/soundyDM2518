@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import "./App.css";
-import { redirectWhenOAuthChanges } from "./utils";
+import { redirectWhenOAuthChanges } from "../utils";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -37,38 +36,40 @@ class Profile extends Component {
       });
   };
 
-  renderToolbar() {
-    return (
-      <Ons.Toolbar>
-        <div className="center">Welcome</div>
-      </Ons.Toolbar>
-    );
+  renderProfileImage() {
+    const { currentUser } = this.state;
+    console.log(currentUser && currentUser.photoURL);
+    if (currentUser && currentUser.photoURL === null) {
+      console.log("Undefined image, use default");
+      return (
+        <img
+          src="https://t4.ftcdn.net/jpg/02/15/84/43/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
+          alt={currentUser && currentUser.displayName}
+          className="userPhoto"
+        />
+      );
+    } else {
+      console.log("NOT Undefined image");
+      return (
+        <img
+          src={currentUser && currentUser.photoURL}
+          alt={currentUser && currentUser.displayName}
+          className="userPhoto"
+        />
+      );
+    }
   }
 
   render() {
+    const { currentUser } = this.state;
     return (
-      <Ons.Page renderToolbar={this.renderToolbar}>
-        const {currentUser} = this.state; return (
-        <ons-page id="App">
-          <ons-toolbar>
-            <div className="center">Soundy</div>
+      <Ons.Page className="page">
+        <div className="Profil">{this.renderProfileImage()}</div>
+        <h2>{currentUser && currentUser.displayName}</h2>
 
-            <div className="right">
-              <ons-toolbar-button icon="sign-out-alt" onClick={this.signOut} />
-            </div>
-          </ons-toolbar>
-
-          <ons-card>
-            <img
-              src={"https://monaca.io/img/logos/download_image_onsenui_01.png"}
-              alt="Onsen UI"
-              style={{ width: "100%" }}
-            />
-            <div className="title">This is the first song</div>
-            <div className="content" />
-          </ons-card>
-        </ons-page>
-        ); } }
+        <Ons.Button modifier="material" onClick={this.signOut}>
+          Sign out {currentUser && currentUser.email}
+        </Ons.Button>
       </Ons.Page>
     );
   }

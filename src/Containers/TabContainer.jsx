@@ -6,6 +6,7 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 
 import Feed from "./Feed";
+import Profile from "./Profile";
 
 // imports for OnsenUI
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
@@ -22,7 +23,7 @@ class TabContainer extends Component {
     super(props);
     this.state = {
       currentUser: null,
-      index: 0,
+      index: 2,
       posts: [
         {
           title: "foo",
@@ -105,8 +106,7 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Profile">
-                  <p>Profile</p>
-                  <Ons.Button icon="sign-out-alt" onClick={this.signOut} />
+                  <Profile />
                 </Ons.Page>
               ),
               tab: <Ons.Tab label="Profile" icon="fa-user" key="ProfileTab" />
