@@ -3,7 +3,6 @@ import CreateLogin from "./CreateLogin";
 //import Start from "./Start";
 import Loading from "./Loading";
 import TabContainer from "./Containers/TabContainer";
-import Feed from "./Containers/Feed";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 class App extends Component {
