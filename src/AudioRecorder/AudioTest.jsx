@@ -10,12 +10,18 @@ var app = firebase.initializeApp(config);
 var storage = firebase.app().storage('gs://soundy-dm2518.appspot.com/');
 var storageRef = storage.ref();
 
+var blobURL;
+
 export class AudioTest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      record: false
+      record: false,
+      blobObject: null,
+      isRecording: false,
+      isPaused: false
     };
+    this.onStop = this.onStop.bind(this);
   }
 
   startRecording = () => {
@@ -35,10 +41,8 @@ export class AudioTest extends React.Component {
   }
 
   onStop(recordedBlob) {
-    console.log('recordedBlob is: ', recordedBlob);
     let audioBlob = recordedBlob.blob;
-    console.log(audioBlob);
-
+    this.setState({ blobURL : recordedBlob.blobURL });
     //var audioRef = storageRef.child('audios');
     var soundRef = storageRef.child('sound');
     soundRef
@@ -52,6 +56,7 @@ export class AudioTest extends React.Component {
   }
 
   render() {
+    const { blobURL, isRecording, isPaused } = this.state;
     return (
       <div>
         <ReactMic
@@ -68,7 +73,11 @@ export class AudioTest extends React.Component {
         <button onClick={this.stopRecording} type="button">
           Stop
         </button>
+        <div>
+            <video ref="audioSource" controls="controls" src={blobURL}></video>
+      	</div>
       </div>
+      
     );
   }
 }
