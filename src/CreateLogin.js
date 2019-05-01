@@ -101,10 +101,6 @@ class CreateLogin extends Component {
       .catch(error => {
         console.log(this.state.email);
         console.error("Error signing in! " + error.code + " " + error.message);
-        Ons.notification.alert({
-          message: "test",
-          buttonLabel: "OK"
-        });
       });
   };
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { redirectWhenOAuthChanges } from "../utils";
+//import { redirectWhenOAuthChanges } from "../utils";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -12,10 +12,10 @@ import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
 class Profile extends Component {
-  state = { currentUser: null };
+  state = { currentUser: null, toastShown: true, name: "" };
 
   componentDidMount() {
-    redirectWhenOAuthChanges(this.props.history);
+    //redirectWhenOAuthChanges(this.props.history);
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({ currentUser: user });
@@ -39,7 +39,7 @@ class Profile extends Component {
 
   renderProfileImage() {
     const currentUser = this.state.currentUser;
-    //console.log(currentUser);
+
     if (currentUser && currentUser.photoURL === null) {
       return (
         <img
@@ -59,31 +59,36 @@ class Profile extends Component {
     }
   }
 
-  renderRow(row, index) {
-    const names = [
-      "Max",
-      "Chloe",
-      "Bella",
-      "Oliver",
-      "Tiger",
-      "Lucy",
-      "Shadow",
-      "Angel"
-    ];
-    const name = names[Math.floor(names.length * Math.random())];
+  handleDismiss() {
+    this.setState({ toastShown: false });
+  }
 
-    return (
-      <Ons.ListItem key={index}>
-        <div className="left">
-          <img
-            src="https://cdn1.iconfinder.com/data/icons/phone-33/65/31-512.png"
-            className="list-item__thumbnail"
-            alt="Sound icon"
-          />
-        </div>
-        <div className="center">{name}</div>
-      </Ons.ListItem>
-    );
+  editProfile() {
+    var user = firebase.auth().currentUser;
+    user
+      .updateProfile({
+        displayName: "Mitt nya namn"
+      })
+      .then(function() {
+        console.log("toastShown");
+        //this.setState({ toastShown: true });
+      })
+      .catch(function(error) {
+        console.error("Error updating! " + error.code + " " + error.message);
+      });
+  }
+
+  deleteProfile() {
+    var user = firebase.auth().currentUser;
+
+    user
+      .delete()
+      .then(function() {
+        // User deleted.
+      })
+      .catch(function(error) {
+        // An error happened.
+      });
   }
 
   render() {
@@ -100,29 +105,56 @@ class Profile extends Component {
                 className="profileButtons"
                 onClick={this.signOut}
               >
-                Edit <Ons.Icon icon="user-cog" />
+                Sign out <Ons.Icon icon="sign-out-alt" />
               </Ons.Button>
               <Ons.Button
                 modifier="material"
                 className="profileButtons"
-                onClick={this.signOut}
+                onClick={this.deleteProfile}
               >
-                Sign out <Ons.Icon icon="sign-out-alt" />
+                Delete Account <Ons.Icon icon="trash-alt" />
               </Ons.Button>
             </div>
           </div>
         </div>
 
-        <div className="bottomProfile">
-          <Ons.List
-            dataSource={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
-            renderRow={this.renderRow}
-            renderHeader={() => <Ons.ListHeader>Your posts</Ons.ListHeader>}
-          />
-        </div>
+        <div className="bottomProfile" />
+
+        <Ons.Input
+          value={this.state.name}
+          onChange={event => {
+            this.setState({ name: event.target.value });
+          }}
+          modifier="material"
+          float
+          placeholder="Name"
+          style={{ width: "80vw" }}
+        />
+
+        <Ons.Button
+          modifier="material"
+          className="updateUser"
+          onClick={this.editProfile}
+        >
+          Update User information <Ons.Icon icon="user-cog" />
+        </Ons.Button>
       </Ons.Page>
     );
   }
 }
 
 export default Profile;
+// <Ons.AlertDialog isOpen={this.state.toastShown} isCancelable={false}>
+//   <div className="alert-dialog-title">Confirmaiton</div>
+//   <div className="alert-dialog-content">
+//     Your name have been updated
+//   </div>
+//   <div className="alert-dialog-footer">
+//     <button
+//       onClick={this.handleDismiss}
+//       className="alert-dialog-button"
+//     >
+//       Ok
+//     </button>
+//   </div>
+// </Ons.AlertDialog>

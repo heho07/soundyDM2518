@@ -24,3 +24,5 @@ yarn-error.log*
 
 /src/Config.js
 src/secrets.js
+src/secrets.js
+src/secrets.js

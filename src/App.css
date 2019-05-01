@@ -48,6 +48,28 @@
   overflow: auto;
 }
 
+.text-input--material {
+  margin: 0.8rem !important;
+}
+
 .profileButtons {
-  margin-left: 7px !important;
+  margin-bottom: 7px !important;
+}
+
+.editProfile {
+  display: none;
+}
+
+hr {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.updateUser {
+  margin: 2rem !important;
+}
+
+.Form2 {
+  width: 80%;
+  margin: 3%;
 }
