@@ -90,7 +90,7 @@ export class AudioTest extends React.Component {
     return this.state.allSounds.map(soundObject => {
       const { url, user, time } = soundObject;
       return (
-        <div>
+        <div key={time}>
           <div>User: {user}</div>
           <div>
             {new Date(time).toDateString()}{' '}
