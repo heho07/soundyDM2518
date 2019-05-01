@@ -1,19 +1,20 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { redirectWhenOAuthChanges } from "../utils";
+import { redirectWhenOAuthChanges } from '../utils';
 
-import * as firebase from "firebase/app";
-import "firebase/auth";
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
-import Feed from "./Feed";
-import Profile from "./Profile";
+import Feed from './Feed';
+import Profile from './Profile';
+import AudioTest from '../AudioRecorder/AudioTest';
 
 // imports for OnsenUI
-import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
+import * as Ons from 'react-onsenui'; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 // import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
 // Webpack CSS import
-import "onsenui/css/onsenui.css";
-import "onsenui/css/onsen-css-components.css";
+import 'onsenui/css/onsenui.css';
+import 'onsenui/css/onsen-css-components.css';
 
 class TabContainer extends Component {
   // in the this.state.posts array we can save the results from our database queries
@@ -26,19 +27,19 @@ class TabContainer extends Component {
       index: 2,
       posts: [
         {
-          title: "foo",
-          picUrl: "https://i.imgur.com/Cm919US.jpg",
-          postedBy: "Herman"
+          title: 'foo',
+          picUrl: 'https://i.imgur.com/Cm919US.jpg',
+          postedBy: 'Herman'
         },
         {
-          title: "bar",
-          picUrl: "https://i.imgur.com/1Yd8RQ2.png",
-          postedBy: "OtherUser"
+          title: 'bar',
+          picUrl: 'https://i.imgur.com/1Yd8RQ2.png',
+          postedBy: 'OtherUser'
         },
         {
-          title: "LMAO",
-          picUrl: "https://i.imgur.com/TNDmju5.png",
-          postedBy: "David"
+          title: 'LMAO',
+          picUrl: 'https://i.imgur.com/TNDmju5.png',
+          postedBy: 'David'
         }
       ]
     };
@@ -60,10 +61,10 @@ class TabContainer extends Component {
       .auth()
       .signOut()
       .then(function() {
-        console.log("Signed out completed");
+        console.log('Signed out completed');
       })
       .catch(function(error) {
-        console.log("Error when signing out" + error);
+        console.log('Error when signing out' + error);
       });
   };
 
@@ -80,8 +81,8 @@ class TabContainer extends Component {
       <Ons.Page renderToolbar={this.renderToolbar}>
         <Ons.Tabbar
           onPreChange={({ index }) => this.setState({ index: index })}
-          onPostChange={() => console.log("postChange")}
-          onReactive={() => console.log("postChange")}
+          onPostChange={() => console.log('postChange')}
+          onReactive={() => console.log('postChange')}
           position="bottom"
           index={this.state.index}
           renderTabs={(activeIndex, tabbar) => [
@@ -96,7 +97,7 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Upload">
-                  <p>upload</p>
+                  <AudioTest />
                 </Ons.Page>
               ),
               tab: (
