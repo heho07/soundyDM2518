@@ -19,7 +19,7 @@ export class AudioTest extends React.Component {
     super(props);
     this.state = {
       record: false,
-      blobObject: null,
+      audioBlob: null,
       isRecording: false,
       isPaused: false,
       allSounds: []
@@ -48,8 +48,14 @@ export class AudioTest extends React.Component {
   }
 
   onStop(recordedBlob) {
-    let audioBlob = recordedBlob.blob;
-    this.setState({ blobURL: recordedBlob.blobURL });
+    this.setState({
+      blobURL: recordedBlob.blobURL,
+      audioBlob: recordedBlob.blob
+    });
+  }
+
+  uploadRecording = () => {
+    const { audioBlob } = this.state;
 
     var timeStamp = +new Date();
     var soundRef = storageRef.child('sounds/' + timeStamp);
@@ -59,6 +65,7 @@ export class AudioTest extends React.Component {
         //It is now uploaded to storage
         soundRef.getDownloadURL().then(downloadURL => {
           db.collection('all-sounds').add({
+            //Add to database
             url: downloadURL,
             user: 1, //TODO: Add real user-id
             time: timeStamp
@@ -68,7 +75,7 @@ export class AudioTest extends React.Component {
       .catch(error => {
         console.log('ERROR: ' + error.message);
       });
-  }
+  };
 
   fetchAllSounds = () => {
     var allSounds = [];
@@ -118,6 +125,9 @@ export class AudioTest extends React.Component {
         </button>
         <button onClick={this.stopRecording} type="button">
           Stop
+        </button>
+        <button onClick={this.uploadRecording} type="button">
+          Upload
         </button>
         <h2>Last sound recorded from source</h2>
         <div>
