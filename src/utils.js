@@ -3,6 +3,6 @@ import "firebase/auth";
 
 export const redirectWhenOAuthChanges = history => {
   firebase.auth().onAuthStateChanged(user => {
-    history.push(user ? "/start" : "/login");
+    history.push(user ? "/TabContainer" : "/login");
   });
 };
