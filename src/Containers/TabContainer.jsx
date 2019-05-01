@@ -14,7 +14,7 @@ import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Pa
 import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
-import config from "../Config.js";
+import config from "../secrets.js";
 
 // ES Modules syntax
 import Unsplash, { toJson} from 'unsplash-js';
