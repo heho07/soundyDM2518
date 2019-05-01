@@ -18,7 +18,7 @@ export class AudioTest extends React.Component {
       blobObject: null,
       isRecording: false,
       isPaused: false,
-      audioURL: ""
+      audioURL: ''
     };
     this.onStop = this.onStop.bind(this);
   }
@@ -41,7 +41,7 @@ export class AudioTest extends React.Component {
 
   onStop(recordedBlob) {
     let audioBlob = recordedBlob.blob;
-    this.setState({ blobURL : recordedBlob.blobURL });
+    this.setState({ blobURL: recordedBlob.blobURL });
     //var audioRef = storageRef.child('audios');
 
     //TODO: Random audio name generation
@@ -49,13 +49,10 @@ export class AudioTest extends React.Component {
     soundRef
       .put(audioBlob)
       .then(snapshot => {
-        console.log(snapshot);
-        this.audioURL = soundRef.getDownloadURL().then(function(downloadURL) {
-          //console.log('File available at', downloadURL);
-          // TODO: I can get the url of the file in the bucket inside here but not outside, then it's just a promise.
-          return downloadURL;
+        //It is now uploaded
+        soundRef.getDownloadURL().then(downloadURL => {
+          this.setState({ audioURL: downloadURL });
         });
-        console.log(this.audioURL);
       })
       .catch(error => {
         console.log('ERROR: ' + error.message);
@@ -64,7 +61,7 @@ export class AudioTest extends React.Component {
 
   // If you want background image to <video>: style={{backgroundImage: 'url(' + "https://picsum.photos/400/600" + ')'}}
   render() {
-    const { blobURL, isRecording, isPaused } = this.state;
+    const { blobURL, audioURL, isRecording, isPaused } = this.state;
     return (
       <div>
         <ReactMic
@@ -81,11 +78,15 @@ export class AudioTest extends React.Component {
         <button onClick={this.stopRecording} type="button">
           Stop
         </button>
+        <h4>Sound directly from source</h4>
         <div>
-            <video ref="audioSource" controls="controls" src={blobURL}></video>
-      	</div>
+          <video ref="audioSource" controls="controls" src={blobURL} />
+        </div>
+        <h4>Sound from Firebase Storage</h4>
+        <div>
+          <video ref="audioSource" controls="controls" src={audioURL} />
+        </div>
       </div>
-      
     );
   }
 }
