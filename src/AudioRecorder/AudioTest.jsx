@@ -80,6 +80,7 @@ export class AudioTest extends React.Component {
   fetchAllSounds = () => {
     var allSounds = [];
     db.collection('all-sounds')
+      .orderBy('time', 'desc')
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
