@@ -7,6 +7,7 @@ import 'firebase/auth';
 
 import Feed from './Feed';
 import Profile from './Profile';
+import Upload from "./Upload";
 import AudioTest from '../AudioRecorder/AudioTest';
 
 // imports for OnsenUI
@@ -44,41 +45,24 @@ class TabContainer extends Component {
       index: 2,
       posts: [
         {
-// <<<<<<< HEAD
+
           title:'dog',
-          // picUrl:'https://i.imgur.com/Cm919US.jpg',
           postedBy:'Herman'
         },
         {
           title:'cat',
-          // picUrl:'https://i.imgur.com/1Yd8RQ2.png',
           postedBy:'OtherUser'
         },
         {
           title:'hat',
-          // picUrl:'https://i.imgur.com/TNDmju5.png',
           postedBy:'David'
         }
       ],
       unsplash: unsplash,
-      status:"loading"
-// =======
-//           title: 'foo',
-//           picUrl: 'https://i.imgur.com/Cm919US.jpg',
-//           postedBy: 'Herman'
-//         },
-//         {
-//           title: 'bar',
-//           picUrl: 'https://i.imgur.com/1Yd8RQ2.png',
-//           postedBy: 'OtherUser'
-//         },
-//         {
-//           title: 'LMAO',
-//           picUrl: 'https://i.imgur.com/TNDmju5.png',
-//           postedBy: 'David'
-//         }
-//       ]
-// >>>>>>> master
+      status:"loading",
+
+      // states for the audio recording
+      allSounds: []
     };
   }
 
@@ -106,27 +90,24 @@ class TabContainer extends Component {
   }
 
   async componentDidMount() {
-  //   redirectWhenOAuthChanges(this.props.history);
-  //   firebase.auth().onAuthStateChanged(user => {
-  //     if (user) {
-  //       this.setState({ currentUser: user });
-  //     } else {
-  //       this.setState({ currentUser: null });
-  //     }
-  //   });
-  // }
+    // ifall man skulle bli utloggad (tror jag /H)
+    redirectWhenOAuthChanges(this.props.history);
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.setState({ currentUser: user });
+      } else {
+        this.setState({ currentUser: null });
+      }
+    });
 
-  // signOut = () => {
-  //   firebase
-  //     .auth()
-  //     .signOut()
-  //     .then(function() {
-  //       console.log("Signed out completed");
-  //     })
-  //     .catch(function(error) {
-  //       console.log("Error when signing out" + error);
-  //     });
+    // kopplar upp till databasen
+    var storage = firebase.app().storage('gs://soundy-dm2518.appspot.com/');
+    this.storageRef = storage.ref();
+    this.db = firebase.firestore();
 
+    this.fetchAllSounds();
+
+    // kopplar en bild från unsplash till databsen
     for (var post of this.state.posts){
       console.log(post);
       let res = await this.updateImagesFromUnsplash(post.title);
@@ -137,6 +118,25 @@ class TabContainer extends Component {
     }
   }
 
+  // Anropar databasen och sparar alla query-resultat i this.state
+  fetchAllSounds = () => {
+    var allSounds = [];
+    this.db
+      .collection('all-sounds')
+      .orderBy('time', 'desc')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          allSounds.push(doc.data());
+        });
+        this.setState({ 
+          allSounds: allSounds, 
+        }, () => console.log(this.state.allSounds));
+      });
+  };
+
+
+  // logga-ut knapp
   signOut = () => {
     firebase
       .auth()
@@ -146,24 +146,20 @@ class TabContainer extends Component {
       })
       .catch(function(error) {
         console.log('Error when signing out' + error);
-// >>>>>>> master
+
         });
     }
 
-
-
-// =======
   renderToolbar() {
-// >>>>>>> master
     return (
       <Ons.Toolbar>
         <div className="center">Soundy</div>
       </Ons.Toolbar>
     );
   }
-// <<<<<<< HEAD
-  render() {
 
+
+  render() {
     // Visar bara posts ifall allt laddat klart. Kan med fördel användas till ljud-filerna
     let feedPage;
     switch(this.state.status){
@@ -171,7 +167,11 @@ class TabContainer extends Component {
         feedPage = <p>loading</p>;
         break;
       case "loaded":
-        feedPage = <Feed posts = {this.state.posts}/>
+        feedPage = <Feed 
+                      posts = {this.state.posts}
+                      allSounds = {this.state.allSounds}
+                      fetchAllSounds = {() => this.fetchAllSounds()}
+                    />
         break;
       default:
         feedPage = <p>something wrong</p>
@@ -201,7 +201,7 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Upload">
-                  <AudioTest />
+                  <Upload />
                 </Ons.Page>
               ),
               tab: (
