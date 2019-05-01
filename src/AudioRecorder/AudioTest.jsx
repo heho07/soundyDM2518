@@ -3,12 +3,16 @@ import { ReactMic } from 'react-mic';
 
 import * as firebase from 'firebase/app';
 import 'firebase/storage';
+import 'firebase/firestore';
+
 import config from '../secrets';
 
 var app = firebase.initializeApp(config);
 
 var storage = firebase.app().storage('gs://soundy-dm2518.appspot.com/');
 var storageRef = storage.ref();
+
+var db = firebase.firestore();
 
 export class AudioTest extends React.Component {
   constructor(props) {
@@ -18,10 +22,14 @@ export class AudioTest extends React.Component {
       blobObject: null,
       isRecording: false,
       isPaused: false,
-      audioURL: ''
+      allSounds: []
     };
     this.onStop = this.onStop.bind(this);
   }
+
+  componentDidMount = () => {
+    this.fetchAllSounds();
+  };
 
   startRecording = () => {
     this.setState({
@@ -42,22 +50,55 @@ export class AudioTest extends React.Component {
   onStop(recordedBlob) {
     let audioBlob = recordedBlob.blob;
     this.setState({ blobURL: recordedBlob.blobURL });
-    //var audioRef = storageRef.child('audios');
 
-    //TODO: Random audio name generation
-    var soundRef = storageRef.child('sound');
+    var timeStamp = +new Date();
+    var soundRef = storageRef.child('sounds/' + timeStamp);
     soundRef
       .put(audioBlob)
       .then(snapshot => {
-        //It is now uploaded
+        //It is now uploaded to storage
         soundRef.getDownloadURL().then(downloadURL => {
-          this.setState({ audioURL: downloadURL });
+          db.collection('all-sounds').add({
+            url: downloadURL,
+            user: 1, //TODO: Add real user-id
+            time: timeStamp
+          });
         });
       })
       .catch(error => {
         console.log('ERROR: ' + error.message);
       });
   }
+
+  fetchAllSounds = () => {
+    var allSounds = [];
+    db.collection('all-sounds')
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          allSounds.push(doc.data());
+        });
+        this.setState({ allSounds: allSounds });
+      });
+  };
+
+  renderAllSounds = () => {
+    return this.state.allSounds.map(soundObject => {
+      const { url, user, time } = soundObject;
+      return (
+        <div>
+          <div>User: {user}</div>
+          <div>
+            {new Date(time).toDateString()}{' '}
+            {new Date(time).toLocaleTimeString()}
+          </div>
+          <div>
+            <video ref="audioSource" controls="controls" src={url} />
+          </div>
+        </div>
+      );
+    });
+  };
 
   // If you want background image to <video>: style={{backgroundImage: 'url(' + "https://picsum.photos/400/600" + ')'}}
   render() {
@@ -78,14 +119,19 @@ export class AudioTest extends React.Component {
         <button onClick={this.stopRecording} type="button">
           Stop
         </button>
-        <h4>Sound directly from source</h4>
+        <h2>Last sound recorded from source</h2>
         <div>
           <video ref="audioSource" controls="controls" src={blobURL} />
         </div>
-        <h4>Sound from Firebase Storage</h4>
-        <div>
-          <video ref="audioSource" controls="controls" src={audioURL} />
-        </div>
+        <h2>Sounds from Firebase Storage</h2>
+        <button
+          onClick={() => {
+            this.fetchAllSounds();
+          }}
+        >
+          Refresh
+        </button>
+        {this.renderAllSounds()}
       </div>
     );
   }
