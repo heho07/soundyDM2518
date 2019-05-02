@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 // imports for OnsenUI
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 //import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
@@ -32,12 +31,19 @@ class Feed extends Component {
           {new Date(item.time).toLocaleTimeString()}
         </p>
         <img src = "https://i.imgur.com/hgyXyww.png"/>
-        <audio controls>
+        <audio controls onWaiting = {() => this.handleAudioWaiting()}>
           <source src = {item.url}/>
+          <p>Your browser does not support audio. The file can be found at <a href = {item.url}>this link</a></p>  
         </audio>     
         
       </Ons.Card>
     );
+  }
+
+
+  // Called if the audio player has to wait due to slow internet connection
+  handleAudioWaiting(){
+    this.props.createErrorMessage("Slow internet connection detected.", "Toast");
   }
           
 

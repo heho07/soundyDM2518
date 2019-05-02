@@ -120,22 +120,33 @@ class TabContainer extends Component {
 
   // Anropar databasen och sparar alla query-resultat i this.state
   fetchAllSounds = () => {
-    var allSounds = [];
-    this.db
-      .collection('all-sounds')
-      .orderBy('time', 'desc')
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          allSounds.push(doc.data());
-        });
-        this.setState({ 
-          allSounds: allSounds, 
-        }, () => console.log(this.state.allSounds));
-      }).catch(error => {
-        this.props.createErrorMessage("Error when fetching new sounds. See the log for more details");
-        console.log(error);
-      });
+    if(navigator.onLine){
+      var allSounds = [];
+      try{
+
+        this.db
+          .collection('all-sounds')
+          .orderBy('time', 'desc')
+          .get().catch(err => console.log(err))
+          .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              allSounds.push(doc.data());
+            });
+            this.setState({ 
+              allSounds: allSounds, 
+            }, () => console.log(this.state.allSounds));
+          }).catch(error => {
+            this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
+            console.log(error);
+          });
+      }catch(err){
+        this.props.createErrorMessage(err, "Toast");
+        console.log(err);
+      }
+    }
+    else{
+      this.props.createErrorMessage("No internet connection! :(", "Toast");
+    }
   };
 
 
@@ -174,6 +185,7 @@ class TabContainer extends Component {
                       posts = {this.state.posts}
                       allSounds = {this.state.allSounds}
                       fetchAllSounds = {() => this.fetchAllSounds()}
+                      createErrorMessage = {(msg, type) => this.props.createErrorMessage(msg, type)}
                     />
         break;
       default:
@@ -206,7 +218,6 @@ class TabContainer extends Component {
                 <Ons.Page key="Upload">
                   <Upload 
                     createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
-                    cancelErrorMessage = {() => this.props.cancelErrorMessage()}
                   />
                 </Ons.Page>
               ),
