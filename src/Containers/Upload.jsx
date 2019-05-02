@@ -11,7 +11,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/storage';
 import 'firebase/firestore';
 
-
+import ErrorPopUp from "./ErrorPopUp";
 
 class Upload extends Component {
 
@@ -22,6 +22,9 @@ class Upload extends Component {
       audioBlob: null,
       isRecording: false,
       isPaused: false,
+      errorOccured:false,
+      errorMessage:"",
+      errorMessageType:"",
     };
     this.onStop = this.onStop.bind(this);
   }
@@ -80,7 +83,9 @@ class Upload extends Component {
 
 
 
+  showErrorMessage(){
 
+  }
 
 
   render() {
@@ -108,6 +113,23 @@ class Upload extends Component {
         <div>
           <video ref="audioSource" controls="controls" src={blobURL} />
         </div>
+        <button onClick = {() => this.setState({errorOccured:true, errorMessage:"testingError", errorMessageType:"Toast"})} >
+          Detta är toast
+        </button>
+        <button onClick = {() => this.setState({errorOccured:true, errorMessage:"testingError", errorMessageType:"AlertDialog"})} >
+          Detta är alertdialog
+        </button>
+        <button onClick = {() => this.setState({errorOccured:true, errorMessage:"testingError", errorMessageType:"foo"})} >
+          Denna har ingen giltig type
+        </button>
+        <ErrorPopUp 
+          type = {this.state.errorMessageType}
+          isOpen = {this.state.errorOccured} 
+          message = {this.state.errorMessage}
+          onCancel = {() => this.setState({errorOccured:false, errorMessage:"", errorMessageType:""})}
+        />
+
+
       </Ons.Page>
     );
   }

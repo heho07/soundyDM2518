@@ -42,7 +42,7 @@ class TabContainer extends Component {
 
     this.state = {
       currentUser: null,
-      index: 2,
+      index: 0,
       posts: [
         {
 
