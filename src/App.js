@@ -16,6 +16,9 @@ class App extends Component {
       errorMessage:"",
       errorMessageType:"",
   	}
+  	window.addEventListener("offline",(e) =>  {
+    	this.createErrorMessage("No internet connection detected. \nThe app won't function properly.", "Toast");
+	});
   }
 
   createErrorMessage(message, type){
