@@ -90,38 +90,39 @@ class Profile extends Component {
   }
 
   upload = () => {
-    this.setState({ uploadText: "none", spinner: "block" });
     var user = firebase.auth().currentUser;
     const ref = this.storageRef.child("profileImages");
-
     const file = document.querySelector("#photo").files[0];
-    const name = +new Date() + "-" + file.name;
-    const metadata = {
-      contentType: file.type
-    };
-    const task = ref.child(name).put(file, metadata);
-    task
-      .then(snapshot => snapshot.ref.getDownloadURL())
-      .then(url => {
-        user
-          .updateProfile({
-            photoURL: url
-          })
-          .then(test => {
-            this.setState({
-              currentUser: user,
-              image: null,
-              checkmark: "none",
-              spinner: "none",
-              selectText: "block",
-              uploadText: "block"
+    if (file) {
+      this.setState({ uploadText: "none", spinner: "block" });
+      const name = +new Date() + "-" + file.name;
+      const metadata = {
+        contentType: file.type
+      };
+      const task = ref.child(name).put(file, metadata);
+      task
+        .then(snapshot => snapshot.ref.getDownloadURL())
+        .then(url => {
+          user
+            .updateProfile({
+              photoURL: url
+            })
+            .then(test => {
+              this.setState({
+                currentUser: user,
+                image: null,
+                checkmark: "none",
+                spinner: "none",
+                selectText: "block",
+                uploadText: "block"
+              });
+            })
+            .catch(function(error) {
+              // An error happened.
             });
-          })
-          .catch(function(error) {
-            // An error happened.
-          });
-      })
-      .catch(console.error);
+        })
+        .catch(console.error);
+    }
   };
 
   selectButtonContent = () => {
