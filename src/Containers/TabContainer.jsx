@@ -132,6 +132,9 @@ class TabContainer extends Component {
         this.setState({ 
           allSounds: allSounds, 
         }, () => console.log(this.state.allSounds));
+      }).catch(error => {
+        this.props.createErrorMessage("Error when fetching new sounds. See the log for more details");
+        console.log(error);
       });
   };
 
@@ -144,9 +147,9 @@ class TabContainer extends Component {
       .then(function() {
         console.log('Signed out completed');
       })
-      .catch(function(error) {
+      .catch((error) => {
         console.log('Error when signing out' + error);
-
+        this.props.createErrorMessage("Error when signing out " + error, "Toast");
         });
     }
 
