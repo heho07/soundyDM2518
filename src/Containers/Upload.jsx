@@ -76,14 +76,10 @@ class Upload extends Component {
       })
       .catch(error => {
         console.log('ERROR: ' + error.message);
+        this.props.createErrorMessage(error.message, "Toast");
       });
   };
 
-
-
-  showErrorMessage(){
-
-  }
 
 
   render() {
@@ -111,18 +107,6 @@ class Upload extends Component {
         <div>
           <video ref="audioSource" controls="controls" src={blobURL} />
         </div>
-        <button onClick = {() => this.props.createErrorMessage("meddelande", "Toast")} >
-          Detta är toast
-        </button>
-        <button onClick = {() => this.props.createErrorMessage("meddelande", "AlertDialog")} >
-          Detta är alertdialog
-        </button>
-        <button onClick = {() => this.props.createErrorMessage()} >
-          Denna har ingen giltig type
-        </button>
-        
-
-
       </Ons.Page>
     );
   }

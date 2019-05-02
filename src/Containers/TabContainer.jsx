@@ -104,10 +104,7 @@ class TabContainer extends Component {
     var storage = firebase.app().storage('gs://soundy-dm2518.appspot.com/');
     this.storageRef = storage.ref();
     this.db = firebase.firestore();
-    console.log("before");
     this.fetchAllSounds();
-    console.log("after");
-    
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
@@ -126,7 +123,7 @@ class TabContainer extends Component {
             });
             this.setState({ 
               allSounds: allSounds, 
-              status:"loaded"
+              status:"loaded"       // säger till komponenten att nu har allt laddats klart
             }, () => console.log(this.state.allSounds));
           }).catch(error => {
             this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
