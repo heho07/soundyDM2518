@@ -104,18 +104,10 @@ class TabContainer extends Component {
     var storage = firebase.app().storage('gs://soundy-dm2518.appspot.com/');
     this.storageRef = storage.ref();
     this.db = firebase.firestore();
-
+    console.log("before");
     this.fetchAllSounds();
-
-    // kopplar en bild från unsplash till databsen
-    for (var post of this.state.posts){
-      console.log(post);
-      let res = await this.updateImagesFromUnsplash(post.title);
-      post.picUrl = res;
-      this.setState({
-        status:"loaded",
-      });
-    }
+    console.log("after");
+    
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
@@ -134,6 +126,7 @@ class TabContainer extends Component {
             });
             this.setState({ 
               allSounds: allSounds, 
+              status:"loaded"
             }, () => console.log(this.state.allSounds));
           }).catch(error => {
             this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
@@ -178,7 +171,7 @@ class TabContainer extends Component {
     let feedPage;
     switch(this.state.status){
       case "loading":
-        feedPage = <p>loading</p>;
+        feedPage = <h1>loading</h1>;
         break;
       case "loaded":
         feedPage = <Feed 
