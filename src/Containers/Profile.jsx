@@ -44,7 +44,7 @@ class Profile extends Component {
       })
       .catch(function(error) {
         console.log("Error when signing out" + error);
-
+        this.props.createErrorMessage("Error when signing out. See log for more details", "AlertDialog");
       });
   };
 
@@ -85,6 +85,7 @@ class Profile extends Component {
       })
       .catch(function(error) {
         console.error("Error updating! " + error.code + " " + error.message);
+        this.createErrorMessage("Error editing profile. See log for more details", "AlertDialog");
       });
   }
 
@@ -98,6 +99,8 @@ class Profile extends Component {
       })
       .catch(function(error) {
         // An error happened.
+        this.props.createErrorMessage("Error when deleting profile. See log for more details", "AlertDialog");
+        console.log(error);
       });
   }
 
