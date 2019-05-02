@@ -12,7 +12,7 @@ import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
 class Profile extends Component {
-  state = { currentUser: null, toastShown: true, name: "" };
+  state = { currentUser: null, toastShown: false, name: "" };
 
   componentDidMount() {
     //redirectWhenOAuthChanges(this.props.history);
@@ -37,9 +37,12 @@ class Profile extends Component {
       });
   };
 
+  handleDismiss = () => {
+    this.setState({ toastShown: false });
+  };
+
   renderProfileImage() {
     const currentUser = this.state.currentUser;
-
     if (currentUser && currentUser.photoURL === null) {
       return (
         <img
@@ -59,19 +62,15 @@ class Profile extends Component {
     }
   }
 
-  handleDismiss() {
-    this.setState({ toastShown: false });
-  }
-
   editProfile() {
     var user = firebase.auth().currentUser;
     user
       .updateProfile({
-        displayName: "Mitt nya namn"
+        displayName: this.state.name
       })
-      .then(function() {
-        console.log("toastShown");
-        //this.setState({ toastShown: true });
+      .then(test => {
+        this.setState({ currentUser: user });
+        this.setState({ toastShown: true });
       })
       .catch(function(error) {
         console.error("Error updating! " + error.code + " " + error.message);
@@ -134,27 +133,27 @@ class Profile extends Component {
         <Ons.Button
           modifier="material"
           className="updateUser"
-          onClick={this.editProfile}
+          onClick={this.editProfile.bind(this)}
         >
           Update User information <Ons.Icon icon="user-cog" />
         </Ons.Button>
+        <Ons.AlertDialog isOpen={this.state.toastShown} isCancelable={false}>
+          <div className="alert-dialog-title">Confirmaiton</div>
+          <div className="alert-dialog-content">
+            Your name have been updated
+          </div>
+          <div className="alert-dialog-footer">
+            <button
+              onClick={this.handleDismiss}
+              className="alert-dialog-button"
+            >
+              Ok
+            </button>
+          </div>
+        </Ons.AlertDialog>
       </Ons.Page>
     );
   }
 }
 
 export default Profile;
-// <Ons.AlertDialog isOpen={this.state.toastShown} isCancelable={false}>
-//   <div className="alert-dialog-title">Confirmaiton</div>
-//   <div className="alert-dialog-content">
-//     Your name have been updated
-//   </div>
-//   <div className="alert-dialog-footer">
-//     <button
-//       onClick={this.handleDismiss}
-//       className="alert-dialog-button"
-//     >
-//       Ok
-//     </button>
-//   </div>
-// </Ons.AlertDialog>
