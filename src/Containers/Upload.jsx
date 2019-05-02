@@ -11,21 +11,18 @@ import * as firebase from 'firebase/app';
 import 'firebase/storage';
 import 'firebase/firestore';
 
-
-
 class Upload extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
       record: false,
       audioBlob: null,
       isRecording: false,
-      isPaused: false,
+      isPaused: false
     };
     this.onStop = this.onStop.bind(this);
   }
-  
+
   componentDidMount = () => {
     var storage = firebase.app().storage('gs://soundy-dm2518.appspot.com/');
     this.storageRef = storage.ref();
@@ -57,7 +54,9 @@ class Upload extends Component {
 
   uploadRecording = () => {
     const { audioBlob } = this.state;
+    const { uid } = firebase.auth().currentUser;
 
+    console.log(uid);
     var timeStamp = +new Date();
     var soundRef = this.storageRef.child('sounds/' + timeStamp);
     soundRef
@@ -65,12 +64,15 @@ class Upload extends Component {
       .then(snapshot => {
         //It is now uploaded to storage
         soundRef.getDownloadURL().then(downloadURL => {
-          this.db.collection('all-sounds').add({
-            //Add to database
-            url: downloadURL,
-            user: 1, //TODO: Add real user-id
-            time: timeStamp
-          }).then(alert("uploaded"));
+          this.db
+            .collection('all-sounds')
+            .add({
+              //Add to database
+              url: downloadURL,
+              user: uid,
+              time: timeStamp
+            })
+            .then(alert('uploaded'));
         });
       })
       .catch(error => {
@@ -78,15 +80,10 @@ class Upload extends Component {
       });
   };
 
-
-
-
-
-
   render() {
     const { blobURL, audioURL, isRecording, isPaused } = this.state;
     return (
-      <Ons.Page>  
+      <Ons.Page>
         <ReactMic
           record={this.state.record}
           className="sound-wave"
