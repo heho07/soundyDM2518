@@ -12,7 +12,16 @@ import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
 class Profile extends Component {
-  state = { currentUser: null, toastShown: false, name: "" };
+
+  // behövde skriva om koden med en konstruktor för att få tillgång till props
+  constructor(props){
+    super(props);
+    this.state = { 
+      currentUser: null, 
+      toastShown: false, 
+      name: "" 
+    };
+  }
 
   componentDidMount() {
     // redirectWhenOAuthChanges(this.props.history);
@@ -35,6 +44,7 @@ class Profile extends Component {
       })
       .catch(function(error) {
         console.log("Error when signing out" + error);
+
       });
   };
 

@@ -218,7 +218,9 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Profile">
-                  <Profile />
+                  <Profile 
+                    createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                  />
                 </Ons.Page>
               ),
               tab: <Ons.Tab label="Profile" icon="fa-user" key="ProfileTab" />
