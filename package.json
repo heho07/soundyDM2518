@@ -6,16 +6,17 @@
   "dependencies": {
     "firebase": "^5.10.0",
     "onsenui": "^2.10.8",
+    "rc-if-else": "^1.1.0",
     "react": "^16.8.6",
     "react-audio-recorder": "^2.2.0",
     "react-dom": "^16.8.6",
+    "react-mic": "^12.4.1",
     "react-onsenui": "^1.11.2",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
-    "unsplash-js": "^5.0.0",
-    "react-mic": "^12.4.1",
     "react-tap-event-plugin": "^3.0.3",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "unsplash-js": "^5.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

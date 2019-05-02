@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ReactMic } from 'react-mic';
+import { If, Elif, Else } from 'rc-if-else';
 // imports for OnsenUI
 import * as Ons from 'react-onsenui'; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 import * as ons from 'onsenui'; // This needs to be imported to bootstrap the components.
@@ -22,6 +23,9 @@ class Upload extends Component {
       audioBlob: null,
       isRecording: false,
       isPaused: false,
+      title: "",
+      keyword: ""
+
     };
     this.onStop = this.onStop.bind(this);
   }
@@ -56,9 +60,10 @@ class Upload extends Component {
   }
 
   uploadRecording = () => {
-    const { audioBlob } = this.state;
+    const { audioBlob, title, keyword } = this.state;
 
     var timeStamp = +new Date();
+    console.log(title);
     var soundRef = this.storageRef.child('sounds/' + timeStamp);
     soundRef
       .put(audioBlob)
@@ -69,7 +74,9 @@ class Upload extends Component {
             //Add to database
             url: downloadURL,
             user: 1, //TODO: Add real user-id
-            time: timeStamp
+            time: timeStamp,
+            title: title,
+            keyword: keyword
           }).then(alert("uploaded"));
         });
       })
@@ -78,13 +85,8 @@ class Upload extends Component {
       });
   };
 
-
-
-
-
-
   render() {
-    const { blobURL, audioURL, isRecording, isPaused } = this.state;
+    const { blobURL, audioURL, isRecording, isPaused, title } = this.state;
     return (
       <Ons.Page>  
         <ReactMic
@@ -96,21 +98,43 @@ class Upload extends Component {
           backgroundColor="#000000"
         />
         <div>
-          <ons-fab style={{background: "black"}}>
-            <ons-icon onClick={this.startRecording} type="button" icon="fa-circle" size="56px"></ons-icon>
-          </ons-fab>
-          <ons-fab style={{background: "black"}}>
-            <ons-icon onClick={this.stopRecording} type="button" icon="fa-stop-circle"></ons-icon>
-          </ons-fab>
+            <ons-fab>
+              <ons-icon onClick={this.startRecording} icon="fa-circle"></ons-icon>
+            </ons-fab>
+              <ons-fab>
+                <ons-icon onClick={this.stopRecording} icon="fa-stop-circle"></ons-icon>
+              </ons-fab>
         </div>
         <h2>Your latest recorded sound</h2>
         <div>
           <audio ref="audioSource" controls="controls" src={blobURL} />
         </div>
         <div>
-          <ons-button onClick={this.uploadRecording} type="button" modifier="quiet">
-              Upload
-          </ons-button>
+          <Ons.Input
+            value={this.state.title}
+            onChange={event => {
+              this.setState({ title: event.target.value });
+            }}
+            modifier="material"
+            float
+            placeholder="Title"
+            style={{ width: "80vw" }}
+          />
+        </div>
+        <div>
+          <Ons.Input
+            value={this.state.keyword}
+            onChange={event => {
+              this.setState({ keyword: event.target.value });
+            }}
+            modifier="material"
+            float
+            placeholder="Enter 1 keyword"
+            style={{ width: "80vw" }}
+          />
+        </div>
+        <div>
+          <ons-button onClick={this.uploadRecording} modifier="quiet" icon="fa-cloud-upload-alt"> Upload</ons-button>
         </div>
       </Ons.Page>
     );
