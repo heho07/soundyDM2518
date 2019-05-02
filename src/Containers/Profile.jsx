@@ -3,6 +3,8 @@ import React, { Component } from "react";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/storage";
+import "firebase/firestore";
 
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 //import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
@@ -12,7 +14,13 @@ import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
 class Profile extends Component {
-  state = { currentUser: null, toastShown: false, name: "" };
+  state = {
+    currentUser: null,
+    toastShown: false,
+    name: null,
+    photoURL: null,
+    image: ""
+  };
 
   componentDidMount() {
     // redirectWhenOAuthChanges(this.props.history);
@@ -24,6 +32,10 @@ class Profile extends Component {
         this.setState({ currentUser: null });
       }
     });
+
+    var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
+    this.storageRef = storage.ref();
+    this.db = firebase.firestore();
   }
 
   signOut = () => {
@@ -63,24 +75,26 @@ class Profile extends Component {
     }
   }
 
-  editProfile() {
+  editProfileName() {
     var user = firebase.auth().currentUser;
-    user
-      .updateProfile({
-        displayName: this.state.name
-      })
-      .then(test => {
-        this.setState({ currentUser: user });
-        this.setState({ toastShown: true });
-      })
-      .catch(function(error) {
-        console.error("Error updating! " + error.code + " " + error.message);
-      });
+    console.log(this.state.name);
+
+    this.state.name !== "" &&
+      user
+        .updateProfile({
+          displayName: this.state.name
+        })
+        .then(test => {
+          this.setState({ currentUser: user });
+          this.setState({ toastShown: true });
+        })
+        .catch(function(error) {
+          console.error("Error updating! " + error.code + " " + error.message);
+        });
   }
 
   deleteProfile() {
     var user = firebase.auth().currentUser;
-
     user
       .delete()
       .then(function() {
@@ -90,6 +104,26 @@ class Profile extends Component {
         // An error happened.
       });
   }
+
+  upload = () => {
+    console.log("Upload!!!");
+    console.log(this.state.image);
+
+    const ref = this.storageRef.child("profileImages");
+    const file = document.querySelector("#photo").files[0];
+    const name = +new Date() + "-" + file.name;
+    const metadata = {
+      contentType: file.type
+    };
+    const task = ref.child(name).put(file, metadata);
+    task
+      .then(snapshot => snapshot.ref.getDownloadURL())
+      .then(url => {
+        console.log(url);
+        document.querySelector("#someImageTagID").src = url;
+      })
+      .catch(console.error);
+  };
 
   render() {
     const currentUser = this.state.currentUser;
@@ -118,8 +152,6 @@ class Profile extends Component {
           </div>
         </div>
 
-        <div className="bottomProfile" />
-
         <Ons.Input
           value={this.state.name}
           onChange={event => {
@@ -134,10 +166,11 @@ class Profile extends Component {
         <Ons.Button
           modifier="material"
           className="updateUser"
-          onClick={this.editProfile.bind(this)}
+          onClick={this.editProfileName.bind(this)}
         >
-          Update User information <Ons.Icon icon="user-cog" />
+          Update Name <Ons.Icon icon="user-cog" />
         </Ons.Button>
+
         <Ons.AlertDialog isOpen={this.state.toastShown} isCancelable={false}>
           <div className="alert-dialog-title">Confirmaiton</div>
           <div className="alert-dialog-content">
@@ -152,6 +185,12 @@ class Profile extends Component {
             </button>
           </div>
         </Ons.AlertDialog>
+        <form>
+          <input type="file" name="photo" accept="image/*" id="photo" />
+          <Ons.Button modifier="material" onClick={this.upload}>
+            Upload <Ons.Icon icon="upload" />
+          </Ons.Button>
+        </form>
       </Ons.Page>
     );
   }
