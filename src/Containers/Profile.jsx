@@ -3,6 +3,8 @@ import React, { Component } from "react";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/storage";
+import "firebase/firestore";
 
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 //import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
@@ -16,10 +18,15 @@ class Profile extends Component {
   // behövde skriva om koden med en konstruktor för att få tillgång till props
   constructor(props){
     super(props);
-    this.state = { 
-      currentUser: null, 
-      toastShown: false, 
-      name: "" 
+    this.state = {
+      currentUser: null,
+      name: null,
+      photoURL: null,
+      image: "",
+      checkmark: "none",
+      spinner: "none",
+      selectText: "inherent",
+      uploadText: "inherent"
     };
   }
 
@@ -33,6 +40,10 @@ class Profile extends Component {
         this.setState({ currentUser: null });
       }
     });
+
+    var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
+    this.storageRef = storage.ref();
+    this.db = firebase.firestore();
   }
 
   signOut = () => {
@@ -46,10 +57,6 @@ class Profile extends Component {
         console.log("Error when signing out" + error);
         this.props.createErrorMessage("Error when signing out. See log for more details", "AlertDialog");
       });
-  };
-
-  handleDismiss = () => {
-    this.setState({ toastShown: false });
   };
 
   renderProfileImage() {
@@ -73,36 +80,62 @@ class Profile extends Component {
     }
   }
 
-  editProfile() {
+  editProfileName() {
     var user = firebase.auth().currentUser;
-    user
-      .updateProfile({
-        displayName: this.state.name
-      })
-      .then(test => {
-        this.setState({ currentUser: user });
-        this.setState({ toastShown: true });
-      })
-      .catch(function(error) {
-        console.error("Error updating! " + error.code + " " + error.message);
-        this.createErrorMessage("Error editing profile. See log for more details", "AlertDialog");
-      });
+    this.state.name !== null &&
+      user
+        .updateProfile({
+          displayName: this.state.name
+        })
+        .then(test => {
+          this.setState({ currentUser: user, name: null });
+        })
+        .catch(function(error) {
+          console.error("Error updating! " + error.code + " " + error.message);
+          this.createErrorMessage("Error editing profile. See log for more details", "AlertDialog");
+        });
   }
 
-  deleteProfile() {
+  upload = () => {
     var user = firebase.auth().currentUser;
+    const ref = this.storageRef.child("profileImages");
+    const file = document.querySelector("#photo").files[0];
+    if (file) {
+      this.setState({ uploadText: "none", spinner: "block" });
+      const name = +new Date() + "-" + file.name;
+      const metadata = {
+        contentType: file.type
+      };
+      const task = ref.child(name).put(file, metadata);
+      task
+        .then(snapshot => snapshot.ref.getDownloadURL())
+        .then(url => {
+          user
+            .updateProfile({
+              photoURL: url
+            })
+            .then(test => {
+              this.setState({
+                currentUser: user,
+                image: null,
+                checkmark: "none",
+                spinner: "none",
+                selectText: "block",
+                uploadText: "block"
+              });
+            })
+            .catch(function(error) {
+              // An error happened.
+            });
+        })
+        .catch(console.error);
+    }
+  };
 
-    user
-      .delete()
-      .then(function() {
-        // User deleted.
-      })
-      .catch(function(error) {
-        // An error happened.
-        this.props.createErrorMessage("Error when deleting profile. See log for more details", "AlertDialog");
-        console.log(error);
-      });
-  }
+
+  selectButtonContent = () => {
+    this.setState({ checkmark: "block", selectText: "none" });
+  };
 
   render() {
     const currentUser = this.state.currentUser;
@@ -113,58 +146,60 @@ class Profile extends Component {
           <div className="profileName">
             <h2>{currentUser && currentUser.displayName}</h2>
             <div>
-              <Ons.Button
-                modifier="material"
-                className="profileButtons"
-                onClick={this.signOut}
-              >
+              <Ons.Button modifier="material" onClick={this.signOut}>
                 Sign out <Ons.Icon icon="sign-out-alt" />
-              </Ons.Button>
-              <Ons.Button
-                modifier="material"
-                className="profileButtons"
-                onClick={this.deleteProfile}
-              >
-                Delete Account <Ons.Icon icon="trash-alt" />
               </Ons.Button>
             </div>
           </div>
         </div>
-
-        <div className="bottomProfile" />
-
-        <Ons.Input
-          value={this.state.name}
-          onChange={event => {
-            this.setState({ name: event.target.value });
-          }}
-          modifier="material"
-          float
-          placeholder="Name"
-          style={{ width: "80vw" }}
-        />
-
-        <Ons.Button
-          modifier="material"
-          className="updateUser"
-          onClick={this.editProfile.bind(this)}
-        >
-          Update User information <Ons.Icon icon="user-cog" />
-        </Ons.Button>
-        <Ons.AlertDialog isOpen={this.state.toastShown} isCancelable={false}>
-          <div className="alert-dialog-title">Confirmaiton</div>
-          <div className="alert-dialog-content">
-            Your name have been updated
-          </div>
-          <div className="alert-dialog-footer">
-            <button
-              onClick={this.handleDismiss}
-              className="alert-dialog-button"
-            >
-              Ok
-            </button>
-          </div>
-        </Ons.AlertDialog>
+        <div className="editName">
+          <Ons.Input
+            value={this.state.name}
+            onChange={event => {
+              this.setState({ name: event.target.value });
+            }}
+            modifier="underbar"
+            float
+            placeholder="Update Name"
+            className="updateName"
+            requried
+          />
+          <Ons.Fab
+            className="saveButton"
+            onClick={this.editProfileName.bind(this)}
+          >
+            <Ons.Icon icon="save" />
+          </Ons.Fab>
+        </div>
+        <form>
+          <input
+            className="uploadImage"
+            type="file"
+            name="photo"
+            accept="image/*"
+            id="photo"
+            onChange={this.selectButtonContent}
+          />
+          <label htmlFor="photo" className="uploadImage">
+            <span style={{ display: this.state.selectText }}>Select Image</span>
+            <Ons.Icon icon="check" style={{ display: this.state.checkmark }} />
+          </label>
+          <Ons.Button
+            modifier="material"
+            onClick={this.upload}
+            className="uploadImage"
+          >
+            <span style={{ display: this.state.uploadText }}>Upload</span>
+            <Ons.Icon
+              spin
+              icon="sync-alt"
+              style={{ display: this.state.spinner }}
+            />
+          </Ons.Button>
+        </form>
+        <div className="your_posts">
+          <p>Här kommer användarens posts</p>
+        </div>
       </Ons.Page>
     );
   }

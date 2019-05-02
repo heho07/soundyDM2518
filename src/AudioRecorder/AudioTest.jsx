@@ -1,9 +1,9 @@
-import React from 'react';
-import { ReactMic } from 'react-mic';
+import React from "react";
+import { ReactMic } from "react-mic";
 
-import * as firebase from 'firebase/app';
-import 'firebase/storage';
-import 'firebase/firestore';
+import * as firebase from "firebase/app";
+import "firebase/storage";
+import "firebase/firestore";
 
 export class AudioTest extends React.Component {
   constructor(props) {
@@ -19,7 +19,7 @@ export class AudioTest extends React.Component {
   }
 
   componentDidMount = () => {
-    var storage = firebase.app().storage('gs://soundy-dm2518.appspot.com/');
+    var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
     this.storageRef = storage.ref();
     this.db = firebase.firestore();
 
@@ -39,7 +39,7 @@ export class AudioTest extends React.Component {
   };
 
   onData(recordedBlob) {
-    console.log('chunk of real-time data is: ', recordedBlob);
+    console.log("chunk of real-time data is: ", recordedBlob);
   }
 
   onStop(recordedBlob) {
@@ -53,13 +53,13 @@ export class AudioTest extends React.Component {
     const { audioBlob } = this.state;
 
     var timeStamp = +new Date();
-    var soundRef = this.storageRef.child('sounds/' + timeStamp);
+    var soundRef = this.storageRef.child("sounds/" + timeStamp);
     soundRef
       .put(audioBlob)
       .then(snapshot => {
         //It is now uploaded to storage
         soundRef.getDownloadURL().then(downloadURL => {
-          this.db.collection('all-sounds').add({
+          this.db.collection("all-sounds").add({
             //Add to database
             url: downloadURL,
             user: 1, //TODO: Add real user-id
@@ -68,15 +68,15 @@ export class AudioTest extends React.Component {
         });
       })
       .catch(error => {
-        console.log('ERROR: ' + error.message);
+        console.log("ERROR: " + error.message);
       });
   };
 
   fetchAllSounds = () => {
     var allSounds = [];
     this.db
-      .collection('all-sounds')
-      .orderBy('time', 'desc')
+      .collection("all-sounds")
+      .orderBy("time", "desc")
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -93,7 +93,7 @@ export class AudioTest extends React.Component {
         <div key={time}>
           <div>User: {user}</div>
           <div>
-            {new Date(time).toDateString()}{' '}
+            {new Date(time).toDateString()}{" "}
             {new Date(time).toLocaleTimeString()}
           </div>
           <div>
@@ -106,7 +106,7 @@ export class AudioTest extends React.Component {
 
   // If you want background image to <video>: style={{backgroundImage: 'url(' + "https://picsum.photos/400/600" + ')'}}
   render() {
-    const { blobURL, audioURL, isRecording, isPaused } = this.state;
+    const { blobURL } = this.state; //is not used audioURL, isRecording, isPaused
     return (
       <div>
         <ReactMic
