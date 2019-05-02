@@ -22,9 +22,7 @@ class Upload extends Component {
       audioBlob: null,
       isRecording: false,
       isPaused: false,
-      errorOccured:false,
-      errorMessage:"",
-      errorMessageType:"",
+      
     };
     this.onStop = this.onStop.bind(this);
   }
@@ -113,21 +111,16 @@ class Upload extends Component {
         <div>
           <video ref="audioSource" controls="controls" src={blobURL} />
         </div>
-        <button onClick = {() => this.setState({errorOccured:true, errorMessage:"testingError", errorMessageType:"Toast"})} >
+        <button onClick = {() => this.props.createErrorMessage("meddelande", "Toast")} >
           Detta är toast
         </button>
-        <button onClick = {() => this.setState({errorOccured:true, errorMessage:"testingError", errorMessageType:"AlertDialog"})} >
+        <button onClick = {() => this.props.createErrorMessage("meddelande", "AlertDialog")} >
           Detta är alertdialog
         </button>
-        <button onClick = {() => this.setState({errorOccured:true, errorMessage:"testingError", errorMessageType:"foo"})} >
+        <button onClick = {() => this.props.createErrorMessage()} >
           Denna har ingen giltig type
         </button>
-        <ErrorPopUp 
-          type = {this.state.errorMessageType}
-          isOpen = {this.state.errorOccured} 
-          message = {this.state.errorMessage}
-          onCancel = {() => this.setState({errorOccured:false, errorMessage:"", errorMessageType:""})}
-        />
+        
 
 
       </Ons.Page>

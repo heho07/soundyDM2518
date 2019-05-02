@@ -31,7 +31,7 @@ class TabContainer extends Component {
   // By saving the data here we don't have to do a new API call every time we switch tabs
   constructor(props) {
     super(props);
-    
+    console.log(this.props);
     // connecting to Unsplash to get images automatically
     const Unsplash = require('unsplash-js').default;
     console.log(config);
@@ -201,7 +201,10 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Upload">
-                  <Upload />
+                  <Upload 
+                    createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                    cancelErrorMessage = {() => this.props.cancelErrorMessage()}
+                  />
                 </Ons.Page>
               ),
               tab: (
