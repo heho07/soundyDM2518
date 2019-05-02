@@ -15,7 +15,8 @@ class Profile extends Component {
   state = { currentUser: null, toastShown: false, name: "" };
 
   componentDidMount() {
-    //redirectWhenOAuthChanges(this.props.history);
+    // redirectWhenOAuthChanges(this.props.history);
+
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({ currentUser: user });

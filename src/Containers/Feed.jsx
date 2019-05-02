@@ -12,63 +12,125 @@ class Feed extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: this.props.posts
+      foo:true
     };
   }
 
+
+
+
   // renders a specific row from the dataSource in the LazyList
   // this row corresponds to a post in this.state.posts with the index supplied (done by scrolling)
-  renderRow(index) {
-    let item = this.dataSource[index];
-
+  // when using > this < in the renderRow() method it refers to the LazyList object
+  renderRow(index){
+    let item = this.props.allSounds[index];
     return (
-      <Ons.Card key={item.title + index}>
-        <img
-          src={item.picUrl}
-          alt={item.title}
-          style={{ width: "100%", height: "100%" }}
-        />
-        <div className="title right">{item.title}</div>
-        <p>posted by: {item.postedBy}</p>
+      <Ons.Card key={item.time}>
+        <p>posted by: {item.user}</p>
+        <p>             
+          {new Date(item.time).toDateString()}{' '}
+          {new Date(item.time).toLocaleTimeString()}
+        </p>
+        <img src = "https://i.imgur.com/hgyXyww.png"/>
+        <audio controls>
+          <source src = {item.url}/>
+        </audio>     
+        
       </Ons.Card>
     );
   }
+          
 
   // Renders a LazyList https://onsen.io/v2/api/react/LazyList.html
   renderLazyList() {
     return (
       <Ons.LazyList
-        dataSource={this.state.posts}
-        length={this.state.posts.length}
-        renderRow={this.renderRow}
+        dataSource={this.props.allSounds}
+        length={this.props.allSounds.length}
+        renderRow={this.renderRow.bind(this)}
         calculateItemHeight={() => 44}
       />
     );
   }
 
-  // If we don't want to use a LazyList. NOT USED
-  renderPost() {
+  // called from PullHook when the pullHook registers a change
+  onChange(){
+    
+  }
+
+  // called from PullHook when the action is performed
+  async onLoad(done){
+    await this.props.fetchAllSounds();
+    // await setTimeout(() => done(), 3000); 
+    // ^^^^ Kan användas för att testa hur olika laddningsalternativ ser ut.
+    done();
+  }
+
+
+  // Used to request a new database query
+  renderPullHook(){
+    return (
+      <Ons.PullHook 
+        onChange = {this.onChange} 
+        onLoad = {this.onLoad.bind(this)}  // bind this (the Feed.jsx object) to be able to use its methods and attributes
+        // onAction = {console.log("action?")}
+      >
+        {
+         (this.state.pullHookState === 'initial') ?
+          <span >
+            <Ons.Icon size={35} spin={false} icon='ion-arrow-down-a' />
+            Pull down to refresh
+          </span> :
+          (this.state.pullHookState === 'preaction') ?
+           <span>
+             <Ons.Icon size={35} spin={false} icon='ion-arrow-up-a' />
+             Release to refresh
+          </span>
+          :
+          <span><Ons.Icon size={35} spin={true} icon='ion-load-d'></Ons.Icon> Loading data...</span>
+        }
+      </Ons.PullHook>
+      );
+  }
+
+ 
+
+
+  // If we don't want to use a LazyList. 
+  // NOT USED - might be necessary later
+  renderSounds(){
     return (
       <div>
-        {this.state.posts.map((item, index) => {
+        { this.props.allsounds.map((item, index) => {
           return (
-            <Ons.Card key={item.title + index}>
-              <img
-                src={item.picUrl}
-                alt={item.title}
-                style={{ width: "100%", height: "100%" }}
-              />
-              <p>{item.title}</p>
-              <p>posted by: {item.postedBy}</p>
+           <Ons.Card key={item.time}>
+              <p>posted by: {item.user}</p>
+              <p>             
+                {new Date(item.time).toDateString()}{' '}
+                {new Date(item.time).toLocaleTimeString()}
+              </p>
+              <img src = "https://i.imgur.com/hgyXyww.png"/>
+              <audio controls>
+                <source src = {item.url}/>
+              </audio>     
+              
             </Ons.Card>
-          );
+        );
         })}
       </div>
     );
   }
+        // {this.renderAllSounds()}
 
   render() {
-    return <Ons.Page>{this.renderLazyList()}</Ons.Page>;
+
+    return (
+      <Ons.Page>
+
+        {this.renderPullHook()}
+        {this.renderLazyList()}
+      </Ons.Page>
+    );
   }
 }
 
