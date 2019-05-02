@@ -16,10 +16,13 @@ import "onsenui/css/onsen-css-components.css";
 class Profile extends Component {
   state = {
     currentUser: null,
-    toastShown: false,
     name: null,
     photoURL: null,
-    image: ""
+    image: "",
+    checkmark: "none",
+    spinner: "none",
+    selectText: "inherent",
+    uploadText: "inherent"
   };
 
   componentDidMount() {
@@ -50,10 +53,6 @@ class Profile extends Component {
       });
   };
 
-  handleDismiss = () => {
-    this.setState({ toastShown: false });
-  };
-
   renderProfileImage() {
     const currentUser = this.state.currentUser;
     if (currentUser && currentUser.photoURL === null) {
@@ -77,52 +76,57 @@ class Profile extends Component {
 
   editProfileName() {
     var user = firebase.auth().currentUser;
-    console.log(this.state.name);
-
-    this.state.name !== "" &&
+    this.state.name !== null &&
       user
         .updateProfile({
           displayName: this.state.name
         })
         .then(test => {
-          this.setState({ currentUser: user });
-          this.setState({ toastShown: true });
+          this.setState({ currentUser: user, name: null });
         })
         .catch(function(error) {
           console.error("Error updating! " + error.code + " " + error.message);
         });
   }
 
-  deleteProfile() {
-    var user = firebase.auth().currentUser;
-    user
-      .delete()
-      .then(function() {
-        // User deleted.
-      })
-      .catch(function(error) {
-        // An error happened.
-      });
-  }
-
   upload = () => {
-    console.log("Upload!!!");
-    console.log(this.state.image);
-
+    var user = firebase.auth().currentUser;
     const ref = this.storageRef.child("profileImages");
     const file = document.querySelector("#photo").files[0];
-    const name = +new Date() + "-" + file.name;
-    const metadata = {
-      contentType: file.type
-    };
-    const task = ref.child(name).put(file, metadata);
-    task
-      .then(snapshot => snapshot.ref.getDownloadURL())
-      .then(url => {
-        console.log(url);
-        document.querySelector("#someImageTagID").src = url;
-      })
-      .catch(console.error);
+    if (file) {
+      this.setState({ uploadText: "none", spinner: "block" });
+      const name = +new Date() + "-" + file.name;
+      const metadata = {
+        contentType: file.type
+      };
+      const task = ref.child(name).put(file, metadata);
+      task
+        .then(snapshot => snapshot.ref.getDownloadURL())
+        .then(url => {
+          user
+            .updateProfile({
+              photoURL: url
+            })
+            .then(test => {
+              this.setState({
+                currentUser: user,
+                image: null,
+                checkmark: "none",
+                spinner: "none",
+                selectText: "block",
+                uploadText: "block"
+              });
+            })
+            .catch(function(error) {
+              // An error happened.
+            });
+        })
+        .catch(console.error);
+    }
+  };
+
+  selectButtonContent = () => {
+    this.setState({ checkmark: "block", selectText: "none" });
   };
 
   render() {
@@ -134,63 +138,60 @@ class Profile extends Component {
           <div className="profileName">
             <h2>{currentUser && currentUser.displayName}</h2>
             <div>
-              <Ons.Button
-                modifier="material"
-                className="profileButtons"
-                onClick={this.signOut}
-              >
+              <Ons.Button modifier="material" onClick={this.signOut}>
                 Sign out <Ons.Icon icon="sign-out-alt" />
-              </Ons.Button>
-              <Ons.Button
-                modifier="material"
-                className="profileButtons"
-                onClick={this.deleteProfile}
-              >
-                Delete Account <Ons.Icon icon="trash-alt" />
               </Ons.Button>
             </div>
           </div>
         </div>
-
-        <Ons.Input
-          value={this.state.name}
-          onChange={event => {
-            this.setState({ name: event.target.value });
-          }}
-          modifier="material"
-          float
-          placeholder="Name"
-          style={{ width: "80vw" }}
-        />
-
-        <Ons.Button
-          modifier="material"
-          className="updateUser"
-          onClick={this.editProfileName.bind(this)}
-        >
-          Update Name <Ons.Icon icon="user-cog" />
-        </Ons.Button>
-
-        <Ons.AlertDialog isOpen={this.state.toastShown} isCancelable={false}>
-          <div className="alert-dialog-title">Confirmaiton</div>
-          <div className="alert-dialog-content">
-            Your name have been updated
-          </div>
-          <div className="alert-dialog-footer">
-            <button
-              onClick={this.handleDismiss}
-              className="alert-dialog-button"
-            >
-              Ok
-            </button>
-          </div>
-        </Ons.AlertDialog>
+        <div className="editName">
+          <Ons.Input
+            value={this.state.name}
+            onChange={event => {
+              this.setState({ name: event.target.value });
+            }}
+            modifier="underbar"
+            float
+            placeholder="Update Name"
+            className="updateName"
+            requried
+          />
+          <Ons.Fab
+            className="saveButton"
+            onClick={this.editProfileName.bind(this)}
+          >
+            <Ons.Icon icon="save" />
+          </Ons.Fab>
+        </div>
         <form>
-          <input type="file" name="photo" accept="image/*" id="photo" />
-          <Ons.Button modifier="material" onClick={this.upload}>
-            Upload <Ons.Icon icon="upload" />
+          <input
+            className="uploadImage"
+            type="file"
+            name="photo"
+            accept="image/*"
+            id="photo"
+            onChange={this.selectButtonContent}
+          />
+          <label htmlFor="photo" className="uploadImage">
+            <span style={{ display: this.state.selectText }}>Select Image</span>
+            <Ons.Icon icon="check" style={{ display: this.state.checkmark }} />
+          </label>
+          <Ons.Button
+            modifier="material"
+            onClick={this.upload}
+            className="uploadImage"
+          >
+            <span style={{ display: this.state.uploadText }}>Upload</span>
+            <Ons.Icon
+              spin
+              icon="sync-alt"
+              style={{ display: this.state.spinner }}
+            />
           </Ons.Button>
         </form>
+        <div className="your_posts">
+          <p>Här kommer användarens posts</p>
+        </div>
       </Ons.Page>
     );
   }

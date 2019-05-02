@@ -133,7 +133,7 @@ class CreateLogin extends Component {
             onChange={event => {
               this.setState({ email: event.target.value });
             }}
-            modifier="material"
+            modifier="underbar"
             float
             placeholder="Email"
             style={{ width: "80vw" }}
@@ -145,7 +145,7 @@ class CreateLogin extends Component {
             onChange={event => {
               this.setState({ password: event.target.value });
             }}
-            modifier="material"
+            modifier="underbar"
             type="password"
             float
             placeholder="Password"
@@ -156,7 +156,7 @@ class CreateLogin extends Component {
         <p>
           <Ons.Button
             onClick={this.loginClicked}
-            modifier="material"
+            modifier="underbar"
             style={{ width: "60vw" }}
           >
             Log in
@@ -165,7 +165,7 @@ class CreateLogin extends Component {
         <p>
           <Ons.Button
             onClick={this.createClick}
-            modifier="material"
+            modifier="underbar"
             style={{ width: "60vw" }}
           >
             Create Account
@@ -175,7 +175,7 @@ class CreateLogin extends Component {
         <p>
           <Ons.Button
             className=".fb-google-button"
-            modifier="material"
+            modifier="underbar"
             style={{ width: "60vw" }}
             onClick={this.signInWithGoogle}
           >
@@ -185,7 +185,7 @@ class CreateLogin extends Component {
         <p>
           <Ons.Button
             className=".fb-google-button"
-            modifier="material"
+            modifier="underbar"
             style={{ width: "60vw" }}
             onClick={this.signInWithFacebook}
           >
