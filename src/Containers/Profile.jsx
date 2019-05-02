@@ -126,6 +126,7 @@ class Profile extends Component {
             })
             .catch(function(error) {
               // An error happened.
+              this.props.createErrorMessage("Error uploading profile image.", "AlertDialog");
             });
         })
         .catch(console.error);
@@ -134,7 +135,10 @@ class Profile extends Component {
 
 
   selectButtonContent = () => {
-    this.setState({ checkmark: "block", selectText: "none" });
+    this.setState({ 
+      checkmark: "block", 
+      selectText: "none" 
+    });
   };
 
   render() {
