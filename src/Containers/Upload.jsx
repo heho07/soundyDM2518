@@ -92,21 +92,25 @@ class Upload extends Component {
           className="sound-wave"
           onStop={this.onStop}
           onData={this.onData}
-          strokeColor="#000000"
-          backgroundColor="#FF4081"
+          strokeColor="#375d89"
+          backgroundColor="#000000"
         />
-        <button onClick={this.startRecording} type="button">
-          Start
-        </button>
-        <button onClick={this.stopRecording} type="button">
-          Stop
-        </button>
-        <button onClick={this.uploadRecording} type="button">
-          Upload
-        </button>
-        <h2>Last sound recorded from source</h2>
         <div>
-          <video ref="audioSource" controls="controls" src={blobURL} />
+          <ons-fab style={{background: "black"}}>
+            <ons-icon onClick={this.startRecording} type="button" icon="fa-circle" size="56px"></ons-icon>
+          </ons-fab>
+          <ons-fab style={{background: "black"}}>
+            <ons-icon onClick={this.stopRecording} type="button" icon="fa-stop-circle"></ons-icon>
+          </ons-fab>
+        </div>
+        <h2>Your latest recorded sound</h2>
+        <div>
+          <audio ref="audioSource" controls="controls" src={blobURL} />
+        </div>
+        <div>
+          <ons-button onClick={this.uploadRecording} type="button" modifier="quiet">
+              Upload
+          </ons-button>
         </div>
       </Ons.Page>
     );
