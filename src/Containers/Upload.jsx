@@ -121,7 +121,7 @@ class Upload extends Component {
                 {recordButton}
               </ons-fab>
         </div>
-        <h2>Listen to you recording:</h2>
+        <h2>Listen to your recording:</h2>
         <div>
           <audio ref="audioSource" controls="controls" src={blobURL} />
         </div>
