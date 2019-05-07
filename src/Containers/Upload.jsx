@@ -91,10 +91,16 @@ class Upload extends Component {
 
     switch(this.state.record){
       case false:
-        recordButton = <ons-icon onClick={this.startRecording} icon="fa-circle"></ons-icon>;
+        recordButton = <ons-icon onClick={this.startRecording} 
+                                 icon="fa-circle" 
+                                 size="30px"
+                                 style={{color: "red"}}></ons-icon>;
         break;
       case true:
-        recordButton = <ons-icon onClick={this.stopRecording} icon="fa-stop-circle"></ons-icon>;
+        recordButton = <ons-icon onClick={this.stopRecording} 
+                                 icon="fa-stop-circle" 
+                                 size="56px"
+                                 style={{color: "red"}}></ons-icon>;
         break;
       default:
         recordButton = <h1>Something is wrong</h1>;
@@ -107,7 +113,7 @@ class Upload extends Component {
           className="sound-wave"
           onStop={this.onStop}
           onData={this.onData}
-          strokeColor="#375d89"
+          strokeColor="#4C78FB"
           backgroundColor="#000000"
         />
         <div>
@@ -115,7 +121,7 @@ class Upload extends Component {
                 {recordButton}
               </ons-fab>
         </div>
-        <h2>Your latest recorded sound</h2>
+        <h2>Listen to you recording:</h2>
         <div>
           <audio ref="audioSource" controls="controls" src={blobURL} />
         </div>
