@@ -87,6 +87,19 @@ class Upload extends Component {
 
   render() {
     const { blobURL, audioURL, isRecording, isPaused, title } = this.state;
+    let recordButton;
+
+    switch(this.state.record){
+      case false:
+        recordButton = <ons-icon onClick={this.startRecording} icon="fa-circle"></ons-icon>;
+        break;
+      case true:
+        recordButton = <ons-icon onClick={this.stopRecording} icon="fa-stop-circle"></ons-icon>;
+        break;
+      default:
+        recordButton = <h1>Something is wrong</h1>;
+        break;
+    }
     return (
       <Ons.Page>  
         <ReactMic
@@ -98,11 +111,8 @@ class Upload extends Component {
           backgroundColor="#000000"
         />
         <div>
-            <ons-fab>
-              <ons-icon onClick={this.startRecording} icon="fa-circle"></ons-icon>
-            </ons-fab>
               <ons-fab>
-                <ons-icon onClick={this.stopRecording} icon="fa-stop-circle"></ons-icon>
+                {recordButton}
               </ons-fab>
         </div>
         <h2>Your latest recorded sound</h2>
