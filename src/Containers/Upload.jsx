@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { ReactMic } from 'react-mic';
-
+import { Line } from 'rc-progress';
 // imports for OnsenUI
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 //import * as ons from 'onsenui'; // This needs to be imported to bootstrap the components.
@@ -28,7 +28,6 @@ class Upload extends Component {
       time: 0
     };
     this.onStop = this.onStop.bind(this);
-    this.startTimer = this.startTimer.bind(this);
   }
 
   startTimer() {
@@ -139,7 +138,9 @@ class Upload extends Component {
                 {recordButton}
               </ons-fab>
         </div>
-        <h3>Time left: {10 - this.state.time}</h3>
+        <br/>
+        <Line percent={this.state.time * 10} style={{width: "80%"}}strokeWidth="4" strokeColor="#D3D3D3" />
+        <p>{this.state.time} out of 10s</p>
         <h2>Listen to your recording:</h2>
         <div>
           <audio ref="audioSource" controls="controls" src={blobURL} />
