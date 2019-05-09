@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./App.css";
-import { redirectWhenOAuthChanges } from "./utils";
 
 import * as firebase from "firebase/app";
 import "firebase/auth";
@@ -13,17 +12,16 @@ import "onsenui/css/onsen-css-components.css";
 var googleProvider = new firebase.auth.GoogleAuthProvider();
 var facebookProvider = new firebase.auth.FacebookAuthProvider();
 
-class CreateLogin extends Component {
+class CreateUser extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { email: "", password: "" };
+    this.state = { email: "", displayName: "",password: "" };
   }
 
   componentDidMount() {
-    console.log(Ons);
-    redirectWhenOAuthChanges(this.props.history);
   }
+
 
   signInWithGoogle = () => {
     firebase
@@ -98,25 +96,16 @@ class CreateLogin extends Component {
   };
 
   createClick = () => {
-    const { email, password } = this.state;
+    const { email, displayName, password } = this.state;
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
+      .then(userCredentials => {
+        userCredentials.user.updateProfile({displayName: displayName})
+      })
       .catch(error => {
         console.log(this.state.email);
         let errorMsg = ("Error creating user! " + error.code + " " + error.message);
-        this.props.createErrorMessage(errorMsg, "Toast");
-      });
-  };
-
-  loginClicked = () => {
-    const { email, password } = this.state;
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .catch(error => {
-        console.log(this.state.email);
-        let errorMsg = ("Error logging in! " + error.code + " " + error.message);
         this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
@@ -151,6 +140,18 @@ class CreateLogin extends Component {
               </p>
               <p>
                 <Ons.Input
+                  value={this.state.displayName}
+                  onChange={event => {
+                    this.setState({ displayName: event.target.value });
+                  }}
+                  modifier="underbar"
+                  float
+                  placeholder="Display Name"
+                  style={{ width: "80vw" }}
+                />
+              </p>
+              <p>
+                <Ons.Input
                   value={this.state.password}
                   onChange={event => {
                     this.setState({ password: event.target.value });
@@ -163,15 +164,7 @@ class CreateLogin extends Component {
                 />
               </p>
               <br />
-              <p>
-                <Ons.Button
-                  onClick={this.loginClicked}
-                  modifier="underbar"
-                  style={{ width: "60vw" }}
-                >
-                  Log in
-                </Ons.Button>
-              </p>
+              
               <p>
                 <Ons.Button
                   onClick={this.createClick}
@@ -181,32 +174,32 @@ class CreateLogin extends Component {
                   Create Account
                 </Ons.Button>
               </p>
+              <br />
+            <p>
+              <Ons.Button
+                className=".fb-google-button"
+                modifier="underbar"
+                style={{ width: "60vw" }}
+                onClick={this.signInWithGoogle}
+              >
+                Create account with <Ons.Icon icon="google" />
+              </Ons.Button>
+            </p>
+            <p>
+              <Ons.Button
+                className=".fb-google-button"
+                modifier="underbar"
+                style={{ width: "60vw" }}
+                onClick={this.signInWithFacebook}
+              >
+                Create account with <Ons.Icon icon="facebook" />
+              </Ons.Button>
+            </p>
             <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
           </form>
-        <br />
-        <p>
-          <Ons.Button
-            className=".fb-google-button"
-            modifier="underbar"
-            style={{ width: "60vw" }}
-            onClick={this.signInWithGoogle}
-          >
-            <Ons.Icon icon="google" /> Sign in with Google
-          </Ons.Button>
-        </p>
-        <p>
-          <Ons.Button
-            className=".fb-google-button"
-            modifier="underbar"
-            style={{ width: "60vw" }}
-            onClick={this.signInWithFacebook}
-          >
-            <Ons.Icon icon="facebook" /> Sign in with Facebook
-          </Ons.Button>
-        </p>
       </Ons.Page>
     );
   }
 }
 
-export default CreateLogin;
+export default CreateUser;
