@@ -182,7 +182,7 @@ class TabContainer extends Component {
     switch (this.state.status) {
       case "loading":
         feedPage =
-        <div style={{'padding-top':'50%'}}>
+        <div style={{'paddingTop':'50%'}}>
           <Ons.Icon
             spin
             icon="sync-alt"
