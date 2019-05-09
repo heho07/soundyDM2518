@@ -16,7 +16,7 @@ class CreateUser extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { email: "", username: "",password: "" };
+    this.state = { email: "", displayName: "",password: "" };
   }
 
   componentDidMount() {
@@ -96,10 +96,13 @@ class CreateUser extends Component {
   };
 
   createClick = () => {
-    const { email, username, password } = this.state;
+    const { email, displayName, password } = this.state;
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
+      .then(userCredentials => {
+        userCredentials.user.updateProfile({displayName: displayName})
+      })
       .catch(error => {
         console.log(this.state.email);
         let errorMsg = ("Error creating user! " + error.code + " " + error.message);
@@ -137,13 +140,13 @@ class CreateUser extends Component {
               </p>
               <p>
                 <Ons.Input
-                  value={this.state.username}
+                  value={this.state.displayName}
                   onChange={event => {
-                    this.setState({ username: event.target.value });
+                    this.setState({ displayName: event.target.value });
                   }}
                   modifier="underbar"
                   float
-                  placeholder="Username"
+                  placeholder="Display Name"
                   style={{ width: "80vw" }}
                 />
               </p>
