@@ -104,7 +104,7 @@ class CreateLogin extends Component {
       .createUserWithEmailAndPassword(email, password)
       .catch(error => {
         console.log(this.state.email);
-        let errorMsg = ("Error signing in! " + error.code + " " + error.message);
+        let errorMsg = ("Error creating user! " + error.code + " " + error.message);
         this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
@@ -116,7 +116,7 @@ class CreateLogin extends Component {
       .signInWithEmailAndPassword(email, password)
       .catch(error => {
         console.log(this.state.email);
-        let errorMsg = ("Error login in! " + error.code + " " + error.message);
+        let errorMsg = ("Error logging in! " + error.code + " " + error.message);
         this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
@@ -133,50 +133,56 @@ class CreateLogin extends Component {
     return (
       <Ons.Page renderToolbar={this.renderToolbar} className="page">
         <h1>Soundy</h1>
-        <p>
-          <Ons.Input
-            value={this.state.email}
-            onChange={event => {
-              this.setState({ email: event.target.value });
-            }}
-            modifier="underbar"
-            float
-            placeholder="Email"
-            style={{ width: "80vw" }}
-          />
-        </p>
-        <p>
-          <Ons.Input
-            value={this.state.password}
-            onChange={event => {
-              this.setState({ password: event.target.value });
-            }}
-            modifier="underbar"
-            type="password"
-            float
-            placeholder="Password"
-            style={{ width: "80vw" }}
-          />
-        </p>
-        <br />
-        <p>
-          <Ons.Button
-            onClick={this.loginClicked}
-            modifier="underbar"
-            style={{ width: "60vw" }}
-          >
-            Log in
-          </Ons.Button>
-        </p>
-        <p>
-          <Ons.Button
-            onClick={this.createClick}
-            modifier="underbar"
-            style={{ width: "60vw" }}
-          >
-            Create Account
-          </Ons.Button>
-        </p>
+          <form onSubmit = {(event) => {
+            event.preventDefault();
+            this.loginClicked();
+          }}>
+            <p>
+                <Ons.Input
+                  value={this.state.email}
+                  onChange={event => {
+                    this.setState({ email: event.target.value });
+                  }}
+                  modifier="underbar"
+                  float
+                  placeholder="Email"
+                  style={{ width: "80vw" }}
+                />
+              </p>
+              <p>
+                <Ons.Input
+                  value={this.state.password}
+                  onChange={event => {
+                    this.setState({ password: event.target.value });
+                  }}
+                  modifier="underbar"
+                  type="password"
+                  float
+                  placeholder="Password"
+                  style={{ width: "80vw" }}
+                />
+              </p>
+              <br />
+              <p>
+                <Ons.Button
+                  onClick={this.loginClicked}
+                  modifier="underbar"
+                  style={{ width: "60vw" }}
+                >
+                  Log in
+                </Ons.Button>
+              </p>
+              <p>
+                <Ons.Button
+                  onClick={this.createClick}
+                  modifier="underbar"
+                  style={{ width: "60vw" }}
+                >
+                  Create Account
+                </Ons.Button>
+              </p>
+            <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
+          </form>
         <br />
         <p>
           <Ons.Button
