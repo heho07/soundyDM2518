@@ -1,30 +1,29 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import { redirectWhenOAuthChanges } from '../utils';
+import { redirectWhenOAuthChanges } from "../utils";
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/functions';
 
-import Feed from './Feed';
-import Profile from './Profile';
+import Feed from "./Feed";
+import Profile from "./Profile";
 import Upload from "./Upload";
-import AudioTest from '../AudioRecorder/AudioTest';
+//import AudioTest from '../AudioRecorder/AudioTest';
 
 // imports for OnsenUI
-import * as Ons from 'react-onsenui'; // Import everything and use it as 'Ons.Page', 'Ons.Button'
+import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 // import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
 // Webpack CSS import
-import 'onsenui/css/onsenui.css';
-import 'onsenui/css/onsen-css-components.css';
+import "onsenui/css/onsenui.css";
+import "onsenui/css/onsen-css-components.css";
 
 import config from "../secrets.js";
 
 // ES Modules syntax
-import Unsplash, { toJson} from 'unsplash-js';
+import Unsplash, { toJson } from "unsplash-js";
 
 // require syntax
-
 
 class TabContainer extends Component {
   // in the this.state.posts array we can save the results from our database queries
@@ -32,10 +31,9 @@ class TabContainer extends Component {
   // By saving the data here we don't have to do a new API call every time we switch tabs
   constructor(props) {
     super(props);
-    
     // connecting to Unsplash to get images automatically
-    const Unsplash = require('unsplash-js').default;
-    console.log(config);
+    const Unsplash = require("unsplash-js").default;
+    //console.log(config);
     let unsplash = new Unsplash({
       applicationId: config.unsplashApiKeys.access_key,
       secret: config.unsplashApiKeys.secret_key
@@ -45,24 +43,23 @@ class TabContainer extends Component {
 
     this.state = {
       currentUser: null,
-      index: 2,
+      index: 0,
       posts: [
         {
-
-          title:'dog',
-          postedBy:'Herman'
+          title: "dog",
+          postedBy: "Herman"
         },
         {
-          title:'cat',
-          postedBy:'OtherUser'
+          title: "cat",
+          postedBy: "OtherUser"
         },
         {
-          title:'hat',
-          postedBy:'David'
+          title: "hat",
+          postedBy: "David"
         }
       ],
       unsplash: unsplash,
-      status:"loading",
+      status: "loading",
 
       // states for the audio recording
       allSounds: []
@@ -70,8 +67,8 @@ class TabContainer extends Component {
   }
 
   // metod innehållandes kod vi kan använda när vi laddar in databasresultat?
-  // returns the promise of a JSON object containing information about a picture 
-  async updateImagesFromUnsplash(keyWord){
+  // returns the promise of a JSON object containing information about a picture
+  async updateImagesFromUnsplash(keyWord) {
     if (!keyWord) {
       // default to something if no keywoard was supplied
       let keyWord = "sea";
@@ -80,15 +77,18 @@ class TabContainer extends Component {
 
     // Söker efter en bild matchande det sökord som ges
     // Måste använda try-catch för att kunna fånga upp ifall API-queryn ger error
-    try{
-      let unsplashResult = await this.state.unsplash.search.photos(keyWord, 1, 1);
+    try {
+      let unsplashResult = await this.state.unsplash.search.photos(
+        keyWord,
+        1,
+        1
+      );
       unsplashResult = await toJson(unsplashResult);
       return unsplashResult.results[0].urls.thumb;
-    }
-    catch(error){
+    } catch (error) {
       // Ifall vi får error ge nån default bild (t.ex. ifall vi uppnåt quota för unsplashAPI)
       console.log(error);
-      return 'https://i.imgur.com/1S5dGBf.png';
+      return "https://i.imgur.com/1S5dGBf.png";
     }
   }
 
@@ -104,43 +104,45 @@ class TabContainer extends Component {
     });
 
     // kopplar upp till databasen
-    var storage = firebase.app().storage('gs://soundy-dm2518.appspot.com/');
+    var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
     this.storageRef = storage.ref();
     this.db = firebase.firestore();
-
     this.fetchAllSounds();
-
-    // kopplar en bild från unsplash till databsen
-    for (var post of this.state.posts){
-      console.log(post);
-      let res = await this.updateImagesFromUnsplash(post.title);
-      post.picUrl = res;
-      this.setState({
-        status:"loaded",
-      });
-    }
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
   fetchAllSounds = async () => {
-    const usersFromDatabase = await this.fetchAllUsers()
-    var allSounds = [];
-    this.db
-    .collection('all-sounds')
-    .orderBy('time', 'desc')
-    .get()
-    .then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        let soundData = doc.data()
-        const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
-        soundData.userName = correctUser ? correctUser.displayName : "-"
-        soundData.photoURL = correctUser ? correctUser.photoURL : null
-        allSounds.push(soundData);
-      });
-      this.setState({ 
-        allSounds: allSounds, 
-      }, () => console.log(this.state.allSounds));
-    });   
+    if(navigator.onLine){
+      const usersFromDatabase = await this.fetchAllUsers()
+      var allSounds = [];
+      try{
+        this.db
+        .collection('all-sounds')
+        .orderBy('time', 'desc')
+        .get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            let soundData = doc.data()
+            const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
+            soundData.userName = correctUser ? correctUser.displayName : "-"
+            soundData.photoURL = correctUser ? correctUser.photoURL : null
+            allSounds.push(soundData);
+          });
+          this.setState({ 
+            allSounds: allSounds,
+            status:"loaded"
+          });
+        }).catch(error => {
+          this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
+          console.log(error);
+        });
+      } catch(err){
+        this.props.createErrorMessage(err, "Toast");
+        console.log(err);
+      }
+    } else {
+      this.props.createErrorMessage("No internet connection! :(", "Toast");
+    }
   };
 
   fetchAllUsers = () => {
@@ -151,20 +153,20 @@ class TabContainer extends Component {
     })
   }
 
-
   // logga-ut knapp
   signOut = () => {
     firebase
       .auth()
       .signOut()
       .then(function() {
-        console.log('Signed out completed');
+        console.log("Signed out completed");
       })
-      .catch(function(error) {
+      .catch((error) => {
         console.log('Error when signing out' + error);
-
+        this.props.createErrorMessage("Error when signing out " + error, "Toast");
         });
     }
+
 
   renderToolbar() {
     return (
@@ -174,50 +176,46 @@ class TabContainer extends Component {
     );
   }
 
-
   render() {
     // Visar bara posts ifall allt laddat klart. Kan med fördel användas till ljud-filerna
     let feedPage;
-    switch(this.state.status){
+    switch (this.state.status) {
       case "loading":
-        feedPage = <p>loading</p>;
+        feedPage = <h1>loading</h1>;
         break;
       case "loaded":
         feedPage = <Feed 
                       posts = {this.state.posts}
                       allSounds = {this.state.allSounds}
                       fetchAllSounds = {() => this.fetchAllSounds()}
+                      createErrorMessage = {(msg, type) => this.props.createErrorMessage(msg, type)}
                     />
+
         break;
       default:
-        feedPage = <p>something wrong</p>
+        feedPage = <p>something wrong</p>;
         break;
     }
 
-
-  
     return (
       <Ons.Page renderToolbar={this.renderToolbar}>
         <Ons.Tabbar
           onPreChange={({ index }) => this.setState({ index: index })}
-          onPostChange={() => console.log('postChange')}
-          onReactive={() => console.log('postChange')}
+          onPostChange={() => console.log("postChange")}
+          onReactive={() => console.log("postChange")}
           position="bottom"
           index={this.state.index}
           renderTabs={(activeIndex, tabbar) => [
             {
-              content: (
-                <Ons.Page key="Feed">
-                  {feedPage}
-
-                </Ons.Page>
-              ),
+              content: <Ons.Page key="Feed">{feedPage}</Ons.Page>,
               tab: <Ons.Tab label="Feed" icon="fa-headphones" key="FeedTab" />
             },
             {
               content: (
                 <Ons.Page key="Upload">
-                  <Upload />
+                  <Upload 
+                    createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                  />
                 </Ons.Page>
               ),
               tab: (
@@ -227,7 +225,9 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Profile">
-                  <Profile />
+                  <Profile 
+                    createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                  />
                 </Ons.Page>
               ),
               tab: <Ons.Tab label="Profile" icon="fa-user" key="ProfileTab" />
