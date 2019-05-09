@@ -26,7 +26,7 @@ class Feed extends Component {
     let item = this.props.allSounds[index];
     return (
       <Ons.Card key={item.time}>
-        <p>posted by: {item.user}</p>
+        <p>posted by: {item.userName}</p>
         <p>             
           {new Date(item.time).toDateString()}{' '}
           {new Date(item.time).toLocaleTimeString()}

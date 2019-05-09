@@ -4,6 +4,7 @@ import { redirectWhenOAuthChanges } from '../utils';
 
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
+import 'firebase/functions';
 
 import Feed from './Feed';
 import Profile from './Profile';
@@ -39,6 +40,8 @@ class TabContainer extends Component {
       applicationId: config.unsplashApiKeys.access_key,
       secret: config.unsplashApiKeys.secret_key
     });
+
+    this.getAllUsers = firebase.functions().httpsCallable('getAllUsers');
 
     this.state = {
       currentUser: null,
@@ -119,21 +122,34 @@ class TabContainer extends Component {
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
-  fetchAllSounds = () => {
+  fetchAllSounds = async () => {
+    const usersFromDatabase = await this.fetchAllUsers()
     var allSounds = [];
     this.db
-      .collection('all-sounds')
-      .orderBy('time', 'desc')
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          allSounds.push(doc.data());
-        });
-        this.setState({ 
-          allSounds: allSounds, 
-        }, () => console.log(this.state.allSounds));
+    .collection('all-sounds')
+    .orderBy('time', 'desc')
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        let soundData = doc.data()
+        const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
+        soundData.userName = correctUser ? correctUser.displayName : "-"
+        soundData.photoURL = correctUser ? correctUser.photoURL : null
+        allSounds.push(soundData);
       });
+      this.setState({ 
+        allSounds: allSounds, 
+      }, () => console.log(this.state.allSounds));
+    });   
   };
+
+  fetchAllUsers = () => {
+    return this.getAllUsers().then(result => {
+      return result.data.users
+    }).catch(err => {
+      return []
+    })
+  }
 
 
   // logga-ut knapp
