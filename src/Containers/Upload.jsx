@@ -24,9 +24,23 @@ class Upload extends Component {
       isRecording: false,
       isPaused: false,
       title: "",
-      keyword: ""
+      keyword: "",
+      time: 0
     };
     this.onStop = this.onStop.bind(this);
+    this.startTimer = this.startTimer.bind(this);
+  }
+
+  startTimer() {
+    this.timer = setInterval(() => this.setState({
+      time: this.state.time + 1
+    }), 1000);
+    setTimeout(this.stopRecording, 10000);
+  }
+
+  stopTimer() {
+    this.setState({time: 0});
+    clearInterval(this.timer);
   }
 
   componentDidMount = () => {
@@ -39,12 +53,15 @@ class Upload extends Component {
     this.setState({
       record: true
     });
+    this.startTimer();
   };
 
   stopRecording = () => {
     this.setState({
       record: false
     });
+    console.log(this.state.time);
+    this.stopTimer();
   };
 
   onData(recordedBlob) {
@@ -122,6 +139,7 @@ class Upload extends Component {
                 {recordButton}
               </ons-fab>
         </div>
+        <h3>Time left: {10 - this.state.time}</h3>
         <h2>Listen to your recording:</h2>
         <div>
           <audio ref="audioSource" controls="controls" src={blobURL} />
