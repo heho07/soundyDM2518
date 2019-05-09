@@ -62,7 +62,8 @@ class TabContainer extends Component {
       status: "loading",
 
       // states for the audio recording
-      allSounds: []
+      allSounds: [],
+      lastKnownKey:"",
     };
   }
 
@@ -116,9 +117,10 @@ class TabContainer extends Component {
       const usersFromDatabase = await this.fetchAllUsers()
       var allSounds = [];
       try{
-        this.db
+        await this.db
         .collection('all-sounds')
         .orderBy('time', 'desc')
+        .limit(10)
         .get()
         .then(querySnapshot => {
           querySnapshot.forEach(doc => {
@@ -127,12 +129,16 @@ class TabContainer extends Component {
             soundData.userName = correctUser ? correctUser.displayName : "-"
             soundData.photoURL = correctUser ? correctUser.photoURL : null
             allSounds.push(soundData);
-          });
+          })})
+        .then(() => 
           this.setState({ 
             allSounds: allSounds,
-            status:"loaded"
-          });
-        }).catch(error => {
+            status:"loaded",
+          }, () => this.setState({
+            lastKnownKey: this.state.allSounds[this.state.allSounds.length-1].time,            
+          }))
+        )
+        .catch(error => {
           this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
           console.log(error);
         });
@@ -144,6 +150,50 @@ class TabContainer extends Component {
       this.props.createErrorMessage("No internet connection! :(", "Toast");
     }
   };
+
+  fetchAdditionalSounds = async () => {
+    if(navigator.onLine){
+        const usersFromDatabase = await this.fetchAllUsers()
+        var allSounds = this.state.allSounds;
+        console.log(allSounds);
+        try{
+          this.db
+          .collection('all-sounds')
+          .orderBy('time', 'desc')
+          .startAt(this.state.lastKnownKey)
+          .limit(10)
+          .get()
+          .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            let soundData = doc.data()
+            console.log(soundData);
+            const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
+            soundData.userName = correctUser ? correctUser.displayName : "-"
+            soundData.photoURL = correctUser ? correctUser.photoURL : null
+            if (soundData.time !== this.state.lastKnownKey) {
+              allSounds.push(soundData);
+            }
+          })})
+        .then(() => 
+          this.setState({ 
+            allSounds: allSounds,
+            status:"loaded",
+          }, () => this.setState({
+            lastKnownKey: this.state.allSounds[this.state.allSounds.length-1].time,            
+          }))
+        )
+        .catch(error => {
+          this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
+          console.log(error);
+        });
+        } catch(err){
+          this.props.createErrorMessage(err, "Toast");
+          console.log(err);
+        }
+      } else {
+        this.props.createErrorMessage("No internet connection! :(", "Toast");
+      }
+    };    
 
   fetchAllUsers = () => {
     return this.getAllUsers().then(result => {
@@ -189,6 +239,7 @@ class TabContainer extends Component {
                       allSounds = {this.state.allSounds}
                       fetchAllSounds = {() => this.fetchAllSounds()}
                       createErrorMessage = {(msg, type) => this.props.createErrorMessage(msg, type)}
+                      fetchAdditionalSounds = {() => this.fetchAdditionalSounds()}
                     />
 
         break;

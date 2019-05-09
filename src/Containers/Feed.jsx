@@ -20,6 +20,7 @@ class Feed extends Component {
   // when using > this < in the renderRow() method it refers to the LazyList object
   renderRow(index) {
     let item = this.props.allSounds[index];
+    console.log(index);
     return (
       <Ons.Card key={item.time}>
         <p>posted by: {item.userName}</p>
@@ -125,6 +126,7 @@ class Feed extends Component {
       <Ons.Page>
         {this.renderPullHook()}
         {this.renderLazyList()}
+        <button onClick = {() => this.props.fetchAdditionalSounds()}>Fetch more</button>
       </Ons.Page>
     );
   }
