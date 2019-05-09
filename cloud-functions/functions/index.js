@@ -10,3 +10,13 @@ exports.getAllUsers = functions.https.onCall((data, context) => {
         return {users: null}
     })
 });
+
+exports.removeUser = functions.https.onCall((data, context) => {
+    const {uid} = data 
+    return admin.auth().deleteUser(uid)
+    .then(() => {
+        //TODO: remove all user stuff
+        return {completed: true}
+    })
+    .catch(() => ({completed: false}))
+});
