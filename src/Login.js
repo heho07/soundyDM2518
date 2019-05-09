@@ -13,7 +13,7 @@ import "onsenui/css/onsen-css-components.css";
 var googleProvider = new firebase.auth.GoogleAuthProvider();
 var facebookProvider = new firebase.auth.FacebookAuthProvider();
 
-class CreateLogin extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
 
@@ -21,8 +21,7 @@ class CreateLogin extends Component {
   }
 
   componentDidMount() {
-    console.log(Ons);
-    redirectWhenOAuthChanges(this.props.history);
+    redirectWhenOAuthChanges(this.props.history)
   }
 
   signInWithGoogle = () => {
@@ -97,18 +96,6 @@ class CreateLogin extends Component {
       });
   };
 
-  createClick = () => {
-    const { email, password } = this.state;
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .catch(error => {
-        console.log(this.state.email);
-        let errorMsg = ("Error creating user! " + error.code + " " + error.message);
-        this.props.createErrorMessage(errorMsg, "Toast");
-      });
-  };
-
   loginClicked = () => {
     const { email, password } = this.state;
     firebase
@@ -172,15 +159,6 @@ class CreateLogin extends Component {
                   Log in
                 </Ons.Button>
               </p>
-              <p>
-                <Ons.Button
-                  onClick={this.createClick}
-                  modifier="underbar"
-                  style={{ width: "60vw" }}
-                >
-                  Create Account
-                </Ons.Button>
-              </p>
             <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
           </form>
         <br />
@@ -204,9 +182,12 @@ class CreateLogin extends Component {
             <Ons.Icon icon="facebook" /> Sign in with Facebook
           </Ons.Button>
         </p>
+        <a href='javascript:;' onClick={() => {this.props.history.push('/create')}}>Don't have an account? Click here</a>
+
       </Ons.Page>
+
     );
   }
 }
 
-export default CreateLogin;
+export default Login;
