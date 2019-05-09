@@ -11,16 +11,30 @@ class Feed extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      foo: true
+      foo: true,
+      debounce:true,
     };
   }
+
+  // componentDidMount(){
+  //   console.log("Component did mount");
+  //   console.log(window);
+  //   window.addEventListener("scroll", function(event)  {
+  //     console.log("scroll");
+      // if (window.getDocumentById("scrollDiv") - window.getDocumentById("scrollPage").scrollTop - window.innerHeight - 400<= 0) {
+      //   console.log("Should update!");
+      // }
+  //   });
+  // }
 
   // renders a specific row from the dataSource in the LazyList
   // this row corresponds to a post in this.state.posts with the index supplied (done by scrolling)
   // when using > this < in the renderRow() method it refers to the LazyList object
   renderRow(index) {
     let item = this.props.allSounds[index];
-    console.log(index);
+    if (index === this.props.allSounds.length-1){
+      console.log("Last one");
+    }
     return (
       <Ons.Card key={item.time}>
         <p>posted by: {item.userName}</p>
@@ -38,6 +52,8 @@ class Feed extends Component {
     );
   }
 
+  
+
 
   // Called if the audio player has to wait due to slow internet connection
   handleAudioWaiting(){
@@ -45,14 +61,14 @@ class Feed extends Component {
   }
           
 
-
   // Renders a LazyList https://onsen.io/v2/api/react/LazyList.html
   renderLazyList() {
+    // console.log(window.position)
     return (
       <Ons.LazyList
         dataSource={this.props.allSounds}
-        length={this.props.allSounds.length}
-        renderRow={this.renderRow.bind(this)}
+        length= {this.props.allSounds.length} 
+        renderRow= {this.renderRow.bind(this)}  
         calculateItemHeight={() => 44}
       />
     );
@@ -100,19 +116,21 @@ class Feed extends Component {
   // NOT USED - might be necessary later
   renderSounds() {
     return (
-      <div>
-        {this.props.allsounds.map((item, index) => {
+      <div id = "scrollDiv">
+        {this.props.allSounds.map((item, index) => {
           return (
             <Ons.Card key={item.time}>
-              <p>posted by: {item.user}</p>
-              <p>
-                {new Date(item.time).toDateString()}{" "}
+              <p>posted by: {item.userName}</p>
+              <p>             
+                {new Date(item.time).toDateString()}{' '}
                 {new Date(item.time).toLocaleTimeString()}
               </p>
-              <img src="https://i.imgur.com/hgyXyww.png" alt="" />
-              <audio controls>
-                <source src={item.url} />
-              </audio>
+              <img src = "https://i.imgur.com/hgyXyww.png" alt = "placeholderText"/>
+              <audio controls onWaiting = {() => this.handleAudioWaiting()}>
+                <source src = {item.url}/>
+                <p>Your browser does not support audio. The file can be found at <a href = {item.url}>this link</a></p>  
+              </audio>     
+              
             </Ons.Card>
           );
         })}
@@ -121,15 +139,43 @@ class Feed extends Component {
   }
   // {this.renderAllSounds()}
 
+  // Funkar jättedåligt 
+  shouldFeedUpdate(){
+    // if (this.state.debounce) {
+    //   this.setState({
+    //     debounce:false
+    //   }, () => {
+    //     this.setState({
+    //       debounce:true,
+    //     })
+    //   })
+    // }
+    if (window.document.getElementById("scrollDiv").scrollHeight - window.document.getElementById("scrollPage").scrollTop - window.innerHeight - 400<= 0) {
+      console.log("Should update!");
+      this.props.fetchAdditionalSounds();
+    }
+    // console.log("Caliing shouldFeedUpdate");
+    // console.log("window.document.getElementById(scrollDiv)" + window.document.getElementById("scrollDiv"));
+  }
+
   render() {
+    var debounce = true;
     return (
-      <Ons.Page>
+      <Ons.Page id = "scrollPage" onScroll = {()=> {
+        if (debounce) {
+          debounce = false;
+          setTimeout(() => {
+            this.shouldFeedUpdate();
+            debounce = true;
+          }, 1000);
+        }
+      }}>
         {this.renderPullHook()}
-        {this.renderLazyList()}
-        <button onClick = {() => this.props.fetchAdditionalSounds()}>Fetch more</button>
+        {this.renderSounds()}
       </Ons.Page>
     );
   }
 }
+        // <button onClick = {() => this.props.fetchAdditionalSounds()}>Fetch more</button>
 
 export default Feed;
