@@ -5,6 +5,7 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/storage";
 import "firebase/firestore";
+import 'firebase/functions';
 
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 //import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
@@ -28,6 +29,9 @@ class Profile extends Component {
       selectText: "inherent",
       uploadText: "inherent"
     };
+
+    this.removeUser = firebase.functions().httpsCallable('removeUser');
+
   }
 
   componentDidMount() {
@@ -58,6 +62,18 @@ class Profile extends Component {
         console.log("Error when signing out" + error);
         this.props.createErrorMessage("Error when signing out. See log for more details", "AlertDialog");
       });
+  };
+
+  removeAccount = () => {
+    const {uid} = this.state.currentUser;
+    console.log(uid)
+    this.removeUser({uid}).then(result => {
+      if(result.data.completed){
+        this.signOut()
+      } else {
+        this.props.createErrorMessage("Error when removing account", "Toast");
+      }
+    })
   };
 
   renderProfileImage() {
@@ -150,11 +166,15 @@ class Profile extends Component {
           {this.renderProfileImage()}
           <div className="profileName">
             <h2>{currentUser && currentUser.displayName}</h2>
-            <div>
+            <div className="signOutRemoveContainer">
               <Ons.Button modifier="material" onClick={this.signOut}>
                 Sign out <Ons.Icon icon="sign-out-alt" />
               </Ons.Button>
+              <Ons.Button modifier="material" onClick={this.removeAccount} style={{backgroundColor: 'red'}}>
+                Remove account <Ons.Icon icon="trash" />
+              </Ons.Button>
             </div>
+           
           </div>
         </div>
         <div className="editName">

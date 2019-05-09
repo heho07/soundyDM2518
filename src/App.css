@@ -50,8 +50,18 @@ p {
 .profileName {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+}
+
+.profileName ons-button {
+  margin: 0.25rem;
+}
+
+.signOutRemoveContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .bottomProfile {
