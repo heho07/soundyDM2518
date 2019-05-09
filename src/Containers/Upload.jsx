@@ -122,7 +122,7 @@ class Upload extends Component {
           backgroundColor="#000000"
         />
         <div>
-              <ons-fab>
+              <ons-fab class="fab fab--material">
                 {recordButton}
               </ons-fab>
         </div>
