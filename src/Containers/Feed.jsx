@@ -16,12 +16,6 @@ class Feed extends Component {
     };
   }
 
-
-  
-
-
-
-
   // called from PullHook when the action is performed
   async onLoad(done) {
     await this.props.fetchAllSounds();
@@ -36,7 +30,6 @@ class Feed extends Component {
       <Ons.PullHook
         onChange={this.onChange}
         onLoad={this.onLoad.bind(this)} // bind this (the Feed.jsx object) to be able to use its methods and attributes
-        // onAction = {console.log("action?")}
       >
         {this.state.pullHookState === "initial" ? (
           <span>
@@ -80,12 +73,13 @@ class Feed extends Component {
     );
   }
 
-  
+  // The function called from infiniteScroller when new items are to be loaded
   loadItems (page) {
     console.log("Loading more items from the database");
     this.props.fetchAdditionalSounds();
   }
 
+  // Each element to be shown in the feed
   renderItem(item) {
     return (
       <Ons.Card key={item.time}>
@@ -108,8 +102,6 @@ class Feed extends Component {
   handleAudioWaiting(){
     this.props.createErrorMessage("Slow internet connection detected.", "Toast");
   }
-          
-
   
 
   render() {
