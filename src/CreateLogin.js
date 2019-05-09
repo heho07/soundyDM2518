@@ -137,50 +137,50 @@ class CreateLogin extends Component {
             event.preventDefault();
             this.loginClicked();
           }}>
-        <p>
-            <Ons.Input
-              value={this.state.email}
-              onChange={event => {
-                this.setState({ email: event.target.value });
-              }}
-              modifier="underbar"
-              float
-              placeholder="Email"
-              style={{ width: "80vw" }}
-            />
-          </p>
-          <p>
-            <Ons.Input
-              value={this.state.password}
-              onChange={event => {
-                this.setState({ password: event.target.value });
-              }}
-              modifier="underbar"
-              type="password"
-              float
-              placeholder="Password"
-              style={{ width: "80vw" }}
-            />
-          </p>
-          <br />
-          <p>
-            <Ons.Button
-              onClick={this.loginClicked}
-              modifier="underbar"
-              style={{ width: "60vw" }}
-            >
-              Log in
-            </Ons.Button>
-          </p>
-          <p>
-            <Ons.Button
-              onClick={this.createClick}
-              modifier="underbar"
-              style={{ width: "60vw" }}
-            >
-              Create Account
-            </Ons.Button>
-        </p>
+            <p>
+                <Ons.Input
+                  value={this.state.email}
+                  onChange={event => {
+                    this.setState({ email: event.target.value });
+                  }}
+                  modifier="underbar"
+                  float
+                  placeholder="Email"
+                  style={{ width: "80vw" }}
+                />
+              </p>
+              <p>
+                <Ons.Input
+                  value={this.state.password}
+                  onChange={event => {
+                    this.setState({ password: event.target.value });
+                  }}
+                  modifier="underbar"
+                  type="password"
+                  float
+                  placeholder="Password"
+                  style={{ width: "80vw" }}
+                />
+              </p>
+              <br />
+              <p>
+                <Ons.Button
+                  onClick={this.loginClicked}
+                  modifier="underbar"
+                  style={{ width: "60vw" }}
+                >
+                  Log in
+                </Ons.Button>
+              </p>
+              <p>
+                <Ons.Button
+                  onClick={this.createClick}
+                  modifier="underbar"
+                  style={{ width: "60vw" }}
+                >
+                  Create Account
+                </Ons.Button>
+              </p>
             <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
           </form>
         <br />
