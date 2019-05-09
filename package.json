@@ -10,6 +10,7 @@
     "react": "^16.8.6",
     "react-audio-recorder": "^2.2.0",
     "react-dom": "^16.8.6",
+    "react-infinite-scroller": "^1.2.4",
     "react-mic": "^12.4.1",
     "react-onsenui": "^1.11.2",
     "react-router-dom": "^5.0.0",

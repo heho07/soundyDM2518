@@ -64,6 +64,7 @@ class TabContainer extends Component {
       // states for the audio recording
       allSounds: [],
       lastKnownKey:"",
+      hasMore:true,
     };
   }
 
@@ -112,6 +113,7 @@ class TabContainer extends Component {
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
+  // Keeps track of the last item in the allSounds array by saving it to state
   fetchAllSounds = async () => {
     if(navigator.onLine){
       const usersFromDatabase = await this.fetchAllUsers()
@@ -151,25 +153,37 @@ class TabContainer extends Component {
     }
   };
 
+  // Slightly different version of the one above.
+  // Fetches new posts from the database, starting from the last time-ID currently loaded.
+  // Excludes the last one currently shown so as not to create duplicates
+  // Keeps track of the last item in the allSounds array by saving it to state
   fetchAdditionalSounds = async () => {
+    console.log("fetchAdditionalSounds");
     if(navigator.onLine){
         const usersFromDatabase = await this.fetchAllUsers()
         var allSounds = this.state.allSounds;
         console.log(allSounds);
         try{
-          this.db
+          await this.db
           .collection('all-sounds')
           .orderBy('time', 'desc')
           .startAt(this.state.lastKnownKey)
           .limit(10)
           .get()
           .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            let soundData = doc.data()
-            console.log(soundData);
-            const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
-            soundData.userName = correctUser ? correctUser.displayName : "-"
-            soundData.photoURL = correctUser ? correctUser.photoURL : null
+            if (querySnapshot.size === 1) {
+              // ifall vi bara får ett resultat innebär det att det inte finns mer att ladda
+              this.setState({
+                hasMore:false,
+              });
+              this.props.createErrorMessage("No more posts available.", "Toast");
+            }
+            querySnapshot.forEach(doc => {
+              let soundData = doc.data()
+              console.log(soundData);
+              const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
+              soundData.userName = correctUser ? correctUser.displayName : "-"
+              soundData.photoURL = correctUser ? correctUser.photoURL : null
             if (soundData.time !== this.state.lastKnownKey) {
               allSounds.push(soundData);
             }
@@ -240,6 +254,7 @@ class TabContainer extends Component {
                       fetchAllSounds = {() => this.fetchAllSounds()}
                       createErrorMessage = {(msg, type) => this.props.createErrorMessage(msg, type)}
                       fetchAdditionalSounds = {() => this.fetchAdditionalSounds()}
+                      hasMore = {this.state.hasMore}
                     />
 
         break;
