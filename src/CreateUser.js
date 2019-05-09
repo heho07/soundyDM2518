@@ -197,6 +197,7 @@ class CreateUser extends Component {
             </p>
             <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
           </form>
+          <a href='javascript:;' onClick={() => {this.props.history.push('/login')}}>Already have an account? Click here</a>
       </Ons.Page>
     );
   }
