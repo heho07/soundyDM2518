@@ -24,7 +24,8 @@ class Upload extends Component {
       isRecording: false,
       isPaused: false,
       title: "",
-      keyword: ""
+      keyword: "",
+      uploading: false
     };
     this.onStop = this.onStop.bind(this);
   }
@@ -59,6 +60,7 @@ class Upload extends Component {
   }
 
   uploadRecording = () => {
+    this.setState({uploading: true})
     const { audioBlob, title, keyword } = this.state;
     const { uid } = firebase.auth().currentUser;
 
@@ -79,7 +81,7 @@ class Upload extends Component {
             time: timeStamp,
             title: title,
             keyword: keyword
-          }).then(alert("uploaded"));
+          }).then(this.setState({uploading: false}));
         });
       })
       .catch(error => {
@@ -89,7 +91,7 @@ class Upload extends Component {
   };
 
   render() {
-    const { blobURL, audioURL, isRecording, isPaused, title } = this.state;
+    const { blobURL, audioURL, isRecording, isPaused, title, uploading } = this.state;
     let recordButton;
 
     switch(this.state.record){
@@ -153,7 +155,20 @@ class Upload extends Component {
           />
         </div>
         <div>
-          <ons-button onClick={this.uploadRecording} modifier="quiet" icon="fa-cloud-upload-alt"> Upload</ons-button>
+          <Ons.Button
+            modifier="material"
+            onClick={this.uploadRecording}
+            className="uploadImage"
+          >
+            <Ons.Icon
+              spin = {uploading}
+              icon={uploading ? "sync-alt" : "fa-cloud-upload-alt"}
+              style={{ display: this.state.spinner }}
+            />
+            
+            <span> Upload</span>
+
+          </Ons.Button>
         </div>
       </Ons.Page>
     );
