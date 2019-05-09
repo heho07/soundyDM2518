@@ -1,9 +1,10 @@
+
 import React, { Component } from 'react';
 import { ReactMic } from 'react-mic';
-import { If, Elif, Else } from 'rc-if-else';
+
 // imports for OnsenUI
-import * as Ons from 'react-onsenui'; // Import everything and use it as 'Ons.Page', 'Ons.Button'
-import * as ons from 'onsenui'; // This needs to be imported to bootstrap the components.
+import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
+//import * as ons from 'onsenui'; // This needs to be imported to bootstrap the components.
 // Webpack CSS import
 import 'onsenui/css/onsenui.css';
 import 'onsenui/css/onsen-css-components.css';
@@ -12,10 +13,9 @@ import * as firebase from 'firebase/app';
 import 'firebase/storage';
 import 'firebase/firestore';
 
-
+import ErrorPopUp from "./ErrorPopUp";
 
 class Upload extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -25,13 +25,12 @@ class Upload extends Component {
       isPaused: false,
       title: "",
       keyword: ""
-
     };
     this.onStop = this.onStop.bind(this);
   }
-  
+
   componentDidMount = () => {
-    var storage = firebase.app().storage('gs://soundy-dm2518.appspot.com/');
+    var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
     this.storageRef = storage.ref();
     this.db = firebase.firestore();
   };
@@ -49,7 +48,7 @@ class Upload extends Component {
   };
 
   onData(recordedBlob) {
-    console.log('chunk of real-time data is: ', recordedBlob);
+    console.log("chunk of real-time data is: ", recordedBlob);
   }
 
   onStop(recordedBlob) {
@@ -65,6 +64,7 @@ class Upload extends Component {
     var timeStamp = +new Date();
     console.log(title);
     var soundRef = this.storageRef.child('sounds/' + timeStamp);
+
     soundRef
       .put(audioBlob)
       .then(snapshot => {
@@ -82,6 +82,7 @@ class Upload extends Component {
       })
       .catch(error => {
         console.log('ERROR: ' + error.message);
+        this.props.createErrorMessage(error.message, "Toast");
       });
   };
 
@@ -107,7 +108,7 @@ class Upload extends Component {
         break;
     }
     return (
-      <Ons.Page>  
+      <Ons.Page>
         <ReactMic
           record={this.state.record}
           className="sound-wave"

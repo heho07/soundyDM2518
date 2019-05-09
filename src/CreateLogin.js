@@ -38,7 +38,7 @@ class CreateLogin extends Component {
         console.log(token);
         console.log(user);
       })
-      .catch(function(error) {
+      .catch((error) => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -55,6 +55,8 @@ class CreateLogin extends Component {
             " email: " +
             email
         );
+        let errorMsg = "There was en error signing in with Google. See the log for detailed information.";
+        this.props.createErrorMessage(errorMsg, "Toast");
         console.log(credential);
       });
   };
@@ -72,7 +74,7 @@ class CreateLogin extends Component {
         console.log(token);
         console.log(user);
       })
-      .catch(function(error) {
+      .catch((error) => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -89,6 +91,8 @@ class CreateLogin extends Component {
             " email: " +
             email
         );
+        let errorMsg = "There was en error signing in with Facebook. See the log for detailed information.";
+        this.props.createErrorMessage(errorMsg, "Toast");
         console.log(credential);
       });
   };
@@ -100,7 +104,8 @@ class CreateLogin extends Component {
       .createUserWithEmailAndPassword(email, password)
       .catch(error => {
         console.log(this.state.email);
-        console.error("Error signing in! " + error.code + " " + error.message);
+        let errorMsg = ("Error signing in! " + error.code + " " + error.message);
+        this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
 
@@ -111,7 +116,8 @@ class CreateLogin extends Component {
       .signInWithEmailAndPassword(email, password)
       .catch(error => {
         console.log(this.state.email);
-        console.error("Error login in! " + error.code + " " + error.message);
+        let errorMsg = ("Error login in! " + error.code + " " + error.message);
+        this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
 
@@ -133,7 +139,7 @@ class CreateLogin extends Component {
             onChange={event => {
               this.setState({ email: event.target.value });
             }}
-            modifier="material"
+            modifier="underbar"
             float
             placeholder="Email"
             style={{ width: "80vw" }}
@@ -145,7 +151,7 @@ class CreateLogin extends Component {
             onChange={event => {
               this.setState({ password: event.target.value });
             }}
-            modifier="material"
+            modifier="underbar"
             type="password"
             float
             placeholder="Password"
@@ -156,7 +162,7 @@ class CreateLogin extends Component {
         <p>
           <Ons.Button
             onClick={this.loginClicked}
-            modifier="material"
+            modifier="underbar"
             style={{ width: "60vw" }}
           >
             Log in
@@ -165,7 +171,7 @@ class CreateLogin extends Component {
         <p>
           <Ons.Button
             onClick={this.createClick}
-            modifier="material"
+            modifier="underbar"
             style={{ width: "60vw" }}
           >
             Create Account
@@ -175,7 +181,7 @@ class CreateLogin extends Component {
         <p>
           <Ons.Button
             className=".fb-google-button"
-            modifier="material"
+            modifier="underbar"
             style={{ width: "60vw" }}
             onClick={this.signInWithGoogle}
           >
@@ -185,7 +191,7 @@ class CreateLogin extends Component {
         <p>
           <Ons.Button
             className=".fb-google-button"
-            modifier="material"
+            modifier="underbar"
             style={{ width: "60vw" }}
             onClick={this.signInWithFacebook}
           >
