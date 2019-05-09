@@ -2,8 +2,9 @@ import React, { Component } from "react";
 
 import { redirectWhenOAuthChanges } from "../utils";
 
-import * as firebase from "firebase/app";
-import "firebase/auth";
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/functions';
 
 import Feed from "./Feed";
 import Profile from "./Profile";
@@ -37,6 +38,8 @@ class TabContainer extends Component {
       applicationId: config.unsplashApiKeys.access_key,
       secret: config.unsplashApiKeys.secret_key
     });
+
+    this.getAllUsers = firebase.functions().httpsCallable('getAllUsers');
 
     this.state = {
       currentUser: null,
@@ -108,36 +111,47 @@ class TabContainer extends Component {
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
-  fetchAllSounds = () => {
+  fetchAllSounds = async () => {
     if(navigator.onLine){
+      const usersFromDatabase = await this.fetchAllUsers()
       var allSounds = [];
       try{
-
         this.db
-          .collection('all-sounds')
-          .orderBy('time', 'desc')
-          .get().catch(err => console.log(err))
-          .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-              allSounds.push(doc.data());
-            });
-            this.setState({ 
-              allSounds: allSounds, 
-              status:"loaded"       // säger till komponenten att nu har allt laddats klart
-            });
-          }).catch(error => {
-            this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
-            console.log(error);
+        .collection('all-sounds')
+        .orderBy('time', 'desc')
+        .get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            let soundData = doc.data()
+            const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
+            soundData.userName = correctUser ? correctUser.displayName : "-"
+            soundData.photoURL = correctUser ? correctUser.photoURL : null
+            allSounds.push(soundData);
           });
-      }catch(err){
+          this.setState({ 
+            allSounds: allSounds,
+            status:"loaded"
+          });
+        }).catch(error => {
+          this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
+          console.log(error);
+        });
+      } catch(err){
         this.props.createErrorMessage(err, "Toast");
         console.log(err);
       }
-    }
-    else{
+    } else {
       this.props.createErrorMessage("No internet connection! :(", "Toast");
     }
   };
+
+  fetchAllUsers = () => {
+    return this.getAllUsers().then(result => {
+      return result.data.users
+    }).catch(err => {
+      return []
+    })
+  }
 
   // logga-ut knapp
   signOut = () => {

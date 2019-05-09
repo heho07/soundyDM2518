@@ -22,9 +22,9 @@ class Feed extends Component {
     let item = this.props.allSounds[index];
     return (
       <Ons.Card key={item.time}>
-        <p>posted by: {item.user}</p>
-        <p>
-          {new Date(item.time).toDateString()}{" "}
+        <p>posted by: {item.userName}</p>
+        <p>             
+          {new Date(item.time).toDateString()}{' '}
           {new Date(item.time).toLocaleTimeString()}
         </p>
         <img src = "https://i.imgur.com/hgyXyww.png" alt = "placeholderText"/>

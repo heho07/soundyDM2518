@@ -60,7 +60,9 @@ class Upload extends Component {
 
   uploadRecording = () => {
     const { audioBlob, title, keyword } = this.state;
+    const { uid } = firebase.auth().currentUser;
 
+    console.log(uid);
     var timeStamp = +new Date();
     console.log(title);
     var soundRef = this.storageRef.child('sounds/' + timeStamp);
@@ -73,7 +75,7 @@ class Upload extends Component {
           this.db.collection('all-sounds').add({
             //Add to database
             url: downloadURL,
-            user: 1, //TODO: Add real user-id
+            user: uid,
             time: timeStamp,
             title: title,
             keyword: keyword
