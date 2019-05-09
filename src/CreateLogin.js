@@ -104,7 +104,7 @@ class CreateLogin extends Component {
       .createUserWithEmailAndPassword(email, password)
       .catch(error => {
         console.log(this.state.email);
-        let errorMsg = ("Error signing in! " + error.code + " " + error.message);
+        let errorMsg = ("Error creating user! " + error.code + " " + error.message);
         this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
@@ -116,7 +116,7 @@ class CreateLogin extends Component {
       .signInWithEmailAndPassword(email, password)
       .catch(error => {
         console.log(this.state.email);
-        let errorMsg = ("Error login in! " + error.code + " " + error.message);
+        let errorMsg = ("Error logging in! " + error.code + " " + error.message);
         this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
