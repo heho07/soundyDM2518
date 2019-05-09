@@ -30,7 +30,6 @@ class TabContainer extends Component {
   // By saving the data here we don't have to do a new API call every time we switch tabs
   constructor(props) {
     super(props);
-
     // connecting to Unsplash to get images automatically
     const Unsplash = require("unsplash-js").default;
     //console.log(config);
@@ -41,7 +40,7 @@ class TabContainer extends Component {
 
     this.state = {
       currentUser: null,
-      index: 2,
+      index: 0,
       posts: [
         {
           title: "dog",
@@ -105,38 +104,39 @@ class TabContainer extends Component {
     var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
     this.storageRef = storage.ref();
     this.db = firebase.firestore();
-
     this.fetchAllSounds();
-
-    // kopplar en bild från unsplash till databsen
-    for (var post of this.state.posts) {
-      //console.log(post);
-      let res = await this.updateImagesFromUnsplash(post.title);
-      post.picUrl = res;
-      this.setState({
-        status: "loaded"
-      });
-    }
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
   fetchAllSounds = () => {
-    var allSounds = [];
-    this.db
-      .collection("all-sounds")
-      .orderBy("time", "desc")
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          allSounds.push(doc.data());
-        });
-        this.setState(
-          {
-            allSounds: allSounds
-          }
-          //  () => console.log(this.state.allSounds)
-        );
-      });
+    if(navigator.onLine){
+      var allSounds = [];
+      try{
+
+        this.db
+          .collection('all-sounds')
+          .orderBy('time', 'desc')
+          .get().catch(err => console.log(err))
+          .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              allSounds.push(doc.data());
+            });
+            this.setState({ 
+              allSounds: allSounds, 
+              status:"loaded"       // säger till komponenten att nu har allt laddats klart
+            });
+          }).catch(error => {
+            this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
+            console.log(error);
+          });
+      }catch(err){
+        this.props.createErrorMessage(err, "Toast");
+        console.log(err);
+      }
+    }
+    else{
+      this.props.createErrorMessage("No internet connection! :(", "Toast");
+    }
   };
 
   // logga-ut knapp
@@ -147,10 +147,12 @@ class TabContainer extends Component {
       .then(function() {
         console.log("Signed out completed");
       })
-      .catch(function(error) {
-        console.log("Error when signing out" + error);
-      });
-  };
+      .catch((error) => {
+        console.log('Error when signing out' + error);
+        this.props.createErrorMessage("Error when signing out " + error, "Toast");
+        });
+    }
+
 
   renderToolbar() {
     return (
@@ -165,16 +167,16 @@ class TabContainer extends Component {
     let feedPage;
     switch (this.state.status) {
       case "loading":
-        feedPage = <p>loading</p>;
+        feedPage = <h1>loading</h1>;
         break;
       case "loaded":
-        feedPage = (
-          <Feed
-            posts={this.state.posts}
-            allSounds={this.state.allSounds}
-            fetchAllSounds={() => this.fetchAllSounds()}
-          />
-        );
+        feedPage = <Feed 
+                      posts = {this.state.posts}
+                      allSounds = {this.state.allSounds}
+                      fetchAllSounds = {() => this.fetchAllSounds()}
+                      createErrorMessage = {(msg, type) => this.props.createErrorMessage(msg, type)}
+                    />
+
         break;
       default:
         feedPage = <p>something wrong</p>;
@@ -197,7 +199,9 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Upload">
-                  <Upload />
+                  <Upload 
+                    createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                  />
                 </Ons.Page>
               ),
               tab: (
@@ -207,7 +211,9 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Profile">
-                  <Profile />
+                  <Profile 
+                    createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                  />
                 </Ons.Page>
               ),
               tab: <Ons.Tab label="Profile" icon="fa-user" key="ProfileTab" />

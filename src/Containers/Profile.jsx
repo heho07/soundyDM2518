@@ -14,16 +14,21 @@ import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
 class Profile extends Component {
-  state = {
-    currentUser: null,
-    name: null,
-    photoURL: null,
-    image: "",
-    checkmark: "none",
-    spinner: "none",
-    selectText: "inherent",
-    uploadText: "inherent"
-  };
+
+  // behövde skriva om koden med en konstruktor för att få tillgång till props
+  constructor(props){
+    super(props);
+    this.state = {
+      currentUser: null,
+      name: null,
+      photoURL: null,
+      image: "",
+      checkmark: "none",
+      spinner: "none",
+      selectText: "inherent",
+      uploadText: "inherent"
+    };
+  }
 
   componentDidMount() {
     // redirectWhenOAuthChanges(this.props.history);
@@ -50,6 +55,7 @@ class Profile extends Component {
       })
       .catch(function(error) {
         console.log("Error when signing out" + error);
+        this.props.createErrorMessage("Error when signing out. See log for more details", "AlertDialog");
       });
   };
 
@@ -86,6 +92,7 @@ class Profile extends Component {
         })
         .catch(function(error) {
           console.error("Error updating! " + error.code + " " + error.message);
+          this.createErrorMessage("Error editing profile. See log for more details", "AlertDialog");
         });
   }
 
@@ -119,14 +126,19 @@ class Profile extends Component {
             })
             .catch(function(error) {
               // An error happened.
+              this.props.createErrorMessage("Error uploading profile image.", "AlertDialog");
             });
         })
         .catch(console.error);
     }
   };
 
+
   selectButtonContent = () => {
-    this.setState({ checkmark: "block", selectText: "none" });
+    this.setState({ 
+      checkmark: "block", 
+      selectText: "none" 
+    });
   };
 
   render() {

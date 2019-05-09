@@ -4,12 +4,14 @@ import { ReactMic } from "react-mic";
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 //import * as ons from 'onsenui'; // This needs to be imported to bootstrap the components.
 // Webpack CSS import
-import "onsenui/css/onsenui.css";
-import "onsenui/css/onsen-css-components.css";
+import 'onsenui/css/onsenui.css';
+import 'onsenui/css/onsen-css-components.css';
 
-import * as firebase from "firebase/app";
-import "firebase/storage";
-import "firebase/firestore";
+import * as firebase from 'firebase/app';
+import 'firebase/storage';
+import 'firebase/firestore';
+
+import ErrorPopUp from "./ErrorPopUp";
 
 class Upload extends Component {
   constructor(props) {
@@ -18,7 +20,7 @@ class Upload extends Component {
       record: false,
       audioBlob: null,
       isRecording: false,
-      isPaused: false
+      isPaused: false,      
     };
     this.onStop = this.onStop.bind(this);
   }
@@ -74,9 +76,12 @@ class Upload extends Component {
         });
       })
       .catch(error => {
-        console.log("ERROR: " + error.message);
+        console.log('ERROR: ' + error.message);
+        this.props.createErrorMessage(error.message, "Toast");
       });
   };
+
+
 
   render() {
     const { blobURL } = this.state; //Not used audioURL, isRecording, isPaused
