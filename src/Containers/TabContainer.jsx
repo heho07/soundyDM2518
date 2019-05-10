@@ -158,11 +158,9 @@ class TabContainer extends Component {
   // Excludes the last one currently shown so as not to create duplicates
   // Keeps track of the last item in the allSounds array by saving it to state
   fetchAdditionalSounds = async () => {
-    console.log("fetchAdditionalSounds");
     if(navigator.onLine){
         const usersFromDatabase = await this.fetchAllUsers()
         var allSounds = this.state.allSounds;
-        console.log(allSounds);
         try{
           await this.db
           .collection('all-sounds')
@@ -180,7 +178,6 @@ class TabContainer extends Component {
             }
             querySnapshot.forEach(doc => {
               let soundData = doc.data()
-              console.log(soundData);
               const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
               soundData.userName = correctUser ? correctUser.displayName : "-"
               soundData.photoURL = correctUser ? correctUser.photoURL : null
