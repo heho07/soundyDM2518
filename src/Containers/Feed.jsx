@@ -43,7 +43,11 @@ class Feed extends Component {
           </span>
         ) : (
           <span>
-            <Ons.Icon size={35} spin={true} icon="ion-load-d" /> Loading data...
+            <Ons.Icon
+              spin
+              icon="sync-alt"
+              style={{ display: this.state.spinner }}
+            />
           </span>
         )}
       </Ons.PullHook>

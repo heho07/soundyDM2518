@@ -95,15 +95,7 @@ class TabContainer extends Component {
   }
 
   async componentDidMount() {
-    // ifall man skulle bli utloggad (tror jag /H)
     redirectWhenOAuthChanges(this.props.history);
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setState({ currentUser: user });
-      } else {
-        this.setState({ currentUser: null });
-      }
-    });
 
     // kopplar upp till databasen
     var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
@@ -242,7 +234,13 @@ class TabContainer extends Component {
     let feedPage;
     switch (this.state.status) {
       case "loading":
-        feedPage = <h1>loading</h1>;
+        feedPage =
+        <div style={{'paddingTop':'50%'}}>
+          <Ons.Icon
+            spin
+            icon="sync-alt"
+          />
+        </div>;
         break;
       case "loaded":
         feedPage = <Feed 

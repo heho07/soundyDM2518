@@ -24,7 +24,8 @@ class Upload extends Component {
       isRecording: false,
       isPaused: false,
       title: "",
-      keyword: ""
+      keyword: "",
+      uploading: false
     };
     this.onStop = this.onStop.bind(this);
   }
@@ -59,6 +60,7 @@ class Upload extends Component {
   }
 
   uploadRecording = () => {
+    this.setState({uploading: true})
     const { audioBlob, title, keyword } = this.state;
     const { uid } = firebase.auth().currentUser;
 
@@ -66,7 +68,9 @@ class Upload extends Component {
     var timeStamp = +new Date();
     console.log(title);
     var soundRef = this.storageRef.child('sounds/' + timeStamp);
-    this.props.updateImagesFromUnsplash(keyword).then((imgUrl) => {
+    
+    this.props.updateImagesFromUnsplash(keyword)
+    .then((imgUrl) => {
       soundRef
         .put(audioBlob)
         .then(snapshot => {
@@ -80,18 +84,17 @@ class Upload extends Component {
               title: title,
               keyword: keyword,
               imgUrl:imgUrl,
-            }).then(alert("uploaded"));
+            }).then(this.setState({uploading: false}));
           });
         })
         .catch(error => {
           console.log('ERROR: ' + error.message);
           this.props.createErrorMessage(error.message, "Toast");
-        });
-    })
+      });
   };
 
   render() {
-    const { blobURL, audioURL, isRecording, isPaused, title } = this.state;
+    const { blobURL, audioURL, isRecording, isPaused, title, uploading } = this.state;
     let recordButton;
 
     switch(this.state.record){
@@ -122,7 +125,7 @@ class Upload extends Component {
           backgroundColor="#000000"
         />
         <div>
-              <ons-fab>
+              <ons-fab class="fab fab--material">
                 {recordButton}
               </ons-fab>
         </div>
@@ -155,7 +158,20 @@ class Upload extends Component {
           />
         </div>
         <div>
-          <ons-button onClick={this.uploadRecording} modifier="quiet" icon="fa-cloud-upload-alt"> Upload</ons-button>
+          <Ons.Button
+            modifier="material"
+            onClick={this.uploadRecording}
+            className="uploadImage"
+          >
+            <Ons.Icon
+              spin = {uploading}
+              icon={uploading ? "sync-alt" : "fa-cloud-upload-alt"}
+              style={{ display: this.state.spinner }}
+            />
+            
+            <span> Upload</span>
+
+          </Ons.Button>
         </div>
       </Ons.Page>
     );

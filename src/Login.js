@@ -13,7 +13,7 @@ import "onsenui/css/onsen-css-components.css";
 var googleProvider = new firebase.auth.GoogleAuthProvider();
 var facebookProvider = new firebase.auth.FacebookAuthProvider();
 
-class CreateLogin extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
 
@@ -21,8 +21,7 @@ class CreateLogin extends Component {
   }
 
   componentDidMount() {
-    console.log(Ons);
-    redirectWhenOAuthChanges(this.props.history);
+    redirectWhenOAuthChanges(this.props.history)
   }
 
   signInWithGoogle = () => {
@@ -97,18 +96,6 @@ class CreateLogin extends Component {
       });
   };
 
-  createClick = () => {
-    const { email, password } = this.state;
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .catch(error => {
-        console.log(this.state.email);
-        let errorMsg = ("Error signing in! " + error.code + " " + error.message);
-        this.props.createErrorMessage(errorMsg, "Toast");
-      });
-  };
-
   loginClicked = () => {
     const { email, password } = this.state;
     firebase
@@ -116,7 +103,7 @@ class CreateLogin extends Component {
       .signInWithEmailAndPassword(email, password)
       .catch(error => {
         console.log(this.state.email);
-        let errorMsg = ("Error login in! " + error.code + " " + error.message);
+        let errorMsg = ("Error logging in! " + error.code + " " + error.message);
         this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
@@ -133,50 +120,47 @@ class CreateLogin extends Component {
     return (
       <Ons.Page renderToolbar={this.renderToolbar} className="page">
         <h1>Soundy</h1>
-        <p>
-          <Ons.Input
-            value={this.state.email}
-            onChange={event => {
-              this.setState({ email: event.target.value });
-            }}
-            modifier="underbar"
-            float
-            placeholder="Email"
-            style={{ width: "80vw" }}
-          />
-        </p>
-        <p>
-          <Ons.Input
-            value={this.state.password}
-            onChange={event => {
-              this.setState({ password: event.target.value });
-            }}
-            modifier="underbar"
-            type="password"
-            float
-            placeholder="Password"
-            style={{ width: "80vw" }}
-          />
-        </p>
-        <br />
-        <p>
-          <Ons.Button
-            onClick={this.loginClicked}
-            modifier="underbar"
-            style={{ width: "60vw" }}
-          >
-            Log in
-          </Ons.Button>
-        </p>
-        <p>
-          <Ons.Button
-            onClick={this.createClick}
-            modifier="underbar"
-            style={{ width: "60vw" }}
-          >
-            Create Account
-          </Ons.Button>
-        </p>
+          <form onSubmit = {(event) => {
+            event.preventDefault();
+            this.loginClicked();
+          }}>
+            <p>
+                <Ons.Input
+                  value={this.state.email}
+                  onChange={event => {
+                    this.setState({ email: event.target.value });
+                  }}
+                  modifier="underbar"
+                  float
+                  placeholder="Email"
+                  style={{ width: "80vw" }}
+                />
+              </p>
+              <p>
+                <Ons.Input
+                  value={this.state.password}
+                  onChange={event => {
+                    this.setState({ password: event.target.value });
+                  }}
+                  modifier="underbar"
+                  type="password"
+                  float
+                  placeholder="Password"
+                  style={{ width: "80vw" }}
+                />
+              </p>
+              <br />
+              <p>
+                <Ons.Button
+                  onClick={this.loginClicked}
+                  modifier="underbar"
+                  style={{ width: "60vw" }}
+                >
+                  Log in
+                </Ons.Button>
+              </p>
+            <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
+          </form>
         <br />
         <p>
           <Ons.Button
@@ -198,9 +182,12 @@ class CreateLogin extends Component {
             <Ons.Icon icon="facebook" /> Sign in with Facebook
           </Ons.Button>
         </p>
+        <a href='javascript:;' onClick={() => {this.props.history.push('/create')}}>Don't have an account? Click here</a>
+
       </Ons.Page>
+
     );
   }
 }
 
-export default CreateLogin;
+export default Login;
