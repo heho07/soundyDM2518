@@ -91,7 +91,8 @@ class Upload extends Component {
           console.log('ERROR: ' + error.message);
           this.props.createErrorMessage(error.message, "Toast");
       });
-  };
+    });
+  }
 
   render() {
     const { blobURL, audioURL, isRecording, isPaused, title, uploading } = this.state;
