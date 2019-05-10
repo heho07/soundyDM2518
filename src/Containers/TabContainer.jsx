@@ -70,11 +70,11 @@ class TabContainer extends Component {
 
   // metod innehållandes kod vi kan använda när vi laddar in databasresultat?
   // returns the promise of a JSON object containing information about a picture
+  // 50 requests per hour
   async updateImagesFromUnsplash(keyWord) {
     if (!keyWord) {
       // default to something if no keywoard was supplied
-      let keyWord = "sea";
-      console.log("didnt detect keyWord");
+      return "https://i.imgur.com/dBmYY4M.png";
     }
 
     // Söker efter en bild matchande det sökord som ges
@@ -90,7 +90,7 @@ class TabContainer extends Component {
     } catch (error) {
       // Ifall vi får error ge nån default bild (t.ex. ifall vi uppnåt quota för unsplashAPI)
       console.log(error);
-      return "https://i.imgur.com/1S5dGBf.png";
+      return "https://i.imgur.com/dBmYY4M.png";
     }
   }
 
@@ -278,6 +278,7 @@ class TabContainer extends Component {
                 <Ons.Page key="Upload">
                   <Upload 
                     createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                    updateImagesFromUnsplash = {(keyWord) => this.updateImagesFromUnsplash(keyWord)}
                   />
                 </Ons.Page>
               ),

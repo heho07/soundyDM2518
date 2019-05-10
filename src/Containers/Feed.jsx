@@ -81,19 +81,22 @@ class Feed extends Component {
 
   // Each element to be shown in the feed
   renderItem(item) {
+    let img = item.imgUrl ? item.imgUrl : "https://i.imgur.com/dBmYY4M.png";    // old placeholder image "https://i.imgur.com/hgyXyww.png" 
     return (
       <Ons.Card key={item.time}>
-        <p>posted by: {item.userName}</p>
+        <p>{item.title}</p>
+        <p>Posted by: {item.userName}</p>
+        <center>
+          <img src = {img} alt = "placeholderText"/>
+          <audio controls onWaiting = {() => this.handleAudioWaiting()}>
+            <source src = {item.url}/>
+            <p>Your browser does not support audio. The file can be found at <a href = {item.url}>this link</a></p>  
+          </audio>     
+        </center>
         <p>             
           {new Date(item.time).toDateString()}{' '}
           {new Date(item.time).toLocaleTimeString()}
         </p>
-        <img src = "https://i.imgur.com/hgyXyww.png" alt = "placeholderText"/>
-        <audio controls onWaiting = {() => this.handleAudioWaiting()}>
-          <source src = {item.url}/>
-          <p>Your browser does not support audio. The file can be found at <a href = {item.url}>this link</a></p>  
-        </audio>     
-        
       </Ons.Card>
     );
   }
