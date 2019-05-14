@@ -61,11 +61,11 @@ class Upload extends Component {
 
   validUserInput(){
     if (!this.state.title || this.state.title.length === 0){
-      this.props.createErrorMessage("Please enter a title of your recording", "Toast");
+      this.props.createErrorMessage("Please enter a title of your recording.", "Toast");
       return false;
     }
     else if(!this.state.keyword || !(this.state.keyword.match(/^[a-zA-Z0-9]+$/))){
-      this.props.createErrorMessage("You can only write one (1) keyword, use letters and/or numbers", "Toast");
+      this.props.createErrorMessage("You can only write one (1) keyword, use letters and/or numbers.", "Toast");
       return false;
     } 
     else {
@@ -74,12 +74,17 @@ class Upload extends Component {
   }
 
   uploadRecording = () => {
+    const { audioBlob, title, keyword } = this.state;
+
     if(!this.validUserInput()){
+      return;
+    }
+    if(!audioBlob){
+      this.props.createErrorMessage("A recording is required to be able to post to the Soundy feed.", "Toast");
       return;
     }
     
     this.setState({uploading: true})
-    const { audioBlob } = this.state;
     const { uid } = firebase.auth().currentUser;
 
     
@@ -97,11 +102,13 @@ class Upload extends Component {
             url: downloadURL,
             user: uid,
             time: timeStamp,
-            title: this.title,
-            keyword: this.keyword
+            title: title,
+            keyword: keyword
           }).then(this.setState({uploading: false}));
         });
       })
+       // For some reason, the catch block below isn't reached when an error occures.
+       // Solved it by adding another type of check earlier in the function
       .catch(error => {
         console.log('ERROR: ' + error.message);
         this.props.createErrorMessage(error.message, "Toast");
