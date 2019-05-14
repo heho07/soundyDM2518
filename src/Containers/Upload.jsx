@@ -59,28 +59,46 @@ class Upload extends Component {
     });
   }
 
+  validUserInput(){
+    if (!this.state.title || this.state.title.length === 0){
+      this.props.createErrorMessage("Please enter a title of your recording", "Toast");
+      return false;
+    }
+    else if(!this.state.keyword || !(this.state.keyword.match(/^[a-zA-Z0-9]+$/))){
+      this.props.createErrorMessage("You can only write one (1) keyword, use letters and/or numbers", "Toast");
+      return false;
+    } 
+    else {
+      return true;
+    }
+  }
+
   uploadRecording = () => {
+    if(!this.validUserInput()){
+      return;
+    }
+    
     this.setState({uploading: true})
-    const { audioBlob, title, keyword } = this.state;
+    const { audioBlob } = this.state;
     const { uid } = firebase.auth().currentUser;
 
+    
     console.log(uid);
     var timeStamp = +new Date();
-    console.log(title);
     var soundRef = this.storageRef.child('sounds/' + timeStamp);
 
     soundRef
       .put(audioBlob)
       .then(snapshot => {
         //It is now uploaded to storage
-        soundRef.getDownloadURL().then(downloadURL => {
+        soundRef.getDownloadURL().then(downloadURL => { 
           this.db.collection('all-sounds').add({
             //Add to database
             url: downloadURL,
             user: uid,
             time: timeStamp,
-            title: title,
-            keyword: keyword
+            title: this.title,
+            keyword: this.keyword
           }).then(this.setState({uploading: false}));
         });
       })
