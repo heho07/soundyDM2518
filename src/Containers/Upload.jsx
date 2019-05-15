@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { ReactMic } from 'react-mic';
-
+import { Line } from 'rc-progress';
 // imports for OnsenUI
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 //import * as ons from 'onsenui'; // This needs to be imported to bootstrap the components.
@@ -25,9 +25,22 @@ class Upload extends Component {
       isPaused: false,
       title: "",
       keyword: "",
-      uploading: false
+      time: 0,
+      uploading: false,
     };
     this.onStop = this.onStop.bind(this);
+  }
+
+  startTimer() {
+    this.timer = setInterval(() => this.setState({
+      time: this.state.time + 1
+    }), 1000);
+    setTimeout(this.stopRecording, 10000);
+  }
+
+  stopTimer() {
+    this.setState({time: 0});
+    clearInterval(this.timer);
   }
 
   componentDidMount = () => {
@@ -40,12 +53,15 @@ class Upload extends Component {
     this.setState({
       record: true
     });
+    this.startTimer();
   };
 
   stopRecording = () => {
     this.setState({
       record: false
     });
+    console.log(this.state.time);
+    this.stopTimer();
   };
 
   onData(recordedBlob) {
@@ -92,6 +108,8 @@ class Upload extends Component {
     var timeStamp = +new Date();
     var soundRef = this.storageRef.child('sounds/' + timeStamp);
 
+    this.props.updateImagesFromUnsplash(keyword)
+    .then((imgUrl) => {
     soundRef
       .put(audioBlob)
       .then(snapshot => {
@@ -103,7 +121,8 @@ class Upload extends Component {
             user: uid,
             time: timeStamp,
             title: title,
-            keyword: keyword
+            keyword: keyword,
+            imgUrl:imgUrl,
           }).then(this.setState({uploading: false}));
         });
       })
@@ -113,7 +132,8 @@ class Upload extends Component {
         console.log('ERROR: ' + error.message);
         this.props.createErrorMessage(error.message, "Toast");
       });
-  };
+    });
+  }
 
   render() {
     const { blobURL, audioURL, isRecording, isPaused, title, uploading } = this.state;
@@ -151,6 +171,9 @@ class Upload extends Component {
                 {recordButton}
               </ons-fab>
         </div>
+        <br/>
+        <Line percent={this.state.time * 10} style={{width: "80%"}}strokeWidth="4" strokeColor="#D3D3D3" />
+        <p>{this.state.time} out of 10s</p>
         <h2>Listen to your recording:</h2>
         <div>
           <audio ref="audioSource" controls="controls" src={blobURL} />
