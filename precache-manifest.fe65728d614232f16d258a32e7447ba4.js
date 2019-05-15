@@ -12,8 +12,8 @@ self.__precacheManifest = [
     "url": "/soundydm2518/static/js/runtime~main.687a7693.js"
   },
   {
-    "revision": "83e6c29fb363b2f0ea6cc18fefff729c",
-    "url": "/soundydm2518/static/media/fa-brands-400.83e6c29f.svg"
+    "revision": "de1d242d8acb26ec43c0d071fe78e72d",
+    "url": "/soundydm2518/static/media/fa-solid-900.de1d242d.svg"
   },
   {
     "revision": "56bfa2ce6554d060e3b2",
@@ -100,8 +100,8 @@ self.__precacheManifest = [
     "url": "/soundydm2518/static/media/ionicons.aff28a20.svg"
   },
   {
-    "revision": "de1d242d8acb26ec43c0d071fe78e72d",
-    "url": "/soundydm2518/static/media/fa-solid-900.de1d242d.svg"
+    "revision": "83e6c29fb363b2f0ea6cc18fefff729c",
+    "url": "/soundydm2518/static/media/fa-brands-400.83e6c29f.svg"
   },
   {
     "revision": "56bfa2ce6554d060e3b2",
