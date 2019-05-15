@@ -40,34 +40,36 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
-        <Route path="/" exact component={Loading} />
-        <Route path="/login" exact 
-	        render ={(props) => <Login {...props}  
-        							createErrorMessage = {(message, type) => this.createErrorMessage(message, type)} 
-        							cancelErrorMessage = {() => this.cancelErrorMessage()}
-        						/>}
-        />
-				<Route path="/create" exact 
-	        render ={(props) => <CreateUser {...props}  
-        							createErrorMessage = {(message, type) => this.createErrorMessage(message, type)} 
-        							cancelErrorMessage = {() => this.cancelErrorMessage()}
-        						/>}
-        />
-        
-        <Route path="/TabContainer" 
-        	render ={ (props) => <TabContainer {...props}  
-        							createErrorMessage = {(message, type) => this.createErrorMessage(message, type)} 
-        							cancelErrorMessage = {() => this.cancelErrorMessage()}
-        							/>}
-        />
-	    <ErrorPopUp 
-	      type = {this.state.errorMessageType}
-	      isOpen = {this.state.errorOccured} 
-	      message = {this.state.errorMessage}
-	      onCancel = {() => this.cancelErrorMessage()}
-	    />
-      </Router>
+      <div>
+        <header className = "App-header">
+          <Route path="/" exact component={Loading} />
+          <Route path="/login" exact 
+  	        render ={(props) => <Login {...props}  
+          							createErrorMessage = {(message, type) => this.createErrorMessage(message, type)} 
+          							cancelErrorMessage = {() => this.cancelErrorMessage()}
+          						/>}
+          />
+  				<Route path="/create" exact 
+  	        render ={(props) => <CreateUser {...props}  
+          							createErrorMessage = {(message, type) => this.createErrorMessage(message, type)} 
+          							cancelErrorMessage = {() => this.cancelErrorMessage()}
+          						/>}
+          />
+          
+          <Route path="/TabContainer" 
+          	render ={ (props) => <TabContainer {...props}  
+          							createErrorMessage = {(message, type) => this.createErrorMessage(message, type)} 
+          							cancelErrorMessage = {() => this.cancelErrorMessage()}
+          							/>}
+          />
+    	    <ErrorPopUp 
+    	      type = {this.state.errorMessageType}
+    	      isOpen = {this.state.errorOccured} 
+    	      message = {this.state.errorMessage}
+    	      onCancel = {() => this.cancelErrorMessage()}
+    	    />
+        </header>
+      </div>
     );
   }
 }
