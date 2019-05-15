@@ -62,17 +62,19 @@ class TabContainer extends Component {
       status: "loading",
 
       // states for the audio recording
-      allSounds: []
+      allSounds: [],
+      lastKnownKey:"",
+      hasMore:true,
     };
   }
 
   // metod innehållandes kod vi kan använda när vi laddar in databasresultat?
   // returns the promise of a JSON object containing information about a picture
+  // 50 requests per hour
   async updateImagesFromUnsplash(keyWord) {
     if (!keyWord) {
       // default to something if no keywoard was supplied
-      let keyWord = "sea";
-      console.log("didnt detect keyWord");
+      return "https://i.imgur.com/dBmYY4M.png";
     }
 
     // Söker efter en bild matchande det sökord som ges
@@ -88,7 +90,7 @@ class TabContainer extends Component {
     } catch (error) {
       // Ifall vi får error ge nån default bild (t.ex. ifall vi uppnåt quota för unsplashAPI)
       console.log(error);
-      return "https://i.imgur.com/1S5dGBf.png";
+      return "https://i.imgur.com/dBmYY4M.png";
     }
   }
 
@@ -103,14 +105,16 @@ class TabContainer extends Component {
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
+  // Keeps track of the last item in the allSounds array by saving it to state
   fetchAllSounds = async () => {
     if(navigator.onLine){
       const usersFromDatabase = await this.fetchAllUsers()
       var allSounds = [];
       try{
-        this.db
+        await this.db
         .collection('all-sounds')
         .orderBy('time', 'desc')
+        .limit(10)
         .get()
         .then(querySnapshot => {
           querySnapshot.forEach(doc => {
@@ -119,12 +123,16 @@ class TabContainer extends Component {
             soundData.userName = correctUser ? correctUser.displayName : "-"
             soundData.photoURL = correctUser ? correctUser.photoURL : null
             allSounds.push(soundData);
-          });
+          })})
+        .then(() => 
           this.setState({ 
             allSounds: allSounds,
-            status:"loaded"
-          });
-        }).catch(error => {
+            status:"loaded",
+          }, () => this.setState({
+            lastKnownKey: this.state.allSounds[this.state.allSounds.length-1].time,            
+          }))
+        )
+        .catch(error => {
           this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
           console.log(error);
         });
@@ -136,6 +144,59 @@ class TabContainer extends Component {
       this.props.createErrorMessage("No internet connection! :(", "Toast");
     }
   };
+
+  // Slightly different version of the one above.
+  // Fetches new posts from the database, starting from the last time-ID currently loaded.
+  // Excludes the last one currently shown so as not to create duplicates
+  // Keeps track of the last item in the allSounds array by saving it to state
+  fetchAdditionalSounds = async () => {
+    if(navigator.onLine){
+        const usersFromDatabase = await this.fetchAllUsers()
+        var allSounds = this.state.allSounds;
+        try{
+          await this.db
+          .collection('all-sounds')
+          .orderBy('time', 'desc')
+          .startAt(this.state.lastKnownKey)
+          .limit(10)
+          .get()
+          .then(querySnapshot => {
+            if (querySnapshot.size === 1) {
+              // ifall vi bara får ett resultat innebär det att det inte finns mer att ladda
+              this.setState({
+                hasMore:false,
+              });
+              this.props.createErrorMessage("No more posts available.", "Toast");
+            }
+            querySnapshot.forEach(doc => {
+              let soundData = doc.data()
+              const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
+              soundData.userName = correctUser ? correctUser.displayName : "-"
+              soundData.photoURL = correctUser ? correctUser.photoURL : null
+            if (soundData.time !== this.state.lastKnownKey) {
+              allSounds.push(soundData);
+            }
+          })})
+        .then(() => 
+          this.setState({ 
+            allSounds: allSounds,
+            status:"loaded",
+          }, () => this.setState({
+            lastKnownKey: this.state.allSounds[this.state.allSounds.length-1].time,            
+          }))
+        )
+        .catch(error => {
+          this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
+          console.log(error);
+        });
+        } catch(err){
+          this.props.createErrorMessage(err, "Toast");
+          console.log(err);
+        }
+      } else {
+        this.props.createErrorMessage("No internet connection! :(", "Toast");
+      }
+    };    
 
   fetchAllUsers = () => {
     return this.getAllUsers().then(result => {
@@ -187,6 +248,8 @@ class TabContainer extends Component {
                       allSounds = {this.state.allSounds}
                       fetchAllSounds = {() => this.fetchAllSounds()}
                       createErrorMessage = {(msg, type) => this.props.createErrorMessage(msg, type)}
+                      fetchAdditionalSounds = {() => this.fetchAdditionalSounds()}
+                      hasMore = {this.state.hasMore}
                     />
 
         break;
@@ -213,6 +276,7 @@ class TabContainer extends Component {
                 <Ons.Page key="Upload">
                   <Upload 
                     createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                    updateImagesFromUnsplash = {(keyWord) => this.updateImagesFromUnsplash(keyWord)}
                   />
                 </Ons.Page>
               ),

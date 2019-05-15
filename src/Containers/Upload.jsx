@@ -84,27 +84,31 @@ class Upload extends Component {
     var timeStamp = +new Date();
     console.log(title);
     var soundRef = this.storageRef.child('sounds/' + timeStamp);
-
-    soundRef
-      .put(audioBlob)
-      .then(snapshot => {
-        //It is now uploaded to storage
-        soundRef.getDownloadURL().then(downloadURL => {
-          this.db.collection('all-sounds').add({
-            //Add to database
-            url: downloadURL,
-            user: uid,
-            time: timeStamp,
-            title: title,
-            keyword: keyword
-          }).then(this.setState({uploading: false}));
-        });
-      })
-      .catch(error => {
-        console.log('ERROR: ' + error.message);
-        this.props.createErrorMessage(error.message, "Toast");
+    
+    this.props.updateImagesFromUnsplash(keyword)
+    .then((imgUrl) => {
+      soundRef
+        .put(audioBlob)
+        .then(snapshot => {
+          //It is now uploaded to storage
+          soundRef.getDownloadURL().then(downloadURL => {
+            this.db.collection('all-sounds').add({
+              //Add to database
+              url: downloadURL,
+              user: uid,
+              time: timeStamp,
+              title: title,
+              keyword: keyword,
+              imgUrl:imgUrl,
+            }).then(this.setState({uploading: false}));
+          });
+        })
+        .catch(error => {
+          console.log('ERROR: ' + error.message);
+          this.props.createErrorMessage(error.message, "Toast");
       });
-  };
+    });
+  }
 
   render() {
     const { blobURL, audioURL, isRecording, isPaused, title, uploading } = this.state;
