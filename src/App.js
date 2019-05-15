@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import CreateLogin from "./CreateLogin";
+import Login from "./Login";
+import CreateUser from './CreateUser'
 import Loading from "./Loading";
 import TabContainer from "./Containers/TabContainer";
 import ErrorPopUp from "./Containers/ErrorPopUp";
@@ -42,7 +43,13 @@ class App extends Component {
       <Router>
         <Route path="/" exact component={Loading} />
         <Route path="/login" exact 
-	        render ={(props) => <CreateLogin {...props}  
+	        render ={(props) => <Login {...props}  
+        							createErrorMessage = {(message, type) => this.createErrorMessage(message, type)} 
+        							cancelErrorMessage = {() => this.cancelErrorMessage()}
+        						/>}
+        />
+				<Route path="/create" exact 
+	        render ={(props) => <CreateUser {...props}  
         							createErrorMessage = {(message, type) => this.createErrorMessage(message, type)} 
         							cancelErrorMessage = {() => this.cancelErrorMessage()}
         						/>}

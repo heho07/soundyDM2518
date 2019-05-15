@@ -31,19 +31,20 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-    // redirectWhenOAuthChanges(this.props.history);
 
-    firebase.auth().onAuthStateChanged(user => {
+    this.firebaseAuthListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({ currentUser: user });
-      } else {
-        this.setState({ currentUser: null });
       }
     });
 
     var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
     this.storageRef = storage.ref();
     this.db = firebase.firestore();
+  }
+
+  componentWillUnmount() {
+    this.firebaseAuthListener && this.firebaseAuthListener();
   }
 
   signOut = () => {

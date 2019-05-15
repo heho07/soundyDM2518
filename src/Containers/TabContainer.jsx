@@ -2,8 +2,9 @@ import React, { Component } from "react";
 
 import { redirectWhenOAuthChanges } from "../utils";
 
-import * as firebase from "firebase/app";
-import "firebase/auth";
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/functions';
 
 import Feed from "./Feed";
 import Profile from "./Profile";
@@ -37,6 +38,8 @@ class TabContainer extends Component {
       applicationId: config.unsplashApiKeys.access_key,
       secret: config.unsplashApiKeys.secret_key
     });
+
+    this.getAllUsers = firebase.functions().httpsCallable('getAllUsers');
 
     this.state = {
       currentUser: null,
@@ -90,15 +93,7 @@ class TabContainer extends Component {
   }
 
   async componentDidMount() {
-    // ifall man skulle bli utloggad (tror jag /H)
     redirectWhenOAuthChanges(this.props.history);
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.setState({ currentUser: user });
-      } else {
-        this.setState({ currentUser: null });
-      }
-    });
 
     // kopplar upp till databasen
     var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
@@ -108,36 +103,47 @@ class TabContainer extends Component {
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
-  fetchAllSounds = () => {
+  fetchAllSounds = async () => {
     if(navigator.onLine){
+      const usersFromDatabase = await this.fetchAllUsers()
       var allSounds = [];
       try{
-
         this.db
-          .collection('all-sounds')
-          .orderBy('time', 'desc')
-          .get().catch(err => console.log(err))
-          .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-              allSounds.push(doc.data());
-            });
-            this.setState({ 
-              allSounds: allSounds, 
-              status:"loaded"       // säger till komponenten att nu har allt laddats klart
-            });
-          }).catch(error => {
-            this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
-            console.log(error);
+        .collection('all-sounds')
+        .orderBy('time', 'desc')
+        .get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            let soundData = doc.data()
+            const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
+            soundData.userName = correctUser ? correctUser.displayName : "-"
+            soundData.photoURL = correctUser ? correctUser.photoURL : null
+            allSounds.push(soundData);
           });
-      }catch(err){
+          this.setState({ 
+            allSounds: allSounds,
+            status:"loaded"
+          });
+        }).catch(error => {
+          this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
+          console.log(error);
+        });
+      } catch(err){
         this.props.createErrorMessage(err, "Toast");
         console.log(err);
       }
-    }
-    else{
+    } else {
       this.props.createErrorMessage("No internet connection! :(", "Toast");
     }
   };
+
+  fetchAllUsers = () => {
+    return this.getAllUsers().then(result => {
+      return result.data.users
+    }).catch(err => {
+      return []
+    })
+  }
 
   // logga-ut knapp
   signOut = () => {
@@ -167,7 +173,13 @@ class TabContainer extends Component {
     let feedPage;
     switch (this.state.status) {
       case "loading":
-        feedPage = <h1>loading</h1>;
+        feedPage =
+        <div style={{'paddingTop':'50%'}}>
+          <Ons.Icon
+            spin
+            icon="sync-alt"
+          />
+        </div>;
         break;
       case "loaded":
         feedPage = <Feed 
