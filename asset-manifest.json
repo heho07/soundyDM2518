@@ -1,14 +1,16 @@
 {
-  "main.css": "/soundydm2518/static/css/main.b8aafa83.chunk.css",
-  "main.js": "/soundydm2518/static/js/main.0fa2057f.chunk.js",
-  "main.js.map": "/soundydm2518/static/js/main.0fa2057f.chunk.js.map",
+  "main.css": "/soundydm2518/static/css/main.98525fbe.chunk.css",
+  "main.js": "/soundydm2518/static/js/main.d1801fbd.chunk.js",
+  "main.js.map": "/soundydm2518/static/js/main.d1801fbd.chunk.js.map",
   "runtime~main.js": "/soundydm2518/static/js/runtime~main.687a7693.js",
   "runtime~main.js.map": "/soundydm2518/static/js/runtime~main.687a7693.js.map",
-  "static/js/2.6efc73d3.chunk.js": "/soundydm2518/static/js/2.6efc73d3.chunk.js",
-  "static/js/2.6efc73d3.chunk.js.map": "/soundydm2518/static/js/2.6efc73d3.chunk.js.map",
+  "static/css/2.e82113b4.chunk.css": "/soundydm2518/static/css/2.e82113b4.chunk.css",
+  "static/js/2.dc260f68.chunk.js": "/soundydm2518/static/js/2.dc260f68.chunk.js",
+  "static/js/2.dc260f68.chunk.js.map": "/soundydm2518/static/js/2.dc260f68.chunk.js.map",
   "index.html": "/soundydm2518/index.html",
-  "precache-manifest.5916689d57060c340ec758e1d3d0d596.js": "/soundydm2518/precache-manifest.5916689d57060c340ec758e1d3d0d596.js",
+  "precache-manifest.dc8a53e18362b1b0f9179f237fa3e91f.js": "/soundydm2518/precache-manifest.dc8a53e18362b1b0f9179f237fa3e91f.js",
   "service-worker.js": "/soundydm2518/service-worker.js",
-  "static/css/main.b8aafa83.chunk.css.map": "/soundydm2518/static/css/main.b8aafa83.chunk.css.map",
-  "static/media/logo.svg": "/soundydm2518/static/media/logo.5d5d9eef.svg"
+  "static/css/2.e82113b4.chunk.css.map": "/soundydm2518/static/css/2.e82113b4.chunk.css.map",
+  "static/css/main.98525fbe.chunk.css.map": "/soundydm2518/static/css/main.98525fbe.chunk.css.map",
+  "static/media/onsenui.css": "/soundydm2518/static/media/ionicons.dd4781d1.ttf"
 }
