@@ -133,6 +133,7 @@ class CreateUser extends Component {
                     this.setState({ email: event.target.value });
                   }}
                   modifier="underbar"
+                  type="email"
                   float
                   placeholder="Email"
                   style={{ width: "80vw" }}
