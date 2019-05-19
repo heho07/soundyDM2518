@@ -3,6 +3,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 const db = admin.firestore();
+const storageBucket = admin.storage().bucket()
 
 exports.getAllUsers = functions.https.onCall((data, context) => {
     return admin.auth().listUsers().then(userRecords => {
@@ -19,15 +20,15 @@ exports.removeUser = functions.https.onCall((data, context) => {
         let postsFromUser = db.collection("all-sounds").where("user", "==", uid)
         return postsFromUser.get()
         .then(querySnapshot => {
-            var listOfSounds = []
+            var listOfSoundsUris = []
             querySnapshot.forEach(doc => {
-                listOfSounds.push(doc.data().url)
+                listOfSoundsUris.push(doc.data().storageUri)
                 doc.ref.delete()
             })
-            listOfSounds.forEach(url => {
-                //TODO: Delete actual sound from storage
+            listOfSoundsUris.forEach(uri => {
+                storageBucket.file(uri).delete()
             })
-            return {completed: true, sounds: listOfSounds}
+            return {completed: true}
         })
     })
     .catch(() => ({completed: false}))
