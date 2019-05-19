@@ -8,7 +8,7 @@ import "firebase/firestore";
 import 'firebase/functions';
 
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
-//import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
+import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
 
 // Webpack CSS import
 import "onsenui/css/onsenui.css";
@@ -63,6 +63,16 @@ class Profile extends Component {
         this.props.createErrorMessage("Error when signing out. See log for more details", "AlertDialog");
       });
   };
+
+  showRemoveAccountConfirmation = () => {
+    ons.notification.confirm('Are you sure you want to delete your account?')
+    .then(selected => {
+      //Selected is 1 for OK and 0 for Cancel
+      if(selected){
+        this.removeAccount()
+      }
+    })
+  }
 
   removeAccount = () => {
     const {uid} = this.state.currentUser;
@@ -170,7 +180,7 @@ class Profile extends Component {
               <Ons.Button modifier="material" onClick={this.signOut}>
                 Sign out <Ons.Icon icon="sign-out-alt" />
               </Ons.Button>
-              <Ons.Button modifier="material" onClick={this.removeAccount} style={{backgroundColor: 'red'}}>
+              <Ons.Button modifier="material" onClick={this.showRemoveAccountConfirmation} style={{backgroundColor: 'red'}}>
                 Remove account <Ons.Icon icon="trash" />
               </Ons.Button>
             </div>
