@@ -27,7 +27,8 @@ class Profile extends Component {
       checkmark: "none",
       spinner: "none",
       selectText: "inherent",
-      uploadText: "inherent"
+      uploadText: "inherent",
+      deletingUser: false,
     };
 
     this.removeUser = firebase.functions().httpsCallable('removeUser');
@@ -75,6 +76,7 @@ class Profile extends Component {
   }
 
   removeAccount = () => {
+    this.setState({deletingUser: true})
     const {uid} = this.state.currentUser;
     console.log(uid)
     this.removeUser({uid}).then(result => {
@@ -170,6 +172,12 @@ class Profile extends Component {
 
   render() {
     const currentUser = this.state.currentUser;
+    if(this.state.deletingUser){
+      return (
+      <div style={{'paddingTop':'50%', 'fontSize':'2rem'}}>
+        Deleting...
+      </div>);
+    }
     return (
       <Ons.Page className="page">
         <div className="profilDetails">
