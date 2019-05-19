@@ -31,8 +31,7 @@ class Upload extends Component {
   }
 
   componentDidMount = () => {
-    var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
-    this.storageRef = storage.ref();
+    this.storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
     this.db = firebase.firestore();
   };
 
@@ -67,27 +66,27 @@ class Upload extends Component {
     console.log(uid);
     var timeStamp = +new Date();
     console.log(title);
-    var soundRef = this.storageRef.child('sounds/' + timeStamp);
-
-    soundRef
-      .put(audioBlob)
-      .then(snapshot => {
-        //It is now uploaded to storage
-        soundRef.getDownloadURL().then(downloadURL => {
-          this.db.collection('all-sounds').add({
-            //Add to database
-            url: downloadURL,
-            user: uid,
-            time: timeStamp,
-            title: title,
-            keyword: keyword
-          }).then(this.setState({uploading: false}));
-        });
+    this.db.collection('all-sounds').add({
+      //Add to database
+      user: uid,
+      time: timeStamp,
+      title: title,
+      keyword: keyword
+    }).then(soundDocumentRef => {
+      var filePath = 'sounds/' + firebase.auth().currentUser.uid + '/' + soundDocumentRef.id;
+      this.storage.ref(filePath).put(audioBlob).then(fileSnapshot => {
+        fileSnapshot.ref.getDownloadURL().then(url => {
+          soundDocumentRef.update({
+            url: url,
+            storageUri: fileSnapshot.metadata.fullPath
+          }).then(this.setState({uploading: false}))
+        })
       })
-      .catch(error => {
-        console.log('ERROR: ' + error.message);
-        this.props.createErrorMessage(error.message, "Toast");
-      });
+    })
+    .catch(error => {
+      console.log('ERROR: ' + error.message);
+      this.props.createErrorMessage(error.message, "Toast");
+    });
   };
 
   render() {
