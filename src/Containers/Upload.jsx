@@ -123,7 +123,12 @@ class Upload extends Component {
             title: title,
             keyword: keyword,
             imgUrl:imgUrl,
-          }).then(this.setState({uploading: false}));
+          }).then(this.setState({
+                audioBlob: null,
+                blobURL: "",
+                keyword:"",
+                title: "",
+                uploading: false}));
         });
       })
        // For some reason, the catch block below isn't reached when an error occures.
