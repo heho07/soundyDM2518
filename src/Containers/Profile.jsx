@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import InfiniteScroll from "react-infinite-scroller";
 //import { redirectWhenOAuthChanges } from "../utils";
 
 import * as firebase from "firebase/app";
@@ -149,65 +148,6 @@ class Profile extends Component {
     });
   };
 
-  // Each element to be shown in the feed
-  fetchUsersSounds = async () => {
-    var citiesRef = this.db.collection("all-sounds");
-    var allCities = citiesRef
-      .get()
-      .then(snapshot => {
-        snapshot.forEach(doc => {
-          console.log(doc.id, "=>", doc.data());
-        });
-      })
-      .catch(err => {
-        console.log("Error getting documents", err);
-      });
-  };
-
-  renderList = () => {
-    return (
-      <Ons.List>
-        <Ons.ListHeader>Your Sounds</Ons.ListHeader>
-        <Ons.ListItem key={1}>
-          <div className="left">
-            <img
-              src={`https://cdn.pixabay.com/photo/2017/01/09/20/11/music-1967480_960_720.png`}
-              className="list-item__thumbnail"
-            />
-          </div>
-          <div className="center">Title</div>
-          <div className="right">
-            <Ons.Icon icon="trash-alt" />
-          </div>
-        </Ons.ListItem>
-        <Ons.ListItem key={2}>
-          <div className="left">
-            <img
-              src={`https://cdn.pixabay.com/photo/2017/01/09/20/11/music-1967480_960_720.png`}
-              className="list-item__thumbnail"
-            />
-          </div>
-          <div className="center">Title</div>
-          <div className="right">
-            <Ons.Icon icon="trash-alt" />
-          </div>
-        </Ons.ListItem>
-        <Ons.ListItem key={3}>
-          <div className="left">
-            <img
-              src={`https://cdn.pixabay.com/photo/2017/01/09/20/11/music-1967480_960_720.png`}
-              className="list-item__thumbnail"
-            />
-          </div>
-          <div className="center">Title</div>
-          <div className="right">
-            <Ons.Icon icon="trash-alt" />
-          </div>
-        </Ons.ListItem>
-      </Ons.List>
-    );
-  };
-
   render() {
     const currentUser = this.state.currentUser;
     return (
@@ -275,7 +215,7 @@ class Profile extends Component {
             </Ons.Button>
           </form>
         </div>
-        {this.renderList()}
+        <p> {this.props.renderUsersPost()} </p>
       </Ons.Page>
     );
   }

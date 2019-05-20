@@ -91,6 +91,10 @@ p {
   background-color: #fff !important;
 }
 
+.list {
+  overflow: scroll !important;
+}
+
 [type="file"] {
   height: 0;
   overflow: hidden;
