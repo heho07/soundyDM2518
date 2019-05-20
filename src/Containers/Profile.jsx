@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import InfiniteScroll from "react-infinite-scroller";
 //import { redirectWhenOAuthChanges } from "../utils";
 
 import * as firebase from "firebase/app";
@@ -148,6 +149,65 @@ class Profile extends Component {
     });
   };
 
+  // Each element to be shown in the feed
+  fetchUsersSounds = async () => {
+    var citiesRef = this.db.collection("all-sounds");
+    var allCities = citiesRef
+      .get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          console.log(doc.id, "=>", doc.data());
+        });
+      })
+      .catch(err => {
+        console.log("Error getting documents", err);
+      });
+  };
+
+  renderList = () => {
+    return (
+      <Ons.List>
+        <Ons.ListHeader>Your Sounds</Ons.ListHeader>
+        <Ons.ListItem key={1}>
+          <div className="left">
+            <img
+              src={`https://cdn.pixabay.com/photo/2017/01/09/20/11/music-1967480_960_720.png`}
+              className="list-item__thumbnail"
+            />
+          </div>
+          <div className="center">Title</div>
+          <div className="right">
+            <Ons.Icon icon="trash-alt" />
+          </div>
+        </Ons.ListItem>
+        <Ons.ListItem key={2}>
+          <div className="left">
+            <img
+              src={`https://cdn.pixabay.com/photo/2017/01/09/20/11/music-1967480_960_720.png`}
+              className="list-item__thumbnail"
+            />
+          </div>
+          <div className="center">Title</div>
+          <div className="right">
+            <Ons.Icon icon="trash-alt" />
+          </div>
+        </Ons.ListItem>
+        <Ons.ListItem key={3}>
+          <div className="left">
+            <img
+              src={`https://cdn.pixabay.com/photo/2017/01/09/20/11/music-1967480_960_720.png`}
+              className="list-item__thumbnail"
+            />
+          </div>
+          <div className="center">Title</div>
+          <div className="right">
+            <Ons.Icon icon="trash-alt" />
+          </div>
+        </Ons.ListItem>
+      </Ons.List>
+    );
+  };
+
   render() {
     const currentUser = this.state.currentUser;
     return (
@@ -163,54 +223,59 @@ class Profile extends Component {
             </div>
           </div>
         </div>
-        <div className="editName">
-          <Ons.Input
-            value={this.state.name}
-            onChange={event => {
-              this.setState({ name: event.target.value });
-            }}
-            modifier="underbar"
-            float
-            placeholder="Update Name"
-            className="updateName"
-            requried
-          />
-          <Ons.Fab
-            className="saveButton"
-            onClick={this.editProfileName.bind(this)}
-          >
-            <Ons.Icon icon="save" />
-          </Ons.Fab>
-        </div>
-        <form>
-          <input
-            className="uploadImage"
-            type="file"
-            name="photo"
-            accept="image/*"
-            id="photo"
-            onChange={this.selectButtonContent}
-          />
-          <label htmlFor="photo" className="uploadImage">
-            <span style={{ display: this.state.selectText }}>Select Image</span>
-            <Ons.Icon icon="check" style={{ display: this.state.checkmark }} />
-          </label>
-          <Ons.Button
-            modifier="material"
-            onClick={this.upload}
-            className="uploadImage"
-          >
-            <span style={{ display: this.state.uploadText }}>Upload</span>
-            <Ons.Icon
-              spin
-              icon="sync-alt"
-              style={{ display: this.state.spinner }}
+        <div className="edit">
+          <div className="editName">
+            <Ons.Input
+              value={this.state.name}
+              onChange={event => {
+                this.setState({ name: event.target.value });
+              }}
+              modifier="underbar"
+              float
+              placeholder="Update Name"
+              className="updateName"
+              requried
             />
-          </Ons.Button>
-        </form>
-        <div className="your_posts">
-          <p>Här kommer användarens posts</p>
+            <Ons.Fab
+              className="saveButton"
+              onClick={this.editProfileName.bind(this)}
+            >
+              <Ons.Icon icon="save" />
+            </Ons.Fab>
+          </div>
+          <form>
+            <input
+              className="uploadImage"
+              type="file"
+              name="photo"
+              accept="image/*"
+              id="photo"
+              onChange={this.selectButtonContent}
+            />
+            <label htmlFor="photo" className="uploadImage">
+              <span style={{ display: this.state.selectText }}>
+                Select Image
+              </span>
+              <Ons.Icon
+                icon="check"
+                style={{ display: this.state.checkmark }}
+              />
+            </label>
+            <Ons.Button
+              modifier="material"
+              onClick={this.upload}
+              className="uploadImage"
+            >
+              <span style={{ display: this.state.uploadText }}>Upload</span>
+              <Ons.Icon
+                spin
+                icon="sync-alt"
+                style={{ display: this.state.spinner }}
+              />
+            </Ons.Button>
+          </form>
         </div>
+        {this.renderList()}
       </Ons.Page>
     );
   }
