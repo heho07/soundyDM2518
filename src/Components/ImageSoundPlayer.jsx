@@ -7,6 +7,10 @@ import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Pa
 import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
+import TimeAgo from 'react-timeago'
+import frenchStrings from 'react-timeago/lib/language-strings/fr'
+import buildFormatter from 'react-timeago/lib/formatters/buildFormatter'
+
 class ImageSoundPlayer extends Component {
   // inherits the posts to show from the TabContainer.jsx
   constructor(props) {
@@ -47,8 +51,7 @@ class ImageSoundPlayer extends Component {
     return (
       <Ons.Card
         key={item.time}>
-        <p>{item.title}</p>
-        <p>Posted by: {item.userName}</p>
+        <h5>{item.userName}</h5>
           <div className="imageButtonContainer">
             <img src = {img} style={{width: "100%"}} alt = "placeholderText"/>
             <button
@@ -66,9 +69,8 @@ class ImageSoundPlayer extends Component {
             <source src = {item.url}/>
             <p>Your browser does not support audio. The file can be found at <a href = {item.url}>this link</a></p>  
           </audio>     
-        <p>             
-          {new Date(item.time).toDateString()}{' '}
-          {new Date(item.time).toLocaleTimeString()}
+        <p>
+          Posted <TimeAgo date={new Date(item.time)}/>
         </p>
       </Ons.Card>
     );
