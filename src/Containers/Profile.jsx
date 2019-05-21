@@ -149,29 +149,31 @@ class Profile extends Component {
     });
   };
 
-  renderUsersPost = () => {
-    console.log("hej");
+  getUsersPost = () => {
     if (this.state.currentUser) {
       const { uid } = this.state.currentUser;
       let postsFromUser = this.db
         .collection("all-sounds")
         .where("user", "==", uid);
-      postsFromUser.get().then(querySnapshot => {
+      return postsFromUser.get().then(querySnapshot => {
+        let posts = [];
         querySnapshot.forEach(doc => {
           let documentData = doc.data();
           console.log(documentData);
-          this.state.listOfPosts.push(documentData);
-          console.log(this.state.listOfPosts);
+          posts.push(documentData);
+
           //Lägg till de promise man får i en lista
-          this.renderListItems();
         });
+        console.log();
+        return posts;
       });
     }
   };
 
-  renderListItems() {
+  renderListItems(list) {
     console.log("renderListItems");
-    return this.state.listOfPosts.map(post => (
+    console.log(list);
+    return list.map(post => (
       <Ons.ListItem key={post.time}>
         <div className="left">
           <img src={post.imgURL} className="list-item__thumbnail" />
@@ -183,6 +185,16 @@ class Profile extends Component {
 
   render() {
     const currentUser = this.state.currentUser;
+    let listOfPosts = [];
+    if (currentUser) {
+      console.log("test");
+      this.getUsersPost().then(list => {
+        console.log("listan", list);
+        listOfPosts = list;
+        console.log("listan", listOfPosts);
+      });
+    }
+
     return (
       <Ons.Page className="page">
         <div className="profilDetails">
@@ -247,7 +259,7 @@ class Profile extends Component {
               />
             </Ons.Button>
           </form>
-          {this.renderUsersPost()}
+          {this.renderListItems(listOfPosts)}
         </div>
       </Ons.Page>
     );
