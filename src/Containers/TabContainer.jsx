@@ -113,43 +113,32 @@ class TabContainer extends Component {
       var allSounds = [];
       try {
         await this.db
-          .collection("all-sounds")
-          .orderBy("time", "desc")
-          .limit(10)
-          .get()
-          .then(querySnapshot => {
-            querySnapshot.forEach(doc => {
-              let soundData = doc.data();
-              const correctUser = usersFromDatabase.find(
-                user => user.uid === soundData.user
-              );
-              soundData.userName = correctUser ? correctUser.displayName : "-";
-              soundData.photoURL = correctUser ? correctUser.photoURL : null;
-              allSounds.push(soundData);
-            });
-          })
-          .then(() =>
-            this.setState(
-              {
-                allSounds: allSounds,
-                status: "loaded"
-              },
-              () =>
-                this.setState({
-                  lastKnownKey: this.state.allSounds[
-                    this.state.allSounds.length - 1
-                  ].time
-                })
-            )
-          )
-          .catch(error => {
-            this.props.createErrorMessage(
-              "Error when fetching new sounds. See the log for more details",
-              "Toast"
-            );
-            console.log(error);
-          });
-      } catch (err) {
+        .collection('all-sounds')
+        .orderBy('time', 'desc')
+        .limit(10)
+        .get()
+        .then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+            let soundData = doc.data()
+            const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
+            soundData.userName = correctUser ? correctUser.displayName : "-"
+            soundData.photoURL = correctUser ? correctUser.photoURL : null
+            soundData.id = doc.id
+            allSounds.push(soundData);
+          })})
+        .then(() => 
+          this.setState({ 
+            allSounds: allSounds,
+            status:"loaded",
+          }, () => this.setState({
+            lastKnownKey: this.state.allSounds[this.state.allSounds.length-1].time,            
+          }))
+        )
+        .catch(error => {
+          this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
+          console.log(error);
+        });
+      } catch(err){
         this.props.createErrorMessage(err, "Toast");
         console.log(err);
       }
