@@ -7,6 +7,8 @@ import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Pa
 import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
+import ShowUsersPosts from "./ShowUsersPosts";
+
 class Feed extends Component {
   // inherits the posts to show from the TabContainer.jsx
   constructor(props) {
@@ -91,7 +93,7 @@ class Feed extends Component {
     return (
       <Ons.Card key={item.time}>
         <p>{item.title}</p>
-        <button onClick = {() => this.props.pushPage(item.userName)}>Posted by: {item.userName}</button>
+        <button onClick = {() => this.props.pushPage(item.user)}>Posted by: {item.userName}</button>
         <center>
           <img src = {img} alt = "placeholderText"/>
           <audio controls onWaiting = {() => this.handleAudioWaiting()}>
@@ -125,32 +127,34 @@ class Feed extends Component {
 }
               
 
+//  en klass som antingen visar Feed eller ShowUsersPost
 class Navigator extends Component{
   constructor(props){
     super(props);
   }
 
   renderPage(route, navigator){
-    let foo = <div>hej</div>;
-    // console.log(this)
     switch(route.component){
       case 'Feed':
+        // skickar med alla props till Feed samt även hur den kan nå ShowUsersPosts
         return <Feed key = {route.component} {...this.props} pushPage = {(userID) => this.pushPage(navigator, userID)}/>
       
       default:
+        // om route inte är Feed så antas det att det är ett user ID och försöker visa detta.
         return (
         <Ons.Page key = {route.component}>
-          <div>
-            {route.component}
-          </div>
-          <button onClick = {() => this.pushPage(navigator, foo)}>push div</button>
+          {route.hasBackButton ? <button onClick = {() => navigator.popPage()}>go back</button> : <span/>} 
+          <ShowUsersPosts 
+            user = {{uid:route.component}}
+            shouldShowDeleteButton={false}
+            />
         </Ons.Page>);
         
     }
   }
 
+  // lägger till en route i navigatorns stack
   pushPage(navigator, route){
-    console.log("doing pushpaage")
     navigator.pushPage({component:route, hasBackButton: true});
   }
 
@@ -162,7 +166,6 @@ class Navigator extends Component{
         renderPage={this.renderPage.bind(this)}
         initialRoute={{
           component:"Feed",
-          // title: 'Feed page',
           hasBackButton: false
         }}
       />
