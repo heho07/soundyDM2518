@@ -24,6 +24,27 @@ class Feed extends Component {
     done();
   }
 
+  renderProfileImage(user) {
+    const currentUser = this.state.currentUser;
+    if (currentUser && currentUser.photoURL === null) {
+      return (
+        <img
+          src="https://t4.ftcdn.net/jpg/02/15/84/43/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
+          alt="No Display Name"
+          className="userPhoto"
+        />
+      );
+    } else {
+      return (
+        <img
+          src={currentUser && currentUser.photoURL}
+          alt={currentUser && currentUser.displayName}
+          className="userPhoto"
+        />
+      );
+    }
+  }
+
   // Used to request a new database query
   renderPullHook() {
     return (
@@ -88,18 +109,14 @@ class Feed extends Component {
     let img = item.imgUrl ? item.imgUrl : "https://i.imgur.com/dBmYY4M.png";    // old placeholder image "https://i.imgur.com/hgyXyww.png" 
     return (
       <Ons.Card key={item.time}>
-        <p>{item.title}</p>
-        <p>Posted by: {item.userName}</p>
-        <center>
-          <img src = {img} alt = "placeholderText"/>
+          <img src = {img} style={{width: "100%"}} alt = "placeholderText"/>
+          <p><b>{item.userName} </b>{item.title} <i>#{item.keyword}</i></p>
           <audio controls onWaiting = {() => this.handleAudioWaiting()}>
             <source src = {item.url}/>
-            <p>Your browser does not support audio. The file can be found at <a href = {item.url}>this link</a></p>  
+            <p>Your browser does not support audio. The file can be found at <a href = {  item.url}>this link</a></p>  
           </audio>     
-        </center>
         <p>             
-          {new Date(item.time).toDateString()}{' '}
-          {new Date(item.time).toLocaleTimeString()}
+          {}
         </p>
       </Ons.Card>
     );
