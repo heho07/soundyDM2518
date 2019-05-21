@@ -9,6 +9,7 @@ import "firebase/functions";
 import Feed from "./Feed";
 import Profile from "./Profile";
 import Upload from "./Upload";
+import UsersPosts from "./ShowUsersPosts";
 //import AudioTest from '../AudioRecorder/AudioTest';
 
 // imports for OnsenUI

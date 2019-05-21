@@ -25,7 +25,8 @@ class Profile extends Component {
       checkmark: "none",
       spinner: "none",
       selectText: "inherent",
-      uploadText: "inherent"
+      uploadText: "inherent",
+      listOfPosts: []
     };
   }
 
@@ -148,6 +149,38 @@ class Profile extends Component {
     });
   };
 
+  renderUsersPost = () => {
+    console.log("hej");
+    if (this.state.currentUser) {
+      const { uid } = this.state.currentUser;
+      let postsFromUser = this.db
+        .collection("all-sounds")
+        .where("user", "==", uid);
+      postsFromUser.get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          let documentData = doc.data();
+          console.log(documentData);
+          this.state.listOfPosts.push(documentData);
+          console.log(this.state.listOfPosts);
+          //Lägg till de promise man får i en lista
+          this.renderListItems();
+        });
+      });
+    }
+  };
+
+  renderListItems() {
+    console.log("renderListItems");
+    return this.state.listOfPosts.map(post => (
+      <Ons.ListItem key={post.time}>
+        <div className="left">
+          <img src={post.imgURL} className="list-item__thumbnail" />
+        </div>
+        <div className="center">{post.title}</div>
+      </Ons.ListItem>
+    ));
+  }
+
   render() {
     const currentUser = this.state.currentUser;
     return (
@@ -214,8 +247,8 @@ class Profile extends Component {
               />
             </Ons.Button>
           </form>
+          {this.renderUsersPost()}
         </div>
-        <p> {this.props.renderUsersPost()} </p>
       </Ons.Page>
     );
   }
