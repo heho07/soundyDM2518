@@ -51,7 +51,10 @@ class ImageSoundPlayer extends Component {
     return (
       <Ons.Card
         key={item.time}>
-        <h5>{item.userName}</h5>
+        <div>
+          <img src={item.photoURL} className="profile-image-feed img-circle"/>
+          <b>{item.userName}</b>
+        </div>
           <div className="imageButtonContainer">
             <img src = {img} style={{width: "100%"}} alt = "placeholderText"/>
             <button
@@ -69,6 +72,9 @@ class ImageSoundPlayer extends Component {
             <source src = {item.url}/>
             <p>Your browser does not support audio. The file can be found at <a href = {item.url}>this link</a></p>  
           </audio>     
+        <center>
+          <h4>{item.title} <i>#{item.keyword}</i></h4>
+        </center>
         <p>
           Posted <TimeAgo date={new Date(item.time)}/>
         </p>
