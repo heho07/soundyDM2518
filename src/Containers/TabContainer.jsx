@@ -122,6 +122,7 @@ class TabContainer extends Component {
             const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
             soundData.userName = correctUser ? correctUser.displayName : "-"
             soundData.photoURL = correctUser ? correctUser.photoURL : null
+            soundData.id = doc.id
             allSounds.push(soundData);
           })})
         .then(() => 

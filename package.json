@@ -5,6 +5,7 @@
   "homepage": "https://heho07.github.io/soundydm2518",
   "dependencies": {
     "firebase": "^5.10.0",
+    "moment": "^2.24.0",
     "onsenui": "^2.10.8",
     "rc-if-else": "^1.1.0",
     "rc-progress": "^2.3.0",
@@ -17,6 +18,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
     "react-tap-event-plugin": "^3.0.3",
+    "react-timeago": "^4.4.0",
     "typescript": "^3.4.5",
     "unsplash-js": "^5.0.0"
   },
