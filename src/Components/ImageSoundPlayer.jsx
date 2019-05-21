@@ -49,11 +49,11 @@ class ImageSoundPlayer extends Component {
         key={item.time}>
         <p>{item.title}</p>
         <p>Posted by: {item.userName}</p>
-        <center>
           <div className="imageButtonContainer">
-            <img src = {img} alt = "placeholderText"/>
+            <img src = {img} style={{width: "100%"}} alt = "placeholderText"/>
             <button
               className="btn"
+              style={{opacity: "0.8"}}
               onClick={() => this.soundClick()}>
               <ons-icon
                 icon = {playing ? "pause" : "play"}>
@@ -66,7 +66,6 @@ class ImageSoundPlayer extends Component {
             <source src = {item.url}/>
             <p>Your browser does not support audio. The file can be found at <a href = {item.url}>this link</a></p>  
           </audio>     
-        </center>
         <p>             
           {new Date(item.time).toDateString()}{' '}
           {new Date(item.time).toLocaleTimeString()}

@@ -122,7 +122,7 @@ p {
 /* Container needed to position the button. Adjust the width as needed */
 .imageButtonContainer {
   position: relative;
-  width: 50%;
+  width: 100%;
 }
 
 /* Make the image responsive */
