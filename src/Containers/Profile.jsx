@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ShowUsersPosts from "./ShowUsersPosts";
 //import { redirectWhenOAuthChanges } from "../utils";
 
 import * as firebase from "firebase/app";
@@ -25,7 +26,8 @@ class Profile extends Component {
       checkmark: "none",
       spinner: "none",
       selectText: "inherent",
-      uploadText: "inherent"
+      uploadText: "inherent",
+      listOfPosts: []
     };
   }
 
@@ -151,6 +153,7 @@ class Profile extends Component {
 
   render() {
     const currentUser = this.state.currentUser;
+
     return (
       <Ons.Page className="page">
         <div className="profilDetails">
@@ -164,54 +167,63 @@ class Profile extends Component {
             </div>
           </div>
         </div>
-        <div className="editName">
-          <Ons.Input
-            value={this.state.name}
-            onChange={event => {
-              this.setState({ name: event.target.value });
-            }}
-            modifier="underbar"
-            float
-            placeholder="Update Name"
-            className="updateName"
-            requried
-          />
-          <Ons.Fab
-            className="saveButton"
-            onClick={this.editProfileName.bind(this)}
-          >
-            <Ons.Icon icon="save" />
-          </Ons.Fab>
-        </div>
-        <form>
-          <input
-            className="uploadImage"
-            type="file"
-            name="photo"
-            accept="image/*"
-            id="photo"
-            onChange={this.selectButtonContent}
-          />
-          <label htmlFor="photo" className="uploadImage">
-            <span style={{ display: this.state.selectText }}>Select Image</span>
-            <Ons.Icon icon="check" style={{ display: this.state.checkmark }} />
-          </label>
-          <Ons.Button
-            modifier="material"
-            onClick={this.upload}
-            className="uploadImage"
-          >
-            <span style={{ display: this.state.uploadText }}>Upload</span>
-            <Ons.Icon
-              spin
-              icon="sync-alt"
-              style={{ display: this.state.spinner }}
+        <div className="edit">
+          <div className="editName">
+            <Ons.Input
+              value={this.state.name}
+              onChange={event => {
+                this.setState({ name: event.target.value });
+              }}
+              modifier="underbar"
+              float
+              placeholder="Update Name"
+              className="updateName"
+              requried
             />
-          </Ons.Button>
-        </form>
-        <div className="your_posts">
-          <p>Här kommer användarens posts</p>
+            <Ons.Fab
+              className="saveButton"
+              onClick={this.editProfileName.bind(this)}
+            >
+              <Ons.Icon icon="save" />
+            </Ons.Fab>
+          </div>
+          <form>
+            <input
+              className="uploadImage"
+              type="file"
+              name="photo"
+              accept="image/*"
+              id="photo"
+              onChange={this.selectButtonContent}
+            />
+            <label htmlFor="photo" className="uploadImage">
+              <span style={{ display: this.state.selectText }}>
+                Select Image
+              </span>
+              <Ons.Icon
+                icon="check"
+                style={{ display: this.state.checkmark }}
+              />
+            </label>
+            <Ons.Button
+              modifier="material"
+              onClick={this.upload}
+              className="uploadImage"
+            >
+              <span style={{ display: this.state.uploadText }}>Upload</span>
+              <Ons.Icon
+                spin
+                icon="sync-alt"
+                style={{ display: this.state.spinner }}
+              />
+            </Ons.Button>
+          </form>
         </div>
+
+        <ShowUsersPosts
+          user={this.state.currentUser}
+          shouldShowDeleteButton={true}
+        />
       </Ons.Page>
     );
   }
