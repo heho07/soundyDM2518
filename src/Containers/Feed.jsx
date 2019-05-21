@@ -6,6 +6,7 @@ import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Pa
 // Webpack CSS import
 import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
+import ImageSoundPlayer from "../Components/ImageSoundPlayer";
 
 class Feed extends Component {
   // inherits the posts to show from the TabContainer.jsx
@@ -79,7 +80,7 @@ class Feed extends Component {
   renderInfiniteScroller(){
     let items = [];
     this.props.allSounds.map((element, i) => {
-      items.push(this.renderItem(element));
+      items.push(<ImageSoundPlayer item={element} key={element.id} createErrorMessage={this.props.createErrorMessage}/>);
     })
     return (
       <InfiniteScroll
@@ -103,30 +104,6 @@ class Feed extends Component {
     console.log("Loading more items from the database");
     this.props.fetchAdditionalSounds();
   }
-
-  // Each element to be shown in the feed
-  renderItem(item) {
-    let img = item.imgUrl ? item.imgUrl : "https://i.imgur.com/dBmYY4M.png";    // old placeholder image "https://i.imgur.com/hgyXyww.png" 
-    return (
-      <Ons.Card key={item.time}>
-          <img src = {img} style={{width: "100%"}} alt = "placeholderText"/>
-          <p><b>{item.userName} </b>{item.title} <i>#{item.keyword}</i></p>
-          <audio controls onWaiting = {() => this.handleAudioWaiting()}>
-            <source src = {item.url}/>
-            <p>Your browser does not support audio. The file can be found at <a href = {  item.url}>this link</a></p>  
-          </audio>     
-        <p>             
-          {}
-        </p>
-      </Ons.Card>
-    );
-  }
-
-  // Called if the audio player has to wait due to slow internet connection
-  handleAudioWaiting(){
-    this.props.createErrorMessage("Slow internet connection detected.", "Toast");
-  }
-  
 
   render() {
     return (
