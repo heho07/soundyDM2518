@@ -25,27 +25,6 @@ class Feed extends Component {
     done();
   }
 
-  renderProfileImage(user) {
-    const currentUser = this.state.currentUser;
-    if (currentUser && currentUser.photoURL === null) {
-      return (
-        <img
-          src="https://t4.ftcdn.net/jpg/02/15/84/43/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
-          alt="No Display Name"
-          className="userPhoto"
-        />
-      );
-    } else {
-      return (
-        <img
-          src={currentUser && currentUser.photoURL}
-          alt={currentUser && currentUser.displayName}
-          className="userPhoto"
-        />
-      );
-    }
-  }
-
   // Used to request a new database query
   renderPullHook() {
     return (
