@@ -30,6 +30,7 @@ class ShowUsersPosts extends Component {
     } else {
       if (nextProps.user) {
         this.getUsersPost(nextProps.user);
+        return false;
       }
     }
   }
@@ -48,7 +49,9 @@ class ShowUsersPosts extends Component {
 
         //Lägg till de promise man får i en lista
       });
-      console.log();
+      posts.sort((a, b) => {
+        return b.time - a.time;
+      });
       this.setState({ listOfPosts: posts, hasFetched: true });
     });
   };
@@ -61,7 +64,12 @@ class ShowUsersPosts extends Component {
         <div className="left">
           <img src={post.imgUrl} className="list-item__thumbnail" />
         </div>
-        <div className="center">{post.title}</div>
+        <div className="center">
+          <strong>
+            {post.title}
+            <i> #{post.keyword}</i>
+          </strong>
+        </div>
 
         {this.props.shouldShowDeleteButton && (
           <div className="right">

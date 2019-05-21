@@ -217,11 +217,12 @@ class Profile extends Component {
               />
             </Ons.Button>
           </form>
-          <ShowUsersPosts
-            user={this.state.currentUser}
-            shouldShowDeleteButton={true}
-          />
         </div>
+
+        <ShowUsersPosts
+          user={this.state.currentUser}
+          shouldShowDeleteButton={true}
+        />
       </Ons.Page>
     );
   }
