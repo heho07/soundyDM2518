@@ -34,6 +34,7 @@ class Profile extends Component {
     this.firebaseAuthListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({ currentUser: user });
+        this.getUsersPost();
       }
     });
 
@@ -165,18 +166,18 @@ class Profile extends Component {
           //Lägg till de promise man får i en lista
         });
         console.log();
-        return posts;
+        this.setState({listOfPosts: posts})
       });
     }
   };
 
-  renderListItems(list) {
+  renderListItems() {
     console.log("renderListItems");
-    console.log(list);
-    return list.map(post => (
+    
+    return this.state.listOfPosts.map(post => (
       <Ons.ListItem key={post.time}>
         <div className="left">
-          <img src={post.imgURL} className="list-item__thumbnail" />
+          <img src={post.imgUrl} className="list-item__thumbnail" />
         </div>
         <div className="center">{post.title}</div>
       </Ons.ListItem>
@@ -185,15 +186,6 @@ class Profile extends Component {
 
   render() {
     const currentUser = this.state.currentUser;
-    let listOfPosts = [];
-    if (currentUser) {
-      console.log("test");
-      this.getUsersPost().then(list => {
-        console.log("listan", list);
-        listOfPosts = list;
-        console.log("listan", listOfPosts);
-      });
-    }
 
     return (
       <Ons.Page className="page">
@@ -259,7 +251,7 @@ class Profile extends Component {
               />
             </Ons.Button>
           </form>
-          {this.renderListItems(listOfPosts)}
+          {this.renderListItems()}
         </div>
       </Ons.Page>
     );
