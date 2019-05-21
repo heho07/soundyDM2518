@@ -6,7 +6,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/functions';
 
-import Feed from "./Feed";
+import Navigator from "./Feed";
 import Profile from "./Profile";
 import Upload from "./Upload";
 //import AudioTest from '../AudioRecorder/AudioTest';
@@ -150,6 +150,7 @@ class TabContainer extends Component {
   // Excludes the last one currently shown so as not to create duplicates
   // Keeps track of the last item in the allSounds array by saving it to state
   fetchAdditionalSounds = async () => {
+    console.log("calling fetchAdditionalSounds");
     if(navigator.onLine){
         const usersFromDatabase = await this.fetchAllUsers()
         var allSounds = this.state.allSounds;
@@ -184,7 +185,7 @@ class TabContainer extends Component {
           }, () => this.setState({
             lastKnownKey: this.state.allSounds[this.state.allSounds.length-1].time,            
           }))
-        )
+        ).then(() => console.log("finished fetching"))
         .catch(error => {
           this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
           console.log(error);
@@ -243,7 +244,7 @@ class TabContainer extends Component {
         </div>;
         break;
       case "loaded":
-        feedPage = <Feed 
+        feedPage = <Navigator 
                       posts = {this.state.posts}
                       allSounds = {this.state.allSounds}
                       fetchAllSounds = {() => this.fetchAllSounds()}

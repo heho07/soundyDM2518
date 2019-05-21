@@ -7,7 +7,7 @@ import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Pa
 import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
-class Feed extends Component {
+class UserFeed extends Component {
   // inherits the posts to show from the TabContainer.jsx
   constructor(props) {
     super(props);
@@ -55,8 +55,7 @@ class Feed extends Component {
   }
 
   // https://www.npmjs.com/package/react-infinite-scroller
-  renderInfiniteScroller(that){
-    console.log(that);
+  renderInfiniteScroller(){
     let items = [];
     this.props.allSounds.map((element, i) => {
       items.push(this.renderItem(element));
@@ -86,12 +85,11 @@ class Feed extends Component {
 
   // Each element to be shown in the feed
   renderItem(item) {
-    console.log(this);
     let img = item.imgUrl ? item.imgUrl : "https://i.imgur.com/dBmYY4M.png";    // old placeholder image "https://i.imgur.com/hgyXyww.png" 
     return (
       <Ons.Card key={item.time}>
         <p>{item.title}</p>
-        <button onClick = {() => this.props.pushPage(item.userName)}>Posted by: {item.userName}</button>
+        <p>Posted by: {item.userName}</p>
         <center>
           <img src = {img} alt = "placeholderText"/>
           <audio controls onWaiting = {() => this.handleAudioWaiting()}>
@@ -112,64 +110,16 @@ class Feed extends Component {
     this.props.createErrorMessage("Slow internet connection detected.", "Toast");
   }
   
-  
 
   render() {
     return (
       <Ons.Page>
         {this.renderPullHook()}
+        <button onClick = {() => this.props.fetchUsersPosts()}>fetch</button>
         {this.renderInfiniteScroller()}
-    </Ons.Page>
+      </Ons.Page>
     );
   }
 }
-              
-
-class Navigator extends Component{
-  constructor(props){
-    super(props);
-  }
-
-  renderPage(route, navigator){
-    let foo = <div>hej</div>;
-    // console.log(this)
-    switch(route.component){
-      case 'Feed':
-        return <Feed key = {route.component} {...this.props} pushPage = {(userID) => this.pushPage(navigator, userID)}/>
       
-      default:
-        return (
-        <Ons.Page key = {route.component}>
-          <div>
-            {route.component}
-          </div>
-          <button onClick = {() => this.pushPage(navigator, foo)}>push div</button>
-        </Ons.Page>);
-        
-    }
-  }
-
-  pushPage(navigator, route){
-    console.log("doing pushpaage")
-    navigator.pushPage({component:route, hasBackButton: true});
-  }
-
-  render() {
-    return (
-      <Ons.Page>
-       <Ons.Navigator
-        swipeable
-        renderPage={this.renderPage.bind(this)}
-        initialRoute={{
-          component:"Feed",
-          // title: 'Feed page',
-          hasBackButton: false
-        }}
-      />
-    </Ons.Page>
-    );
-  }
-}
-
-export default Navigator;
-
+export default UserFeed;
