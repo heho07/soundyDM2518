@@ -33,3 +33,14 @@ exports.removeUser = functions.https.onCall((data, context) => {
     })
     .catch(() => ({completed: false}))
 });
+
+exports.removeOnePost = functions.https.onCall((data, context) => {
+    const {id, storageUri} = data 
+   
+    let doc = db.collection("all-sounds").doc(id)
+    return doc.delete().then(value => {
+        return storageBucket.file(storageUri).delete().then(value => {
+            return {completed: true}
+        })
+    })
+});
