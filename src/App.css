@@ -31,10 +31,8 @@
   display: flex;
   flex-direction: row;
   padding-bottom: 2rem;
-  background-color: #e1e1ea;
 }
 .editName {
-  margin-top: 5%;
   display: flex;
   flex-direction: row;
   padding-bottom: 3%;
@@ -93,15 +91,18 @@ p {
   color: #ffffff !important;
 }
 
-.your_posts {
-  margin-top: 5%;
-  background-color: #ffffff;
-  display: flex;
-  height: 100%;
-}
-
 .uploadImage {
   width: 40%;
+}
+
+.edit {
+  padding-top: 5%;
+  padding-bottom: 3%;
+  background-color: #fff !important;
+}
+
+.list {
+  overflow: scroll !important;
 }
 
 [type="file"] {

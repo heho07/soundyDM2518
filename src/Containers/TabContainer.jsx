@@ -2,13 +2,14 @@ import React, { Component } from "react";
 
 import { redirectWhenOAuthChanges } from "../utils";
 
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/functions';
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/functions";
 
 import Feed from "./Feed";
 import Profile from "./Profile";
 import Upload from "./Upload";
+import UsersPosts from "./ShowUsersPosts";
 //import AudioTest from '../AudioRecorder/AudioTest';
 
 // imports for OnsenUI
@@ -39,11 +40,11 @@ class TabContainer extends Component {
       secret: config.unsplashApiKeys.secret_key
     });
 
-    this.getAllUsers = firebase.functions().httpsCallable('getAllUsers');
+    this.getAllUsers = firebase.functions().httpsCallable("getAllUsers");
 
     this.state = {
       currentUser: null,
-      index: 0,
+      index: 2,
       posts: [
         {
           title: "dog",
@@ -62,17 +63,19 @@ class TabContainer extends Component {
       status: "loading",
 
       // states for the audio recording
-      allSounds: []
+      allSounds: [],
+      lastKnownKey: "",
+      hasMore: true
     };
   }
 
   // metod innehållandes kod vi kan använda när vi laddar in databasresultat?
   // returns the promise of a JSON object containing information about a picture
+  // 50 requests per hour
   async updateImagesFromUnsplash(keyWord) {
     if (!keyWord) {
       // default to something if no keywoard was supplied
-      let keyWord = "sea";
-      console.log("didnt detect keyWord");
+      return "https://i.imgur.com/dBmYY4M.png";
     }
 
     // Söker efter en bild matchande det sökord som ges
@@ -88,7 +91,7 @@ class TabContainer extends Component {
     } catch (error) {
       // Ifall vi får error ge nån default bild (t.ex. ifall vi uppnåt quota för unsplashAPI)
       console.log(error);
-      return "https://i.imgur.com/1S5dGBf.png";
+      return "https://i.imgur.com/dBmYY4M.png";
     }
   }
 
@@ -103,32 +106,118 @@ class TabContainer extends Component {
   }
 
   // Anropar databasen och sparar alla query-resultat i this.state
+  // Keeps track of the last item in the allSounds array by saving it to state
   fetchAllSounds = async () => {
-    if(navigator.onLine){
-      const usersFromDatabase = await this.fetchAllUsers()
+    if (navigator.onLine) {
+      const usersFromDatabase = await this.fetchAllUsers();
       var allSounds = [];
-      try{
-        this.db
-        .collection('all-sounds')
-        .orderBy('time', 'desc')
-        .get()
-        .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            let soundData = doc.data()
-            const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
-            soundData.userName = correctUser ? correctUser.displayName : "-"
-            soundData.photoURL = correctUser ? correctUser.photoURL : null
-            allSounds.push(soundData);
+      try {
+        await this.db
+          .collection("all-sounds")
+          .orderBy("time", "desc")
+          .limit(10)
+          .get()
+          .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              let soundData = doc.data();
+              const correctUser = usersFromDatabase.find(
+                user => user.uid === soundData.user
+              );
+              soundData.userName = correctUser ? correctUser.displayName : "-";
+              soundData.photoURL = correctUser ? correctUser.photoURL : null;
+              allSounds.push(soundData);
+            });
+          })
+          .then(() =>
+            this.setState(
+              {
+                allSounds: allSounds,
+                status: "loaded"
+              },
+              () =>
+                this.setState({
+                  lastKnownKey: this.state.allSounds[
+                    this.state.allSounds.length - 1
+                  ].time
+                })
+            )
+          )
+          .catch(error => {
+            this.props.createErrorMessage(
+              "Error when fetching new sounds. See the log for more details",
+              "Toast"
+            );
+            console.log(error);
           });
-          this.setState({ 
-            allSounds: allSounds,
-            status:"loaded"
+      } catch (err) {
+        this.props.createErrorMessage(err, "Toast");
+        console.log(err);
+      }
+    } else {
+      this.props.createErrorMessage("No internet connection! :(", "Toast");
+    }
+  };
+
+  // Slightly different version of the one above.
+  // Fetches new posts from the database, starting from the last time-ID currently loaded.
+  // Excludes the last one currently shown so as not to create duplicates
+  // Keeps track of the last item in the allSounds array by saving it to state
+  fetchAdditionalSounds = async () => {
+    if (navigator.onLine) {
+      const usersFromDatabase = await this.fetchAllUsers();
+      var allSounds = this.state.allSounds;
+      try {
+        await this.db
+          .collection("all-sounds")
+          .orderBy("time", "desc")
+          .startAt(this.state.lastKnownKey)
+          .limit(10)
+          .get()
+          .then(querySnapshot => {
+            if (querySnapshot.size === 1) {
+              // ifall vi bara får ett resultat innebär det att det inte finns mer att ladda
+              this.setState({
+                hasMore: false
+              });
+              this.props.createErrorMessage(
+                "No more posts available.",
+                "Toast"
+              );
+            }
+            querySnapshot.forEach(doc => {
+              let soundData = doc.data();
+              const correctUser = usersFromDatabase.find(
+                user => user.uid === soundData.user
+              );
+              soundData.userName = correctUser ? correctUser.displayName : "-";
+              soundData.photoURL = correctUser ? correctUser.photoURL : null;
+              if (soundData.time !== this.state.lastKnownKey) {
+                allSounds.push(soundData);
+              }
+            });
+          })
+          .then(() =>
+            this.setState(
+              {
+                allSounds: allSounds,
+                status: "loaded"
+              },
+              () =>
+                this.setState({
+                  lastKnownKey: this.state.allSounds[
+                    this.state.allSounds.length - 1
+                  ].time
+                })
+            )
+          )
+          .catch(error => {
+            this.props.createErrorMessage(
+              "Error when fetching new sounds. See the log for more details",
+              "Toast"
+            );
+            console.log(error);
           });
-        }).catch(error => {
-          this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
-          console.log(error);
-        });
-      } catch(err){
+      } catch (err) {
         this.props.createErrorMessage(err, "Toast");
         console.log(err);
       }
@@ -138,12 +227,14 @@ class TabContainer extends Component {
   };
 
   fetchAllUsers = () => {
-    return this.getAllUsers().then(result => {
-      return result.data.users
-    }).catch(err => {
-      return []
-    })
-  }
+    return this.getAllUsers()
+      .then(result => {
+        return result.data.users;
+      })
+      .catch(err => {
+        return [];
+      });
+  };
 
   // logga-ut knapp
   signOut = () => {
@@ -153,12 +244,14 @@ class TabContainer extends Component {
       .then(function() {
         console.log("Signed out completed");
       })
-      .catch((error) => {
-        console.log('Error when signing out' + error);
-        this.props.createErrorMessage("Error when signing out " + error, "Toast");
-        });
-    }
-
+      .catch(error => {
+        console.log("Error when signing out" + error);
+        this.props.createErrorMessage(
+          "Error when signing out " + error,
+          "Toast"
+        );
+      });
+  };
 
   renderToolbar() {
     return (
@@ -173,21 +266,25 @@ class TabContainer extends Component {
     let feedPage;
     switch (this.state.status) {
       case "loading":
-        feedPage =
-        <div style={{'paddingTop':'50%'}}>
-          <Ons.Icon
-            spin
-            icon="sync-alt"
-          />
-        </div>;
+        feedPage = (
+          <div style={{ paddingTop: "50%" }}>
+            <Ons.Icon spin icon="sync-alt" />
+          </div>
+        );
         break;
       case "loaded":
-        feedPage = <Feed 
-                      posts = {this.state.posts}
-                      allSounds = {this.state.allSounds}
-                      fetchAllSounds = {() => this.fetchAllSounds()}
-                      createErrorMessage = {(msg, type) => this.props.createErrorMessage(msg, type)}
-                    />
+        feedPage = (
+          <Feed
+            posts={this.state.posts}
+            allSounds={this.state.allSounds}
+            fetchAllSounds={() => this.fetchAllSounds()}
+            createErrorMessage={(msg, type) =>
+              this.props.createErrorMessage(msg, type)
+            }
+            fetchAdditionalSounds={() => this.fetchAdditionalSounds()}
+            hasMore={this.state.hasMore}
+          />
+        );
 
         break;
       default:
@@ -211,8 +308,13 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Upload">
-                  <Upload 
-                    createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                  <Upload
+                    createErrorMessage={(message, type) =>
+                      this.props.createErrorMessage(message, type)
+                    }
+                    updateImagesFromUnsplash={keyWord =>
+                      this.updateImagesFromUnsplash(keyWord)
+                    }
                   />
                 </Ons.Page>
               ),
@@ -223,8 +325,10 @@ class TabContainer extends Component {
             {
               content: (
                 <Ons.Page key="Profile">
-                  <Profile 
-                    createErrorMessage = {(message, type) => this.props.createErrorMessage(message, type)}
+                  <Profile
+                    createErrorMessage={(message, type) =>
+                      this.props.createErrorMessage(message, type)
+                    }
                   />
                 </Ons.Page>
               ),

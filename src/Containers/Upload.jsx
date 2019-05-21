@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { ReactMic } from 'react-mic';
-
+import { Line } from 'rc-progress';
 // imports for OnsenUI
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 //import * as ons from 'onsenui'; // This needs to be imported to bootstrap the components.
@@ -25,9 +25,22 @@ class Upload extends Component {
       isPaused: false,
       title: "",
       keyword: "",
-      uploading: false
+      time: 0,
+      uploading: false,
     };
     this.onStop = this.onStop.bind(this);
+  }
+
+  startTimer() {
+    this.timer = setInterval(() => this.setState({
+      time: this.state.time + 1
+    }), 1000);
+    setTimeout(this.stopRecording, 10000);
+  }
+
+  stopTimer() {
+    this.setState({time: 0});
+    clearInterval(this.timer);
   }
 
   componentDidMount = () => {
@@ -39,12 +52,15 @@ class Upload extends Component {
     this.setState({
       record: true
     });
+    this.startTimer();
   };
 
   stopRecording = () => {
     this.setState({
       record: false
     });
+    console.log(this.state.time);
+    this.stopTimer();
   };
 
   onData(recordedBlob) {
@@ -58,11 +74,35 @@ class Upload extends Component {
     });
   }
 
+  validUserInput(){
+    if (!this.state.title || this.state.title.length === 0){
+      this.props.createErrorMessage("Please enter a title of your recording.", "Toast");
+      return false;
+    }
+    else if(!this.state.keyword || !(this.state.keyword.match(/^[a-zA-Z0-9]+$/))){
+      this.props.createErrorMessage("You can only write one (1) keyword, use letters and/or numbers.", "Toast");
+      return false;
+    } 
+    else {
+      return true;
+    }
+  }
+
   uploadRecording = () => {
-    this.setState({uploading: true})
     const { audioBlob, title, keyword } = this.state;
+
+    if(!this.validUserInput()){
+      return;
+    }
+    if(!audioBlob){
+      this.props.createErrorMessage("A recording is required to be able to post to the Soundy feed.", "Toast");
+      return;
+    }
+    
+    this.setState({uploading: true})
     const { uid } = firebase.auth().currentUser;
 
+    
     console.log(uid);
     var timeStamp = +new Date();
     console.log(title);
@@ -125,6 +165,9 @@ class Upload extends Component {
                 {recordButton}
               </ons-fab>
         </div>
+        <br/>
+        <Line percent={this.state.time * 10} style={{width: "80%"}}strokeWidth="4" strokeColor="#D3D3D3" />
+        <p>{this.state.time} out of 10s</p>
         <h2>Listen to your recording:</h2>
         <div>
           <audio ref="audioSource" controls="controls" src={blobURL} />

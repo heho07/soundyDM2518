@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ShowUsersPosts from "./ShowUsersPosts";
 //import { redirectWhenOAuthChanges } from "../utils";
 
 import * as firebase from "firebase/app";
@@ -15,9 +16,8 @@ import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
 class Profile extends Component {
-
   // behövde skriva om koden med en konstruktor för att få tillgång till props
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       currentUser: null,
@@ -29,6 +29,7 @@ class Profile extends Component {
       selectText: "inherent",
       uploadText: "inherent",
       deletingUser: false,
+      listOfPosts: []
     };
 
     this.removeUser = firebase.functions().httpsCallable('removeUser');
@@ -36,7 +37,6 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-
     this.firebaseAuthListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({ currentUser: user });
@@ -61,7 +61,10 @@ class Profile extends Component {
       })
       .catch(function(error) {
         console.log("Error when signing out" + error);
-        this.props.createErrorMessage("Error when signing out. See log for more details", "AlertDialog");
+        this.props.createErrorMessage(
+          "Error when signing out. See log for more details",
+          "AlertDialog"
+        );
       });
   };
 
@@ -121,7 +124,10 @@ class Profile extends Component {
         })
         .catch(function(error) {
           console.error("Error updating! " + error.code + " " + error.message);
-          this.createErrorMessage("Error editing profile. See log for more details", "AlertDialog");
+          this.createErrorMessage(
+            "Error editing profile. See log for more details",
+            "AlertDialog"
+          );
         });
   }
 
@@ -131,7 +137,7 @@ class Profile extends Component {
     const file = document.querySelector("#photo").files[0];
     if (file) {
       this.setState({ uploadText: "none", spinner: "block" });
-      const name = +new Date() + "-" + file.name;
+      const name = user.uid;
       const metadata = {
         contentType: file.type
       };
@@ -155,18 +161,20 @@ class Profile extends Component {
             })
             .catch(function(error) {
               // An error happened.
-              this.props.createErrorMessage("Error uploading profile image.", "AlertDialog");
+              this.props.createErrorMessage(
+                "Error uploading profile image.",
+                "AlertDialog"
+              );
             });
         })
         .catch(console.error);
     }
   };
 
-
   selectButtonContent = () => {
-    this.setState({ 
-      checkmark: "block", 
-      selectText: "none" 
+    this.setState({
+      checkmark: "block",
+      selectText: "none"
     });
   };
 
@@ -178,6 +186,7 @@ class Profile extends Component {
         Deleting...
       </div>);
     }
+
     return (
       <Ons.Page className="page">
         <div className="profilDetails">
@@ -195,53 +204,61 @@ class Profile extends Component {
            
           </div>
         </div>
-        <div className="editName">
-          <Ons.Input
-            value={this.state.name}
-            onChange={event => {
-              this.setState({ name: event.target.value });
-            }}
-            modifier="underbar"
-            float
-            placeholder="Update Name"
-            className="updateName"
-            requried
-          />
-          <Ons.Fab
-            className="saveButton"
-            onClick={this.editProfileName.bind(this)}
-          >
-            <Ons.Icon icon="save" />
-          </Ons.Fab>
-        </div>
-        <form>
-          <input
-            className="uploadImage"
-            type="file"
-            name="photo"
-            accept="image/*"
-            id="photo"
-            onChange={this.selectButtonContent}
-          />
-          <label htmlFor="photo" className="uploadImage">
-            <span style={{ display: this.state.selectText }}>Select Image</span>
-            <Ons.Icon icon="check" style={{ display: this.state.checkmark }} />
-          </label>
-          <Ons.Button
-            modifier="material"
-            onClick={this.upload}
-            className="uploadImage"
-          >
-            <span style={{ display: this.state.uploadText }}>Upload</span>
-            <Ons.Icon
-              spin
-              icon="sync-alt"
-              style={{ display: this.state.spinner }}
+        <div className="edit">
+          <div className="editName">
+            <Ons.Input
+              value={this.state.name}
+              onChange={event => {
+                this.setState({ name: event.target.value });
+              }}
+              modifier="underbar"
+              float
+              placeholder="Update Name"
+              className="updateName"
+              requried
             />
-          </Ons.Button>
-        </form>
-        <div className="your_posts">
-          <p>Här kommer användarens posts</p>
+            <Ons.Fab
+              className="saveButton"
+              onClick={this.editProfileName.bind(this)}
+            >
+              <Ons.Icon icon="save" />
+            </Ons.Fab>
+          </div>
+          <form>
+            <input
+              className="uploadImage"
+              type="file"
+              name="photo"
+              accept="image/*"
+              id="photo"
+              onChange={this.selectButtonContent}
+            />
+            <label htmlFor="photo" className="uploadImage">
+              <span style={{ display: this.state.selectText }}>
+                Select Image
+              </span>
+              <Ons.Icon
+                icon="check"
+                style={{ display: this.state.checkmark }}
+              />
+            </label>
+            <Ons.Button
+              modifier="material"
+              onClick={this.upload}
+              className="uploadImage"
+            >
+              <span style={{ display: this.state.uploadText }}>Upload</span>
+              <Ons.Icon
+                spin
+                icon="sync-alt"
+                style={{ display: this.state.spinner }}
+              />
+            </Ons.Button>
+          </form>
+          <ShowUsersPosts
+            user={this.state.currentUser}
+            shouldShowDeleteButton={true}
+          />
         </div>
       </Ons.Page>
     );

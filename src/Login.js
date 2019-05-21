@@ -130,6 +130,7 @@ class Login extends Component {
                   onChange={event => {
                     this.setState({ email: event.target.value });
                   }}
+                  type="email"
                   modifier="underbar"
                   float
                   placeholder="Email"
