@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ShowUsersPosts from "./ShowUsersPosts";
 //import { redirectWhenOAuthChanges } from "../utils";
 
 import * as firebase from "firebase/app";
@@ -34,7 +35,6 @@ class Profile extends Component {
     this.firebaseAuthListener = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({ currentUser: user });
-        this.getUsersPost();
       }
     });
 
@@ -150,40 +150,6 @@ class Profile extends Component {
     });
   };
 
-  getUsersPost = () => {
-    if (this.state.currentUser) {
-      const { uid } = this.state.currentUser;
-      let postsFromUser = this.db
-        .collection("all-sounds")
-        .where("user", "==", uid);
-      return postsFromUser.get().then(querySnapshot => {
-        let posts = [];
-        querySnapshot.forEach(doc => {
-          let documentData = doc.data();
-          console.log(documentData);
-          posts.push(documentData);
-
-          //Lägg till de promise man får i en lista
-        });
-        console.log();
-        this.setState({listOfPosts: posts})
-      });
-    }
-  };
-
-  renderListItems() {
-    console.log("renderListItems");
-    
-    return this.state.listOfPosts.map(post => (
-      <Ons.ListItem key={post.time}>
-        <div className="left">
-          <img src={post.imgUrl} className="list-item__thumbnail" />
-        </div>
-        <div className="center">{post.title}</div>
-      </Ons.ListItem>
-    ));
-  }
-
   render() {
     const currentUser = this.state.currentUser;
 
@@ -251,7 +217,10 @@ class Profile extends Component {
               />
             </Ons.Button>
           </form>
-          {this.renderListItems()}
+          <ShowUsersPosts
+            user={this.state.currentUser}
+            shouldShowDeleteButton={true}
+          />
         </div>
       </Ons.Page>
     );

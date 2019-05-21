@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 
+import * as firebase from "firebase/app";
+import "firebase/firestore";
+
 // imports for OnsenUI
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
 //import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
@@ -7,46 +10,73 @@ import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Pa
 import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
 
-class UsersPosts extends Component {
+class ShowUsersPosts extends Component {
   // inherits the posts to show from the TabContainer.jsx
   constructor(props) {
     super(props);
+    this.state = {
+      hasFetched: false,
+      listOfPosts: []
+    };
   }
 
-  //   // Each element to be shown in the feed
-  //   renderUsersPost = () => {
-  //     var listOfPosts = [];
-  //     if (this.state.user) {
-  //       const { uid } = this.state.user;
-  //       let postsFromUser = this.db
-  //         .collection("all-sounds")
-  //         .where("user", "==", uid);
-  //       postsFromUser.get().then(querySnapshot => {
-  //         querySnapshot.forEach(doc => {
-  //           let documentData = doc.data();
-  //           listOfPosts.push(documentData);
-  //           console.log(listOfPosts);
-  //           //Lägg till de promise man får i en lista
-  //           this.renderListItems();
-  //         });
-  //       });
-  //     }
-  //   };
-  //
-  //   renderListItems() {
-  //     return this.state.listOfPosts.map(post => (
-  //       <Ons.ListItem key={post.index}>
-  //         <div className="left">
-  //           <img src={post.imgURL} className="list-item__thumbnail" />
-  //         </div>
-  //         <div className="center">name</div>
-  //       </Ons.ListItem>
-  //     ));
-  //   }
-  //
-  //   render() {
-  //     return <Ons.List>{this.renderListItems()}</Ons.List>;
-  //   }
+  componentDidMount() {
+    this.db = firebase.firestore();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.hasFetched) {
+      return true;
+    } else {
+      if (nextProps.user) {
+        this.getUsersPost(nextProps.user);
+      }
+    }
+  }
+
+  getUsersPost = user => {
+    const { uid } = user;
+    let postsFromUser = this.db
+      .collection("all-sounds")
+      .where("user", "==", uid);
+    return postsFromUser.get().then(querySnapshot => {
+      let posts = [];
+      querySnapshot.forEach(doc => {
+        let documentData = doc.data();
+        console.log(documentData);
+        posts.push(documentData);
+
+        //Lägg till de promise man får i en lista
+      });
+      console.log();
+      this.setState({ listOfPosts: posts, hasFetched: true });
+    });
+  };
+
+  renderListItems() {
+    console.log("renderListItems");
+
+    return this.state.listOfPosts.map(post => (
+      <Ons.ListItem key={post.time}>
+        <div className="left">
+          <img src={post.imgUrl} className="list-item__thumbnail" />
+        </div>
+        <div className="center">{post.title}</div>
+
+        {this.props.shouldShowDeleteButton && (
+          <div className="right">
+            <Ons.Fab onClick={this.upload} className="saveButton">
+              <Ons.Icon icon="trash" />
+            </Ons.Fab>
+          </div>
+        )}
+      </Ons.ListItem>
+    ));
+  }
+
+  render() {
+    return <Ons.List>{this.renderListItems()}</Ons.List>;
+  }
 }
 
-export default UsersPosts;
+export default ShowUsersPosts;
