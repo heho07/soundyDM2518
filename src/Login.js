@@ -108,6 +108,20 @@ class Login extends Component {
       });
   };
 
+  resetPassword = () => {
+    var auth = firebase.auth();
+    var emailAddress = this.state.email;
+
+    auth.sendPasswordResetEmail(emailAddress).then(function() {
+      // Email sent.
+      console.log("Sent email");
+      this.props.createErrorMessage("Email sent for password reset!", "Toast");
+    }).catch(function(error) {
+      // An error happened.
+    });
+
+  }
+
   renderToolbar() {
     return (
       <Ons.Toolbar>
@@ -159,6 +173,7 @@ class Login extends Component {
                 >
                   Log in
                 </Ons.Button>
+                
               </p>
             <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
           </form>
@@ -184,7 +199,7 @@ class Login extends Component {
           </Ons.Button>
         </p>
         <a href='javascript:;' onClick={() => {this.props.history.push('/create')}}>Don't have an account? Click here</a>
-
+        <p style = {{marginTop:"2em"}} ><a href = 'javascript:;' onClick = {() => this.props.history.push('resetpassword')}>Forgot your password? Click here</a></p>
       </Ons.Page>
 
     );

@@ -5,6 +5,8 @@ import Loading from "./Loading";
 import TabContainer from "./Containers/TabContainer";
 import ErrorPopUp from "./Containers/ErrorPopUp";
 import ShowUsersPosts from "./Containers/ShowUsersPosts";
+import ResetPassword from "./ResetPassword";
+
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import "./App.css";
@@ -69,6 +71,20 @@ class App extends Component {
                   this.createErrorMessage(message, type)
                 }
                 cancelErrorMessage={() => this.cancelErrorMessage()}
+              />
+            )}
+          />
+
+          <Route 
+            path = "/resetpassword"
+            exact
+            render = {props => (
+              <ResetPassword
+                {...props}
+                createErrorMessage = {(message, type) => 
+                  this.createErrorMessage(message, type)
+                }
+                cancelErrorMessage = {() => this.cancelErrorMessage()}
               />
             )}
           />
