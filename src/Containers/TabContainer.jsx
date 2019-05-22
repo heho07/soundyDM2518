@@ -64,8 +64,13 @@ class TabContainer extends Component {
 
       // states for the audio recording
       allSounds: [],
+      
+      // states for infinitescroller
       lastKnownKey: "",
-      hasMore: true
+      hasMore: true,
+
+      // states for navigator in feed
+      navigatorIndex: 0,
     };
   }
 
@@ -242,6 +247,14 @@ class TabContainer extends Component {
       });
   };
 
+  increaseNavigatorIndex(){
+    this.setState({navigatorIndex: this.state.navigatorIndex + 1});
+  }
+
+  resetNavigatorIndex(){
+    this.setState({navigatorIndex: 0});
+  }
+
   renderToolbar() {
     return (
       <Ons.Toolbar>
@@ -307,7 +320,7 @@ class TabContainer extends Component {
                 </Ons.Page>
               ),
               tab: (
-                <Ons.Tab label="Upload" icon="fa-microphone" key="UploadTab" />
+                <Ons.Tab label="Upload" icon="fa-microphone" key="UploadTab" onClick = {() => this.resetNavigatorIndex()} />
               )
             },
             {

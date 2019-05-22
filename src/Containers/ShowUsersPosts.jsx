@@ -25,6 +25,7 @@ class ShowUsersPosts extends Component {
     if (this.props.user) {
       this.getUsersPost(this.props.user);
     }
+
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -47,7 +48,7 @@ class ShowUsersPosts extends Component {
       let posts = [];
       querySnapshot.forEach(doc => {
         let documentData = doc.data();
-        console.log(documentData);
+        // console.log(documentData);
         posts.push(documentData);
 
         //Lägg till de promise man får i en lista
@@ -60,7 +61,7 @@ class ShowUsersPosts extends Component {
   };
 
   renderListItems() {
-    console.log("renderListItems");
+    // console.log("renderListItems");
 
     return this.state.listOfPosts.map(post => (
       <Ons.ListItem key={post.time}>
@@ -86,7 +87,14 @@ class ShowUsersPosts extends Component {
   }
 
   render() {
-    return <Ons.List>{this.renderListItems()}</Ons.List>;
+    return (
+
+        <span>
+          {this.props.shouldShowUserName ? <h2>{this.props.user.userName}</h2> : <span/>}
+          <Ons.List>{this.renderListItems()}</Ons.List>
+        </span>
+
+      );
   }
 }
 
