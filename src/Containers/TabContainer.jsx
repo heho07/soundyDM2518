@@ -44,7 +44,7 @@ class TabContainer extends Component {
 
     this.state = {
       currentUser: null,
-      index: 2,
+      index: 0,
       posts: [
         {
           title: "dog",
@@ -69,8 +69,7 @@ class TabContainer extends Component {
       lastKnownKey: "",
       hasMore: true,
 
-      // states for navigator in feed
-      navigatorIndex: 0,
+
     };
   }
 
@@ -247,13 +246,7 @@ class TabContainer extends Component {
       });
   };
 
-  increaseNavigatorIndex(){
-    this.setState({navigatorIndex: this.state.navigatorIndex + 1});
-  }
-
-  resetNavigatorIndex(){
-    this.setState({navigatorIndex: 0});
-  }
+  
 
   renderToolbar() {
     return (
@@ -285,6 +278,7 @@ class TabContainer extends Component {
             }
             fetchAdditionalSounds={() => this.fetchAdditionalSounds()}
             hasMore={this.state.hasMore}
+
           />
         );
         break;
@@ -320,7 +314,7 @@ class TabContainer extends Component {
                 </Ons.Page>
               ),
               tab: (
-                <Ons.Tab label="Upload" icon="fa-microphone" key="UploadTab" onClick = {() => this.resetNavigatorIndex()} />
+                <Ons.Tab label="Upload" icon="fa-microphone" key="UploadTab" />
               )
             },
             {

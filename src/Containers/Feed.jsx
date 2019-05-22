@@ -110,16 +110,20 @@ class Navigator extends Component{
   }
 
   renderPage(route, navigator){
+
     switch(route.component.uid){
       case 'Feed':
         // skickar med alla props till Feed samt även hur den kan nå ShowUsersPosts
-        return <Feed key = {route.component} {...this.props} pushPage = {(user) => this.pushPage(navigator, user)}/>
+        return <Feed key = {route.component.uid} {...this.props} pushPage = {(user) => this.pushPage(navigator, user)}/>;
       
       default:
         // om route inte är Feed så antas det att det är ett user ID och försöker visa detta.
         return (
         <Ons.Page key = {route.component.uid}>
-          {route.hasBackButton ? <button onClick = {() => navigator.popPage()}>go back</button> : <span/>} 
+          <div style = {{textAlign:"left"}} >
+            <Ons.BackButton onClick = {() => navigator.popPage()} >go back</Ons.BackButton>
+            <h2 style = {{display:"inline-block"}}  >{route.component.userName} </h2>
+          </div>
           <ShowUsersPosts 
             user = {route.component}
             shouldShowDeleteButton={false}
@@ -131,6 +135,7 @@ class Navigator extends Component{
   }
 
   // lägger till en route i navigatorns stack
+  // async för att 
   pushPage(navigator, route){
     navigator.pushPage({component:route, hasBackButton: true});
   }

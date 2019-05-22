@@ -25,7 +25,6 @@ class ShowUsersPosts extends Component {
     if (this.props.user) {
       this.getUsersPost(this.props.user);
     }
-
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -87,14 +86,7 @@ class ShowUsersPosts extends Component {
   }
 
   render() {
-    return (
-
-        <span>
-          {this.props.shouldShowUserName ? <h2>{this.props.user.userName}</h2> : <span/>}
-          <Ons.List>{this.renderListItems()}</Ons.List>
-        </span>
-
-      );
+    return <Ons.List>{this.renderListItems()}</Ons.List>;
   }
 }
 
