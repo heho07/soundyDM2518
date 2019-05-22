@@ -118,6 +118,7 @@ class Navigator extends Component{
       
       default:
         // om route inte är Feed så antas det att det är ett user ID och försöker visa detta.
+        // visar även namn samt tillbakaknapp
         return (
         <Ons.Page key = {route.component.uid}>
           <div style = {{textAlign:"left"}} >
@@ -135,7 +136,6 @@ class Navigator extends Component{
   }
 
   // lägger till en route i navigatorns stack
-  // async för att 
   pushPage(navigator, route){
     navigator.pushPage({component:route, hasBackButton: true});
   }

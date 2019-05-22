@@ -43,7 +43,8 @@ class ImageSoundPlayer extends Component {
     this.props.createErrorMessage("Slow internet connection detected.", "Toast");
   }
 
-
+  // visar varje bild i Feed.jsx
+  // profilbilden och användarnamnet har en onClick som visar alla uppladdarens posts
   render() {
     const item = this.props.item
     const {playing} = this.state
