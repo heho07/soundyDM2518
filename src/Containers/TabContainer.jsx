@@ -184,6 +184,7 @@ class TabContainer extends Component {
               );
               soundData.userName = correctUser ? correctUser.displayName : "-";
               soundData.photoURL = correctUser ? correctUser.photoURL : null;
+              soundData.id = doc.id;
               if (soundData.time !== this.state.lastKnownKey) {
                 allSounds.push(soundData);
               }
