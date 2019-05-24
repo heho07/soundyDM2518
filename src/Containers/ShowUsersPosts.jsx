@@ -83,7 +83,11 @@ class ShowUsersPosts extends Component {
   }
 
   render() {
-    return <Ons.List>{this.renderListItems()}</Ons.List>;
+    return (
+      <div className="userList">
+        <Ons.List>{this.renderListItems()}</Ons.List>
+      </div>
+    );
   }
 }
 
