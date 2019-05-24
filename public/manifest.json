@@ -1,15 +1,20 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "Soundy",
   "icons": [
     {
-      "src": "logo_note.png",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "256_logo.ico",
+      "sizes": "256x256, 144x144, 64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "512_logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#2977FF",
+  "background_color": "#FFFFFF",
+  "orientation": "portrait"
 }

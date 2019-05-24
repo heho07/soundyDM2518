@@ -64,7 +64,7 @@ class Profile extends Component {
   };
 
   renderProfileImage() {
-    const currentUser = this.state.currentUser; 
+    const currentUser = this.state.currentUser;
     if (currentUser && currentUser.photoURL === null) {
       console.log(currentUser.userName);
       return (

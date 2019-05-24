@@ -110,18 +110,10 @@ class Login extends Component {
       });
   };
 
-  renderToolbar() {
-    return (
-      <Ons.Toolbar>
-        <div className="center">Welcome</div>
-      </Ons.Toolbar>
-    );
-  }
-
   render() {
     return (
-      <Ons.Page renderToolbar={this.renderToolbar} className="page">
-        <img scr="/logo.png" />
+      <Ons.Page className="page">
+        <img id="logoStartscreen" src="logo.png" />
         <form
           onSubmit={event => {
             event.preventDefault();
@@ -154,7 +146,7 @@ class Login extends Component {
               style={{ width: "80vw" }}
             />
           </p>
-          <br />
+          <div className="border" />
           <p>
             <Ons.Button
               onClick={this.loginClicked}
@@ -169,7 +161,7 @@ class Login extends Component {
             style={{ visibility: "hidden", height: 0, width: 0 }}
           />
         </form>
-        <br />
+
         <p>
           <Ons.Button
             className=".fb-google-button"
@@ -190,6 +182,7 @@ class Login extends Component {
             <Ons.Icon icon="facebook" /> Sign in with Facebook
           </Ons.Button>
         </p>
+        <br />
         <a
           href="javascript:;"
           onClick={() => {
