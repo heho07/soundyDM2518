@@ -144,7 +144,8 @@ class Upload extends Component {
                   keyword: "",
                   title: "",
                   uploading: false
-                })
+                }, () => this.props.changeTabContainerIndex(0)
+                )
               );
           });
         })
