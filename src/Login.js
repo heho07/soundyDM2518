@@ -21,7 +21,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    redirectWhenOAuthChanges(this.props.history)
+    redirectWhenOAuthChanges(this.props.history);
   }
 
   signInWithGoogle = () => {
@@ -37,7 +37,7 @@ class Login extends Component {
         console.log(token);
         console.log(user);
       })
-      .catch((error) => {
+      .catch(error => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -54,7 +54,8 @@ class Login extends Component {
             " email: " +
             email
         );
-        let errorMsg = "There was en error signing in with Google. See the log for detailed information.";
+        let errorMsg =
+          "There was en error signing in with Google. See the log for detailed information.";
         this.props.createErrorMessage(errorMsg, "Toast");
         console.log(credential);
       });
@@ -73,7 +74,7 @@ class Login extends Component {
         console.log(token);
         console.log(user);
       })
-      .catch((error) => {
+      .catch(error => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -90,7 +91,8 @@ class Login extends Component {
             " email: " +
             email
         );
-        let errorMsg = "There was en error signing in with Facebook. See the log for detailed information.";
+        let errorMsg =
+          "There was en error signing in with Facebook. See the log for detailed information.";
         this.props.createErrorMessage(errorMsg, "Toast");
         console.log(credential);
       });
@@ -103,66 +105,63 @@ class Login extends Component {
       .signInWithEmailAndPassword(email, password)
       .catch(error => {
         console.log(this.state.email);
-        let errorMsg = ("Error logging in! " + error.code + " " + error.message);
+        let errorMsg = "Error logging in! " + error.code + " " + error.message;
         this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
 
-  renderToolbar() {
-    return (
-      <Ons.Toolbar>
-        <div className="center">Welcome</div>
-      </Ons.Toolbar>
-    );
-  }
-
   render() {
     return (
-      <Ons.Page renderToolbar={this.renderToolbar} className="page">
-        <h1>Soundy</h1>
-          <form onSubmit = {(event) => {
+      <Ons.Page className="page">
+        <img id="logoStartscreen" src="logo.png" />
+        <form
+          onSubmit={event => {
             event.preventDefault();
             this.loginClicked();
-          }}>
-            <p>
-                <Ons.Input
-                  value={this.state.email}
-                  onChange={event => {
-                    this.setState({ email: event.target.value });
-                  }}
-                  type="email"
-                  modifier="underbar"
-                  float
-                  placeholder="Email"
-                  style={{ width: "80vw" }}
-                />
-              </p>
-              <p>
-                <Ons.Input
-                  value={this.state.password}
-                  onChange={event => {
-                    this.setState({ password: event.target.value });
-                  }}
-                  modifier="underbar"
-                  type="password"
-                  float
-                  placeholder="Password"
-                  style={{ width: "80vw" }}
-                />
-              </p>
-              <br />
-              <p>
-                <Ons.Button
-                  onClick={this.loginClicked}
-                  modifier="underbar"
-                  style={{ width: "60vw" }}
-                >
-                  Log in
-                </Ons.Button>
-              </p>
-            <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
-          </form>
-        <br />
+          }}
+        >
+          <p>
+            <Ons.Input
+              value={this.state.email}
+              onChange={event => {
+                this.setState({ email: event.target.value });
+              }}
+              type="email"
+              modifier="underbar"
+              float
+              placeholder="Email"
+              style={{ width: "80vw" }}
+            />
+          </p>
+          <p>
+            <Ons.Input
+              value={this.state.password}
+              onChange={event => {
+                this.setState({ password: event.target.value });
+              }}
+              modifier="underbar"
+              type="password"
+              float
+              placeholder="Password"
+              style={{ width: "80vw" }}
+            />
+          </p>
+          <div className="border" />
+          <p>
+            <Ons.Button
+              onClick={this.loginClicked}
+              modifier="underbar"
+              style={{ width: "60vw" }}
+            >
+              Log in
+            </Ons.Button>
+          </p>
+          <input
+            type="submit"
+            style={{ visibility: "hidden", height: 0, width: 0 }}
+          />
+        </form>
+
         <p>
           <Ons.Button
             className=".fb-google-button"
@@ -183,10 +182,16 @@ class Login extends Component {
             <Ons.Icon icon="facebook" /> Sign in with Facebook
           </Ons.Button>
         </p>
-        <a href='javascript:;' onClick={() => {this.props.history.push('/create')}}>Don't have an account? Click here</a>
-
+        <br />
+        <a
+          href="javascript:;"
+          onClick={() => {
+            this.props.history.push("/create");
+          }}
+        >
+          Don't have an account? Click here
+        </a>
       </Ons.Page>
-
     );
   }
 }
