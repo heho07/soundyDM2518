@@ -156,70 +156,71 @@ class Profile extends Component {
 
     return (
       <Ons.Page className="page">
-        <div className="profilDetails">
-          {this.renderProfileImage()}
-          <div className="profileName">
-            <h2>{currentUser && currentUser.displayName}</h2>
-            <div>
-              <Ons.Button modifier="material" onClick={this.signOut}>
-                Sign out <Ons.Icon icon="sign-out-alt" />
-              </Ons.Button>
+        <div className="top">
+          <div className="profilDetails">
+            {this.renderProfileImage()}
+            <div className="profileName">
+              <h2>{currentUser && currentUser.displayName}</h2>
+              <div>
+                <Ons.Button modifier="material" onClick={this.signOut}>
+                  Sign out <Ons.Icon icon="sign-out-alt" />
+                </Ons.Button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="edit">
-          <div className="editName">
-            <Ons.Input
-              value={this.state.name}
-              onChange={event => {
-                this.setState({ name: event.target.value });
-              }}
-              modifier="underbar"
-              float
-              placeholder="Update Name"
-              className="updateName"
-              requried
-            />
-            <Ons.Fab
-              className="saveButton"
-              onClick={this.editProfileName.bind(this)}
-            >
-              <Ons.Icon icon="save" />
-            </Ons.Fab>
+          <div className="edit">
+            <div className="editName">
+              <Ons.Input
+                value={this.state.name}
+                onChange={event => {
+                  this.setState({ name: event.target.value });
+                }}
+                modifier="underbar"
+                float
+                placeholder="Update Name"
+                className="updateName"
+                requried
+              />
+              <Ons.Fab
+                className="saveButton"
+                onClick={this.editProfileName.bind(this)}
+              >
+                <Ons.Icon icon="save" />
+              </Ons.Fab>
+            </div>
+            <form>
+              <input
+                className="uploadImage"
+                type="file"
+                name="photo"
+                accept="image/*"
+                id="photo"
+                onChange={this.selectButtonContent}
+              />
+              <label htmlFor="photo" className="uploadImage">
+                <span style={{ display: this.state.selectText }}>
+                  Select Image
+                </span>
+                <Ons.Icon
+                  icon="check"
+                  style={{ display: this.state.checkmark }}
+                />
+              </label>
+              <Ons.Button
+                modifier="material"
+                onClick={this.upload}
+                className="uploadImage"
+              >
+                <span style={{ display: this.state.uploadText }}>Upload</span>
+                <Ons.Icon
+                  spin
+                  icon="sync-alt"
+                  style={{ display: this.state.spinner }}
+                />
+              </Ons.Button>
+            </form>
           </div>
-          <form>
-            <input
-              className="uploadImage"
-              type="file"
-              name="photo"
-              accept="image/*"
-              id="photo"
-              onChange={this.selectButtonContent}
-            />
-            <label htmlFor="photo" className="uploadImage">
-              <span style={{ display: this.state.selectText }}>
-                Select Image
-              </span>
-              <Ons.Icon
-                icon="check"
-                style={{ display: this.state.checkmark }}
-              />
-            </label>
-            <Ons.Button
-              modifier="material"
-              onClick={this.upload}
-              className="uploadImage"
-            >
-              <span style={{ display: this.state.uploadText }}>Upload</span>
-              <Ons.Icon
-                spin
-                icon="sync-alt"
-                style={{ display: this.state.spinner }}
-              />
-            </Ons.Button>
-          </form>
         </div>
-
         <ShowUsersPosts
           user={this.state.currentUser}
           shouldShowDeleteButton={true}
