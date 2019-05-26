@@ -47,7 +47,7 @@ class ShowUsersPosts extends Component {
       let posts = [];
       querySnapshot.forEach(doc => {
         let documentData = doc.data();
-        // console.log(documentData);
+
         posts.push(documentData);
 
         //Lägg till de promise man får i en lista
@@ -60,12 +60,15 @@ class ShowUsersPosts extends Component {
   };
 
   renderListItems() {
-    // console.log("renderListItems");
 
     return this.state.listOfPosts.map(post => (
       <Ons.ListItem key={post.time}>
         <div className="left">
-          <img src={post.imgUrl} className="list-item__thumbnail" />
+          <img
+            src={post.imgUrl}
+            className="list-item__thumbnail"
+            alt="thumbnail"
+          />
         </div>
         <div className="center">
           <strong>
@@ -76,7 +79,7 @@ class ShowUsersPosts extends Component {
 
         {this.props.shouldShowDeleteButton && (
           <div className="right">
-            <Ons.Fab onClick={this.upload} className="saveButton">
+            <Ons.Fab onClick={this.upload} className="squareButton">
               <Ons.Icon icon="trash" />
             </Ons.Fab>
           </div>
@@ -86,7 +89,11 @@ class ShowUsersPosts extends Component {
   }
 
   render() {
-    return <Ons.List>{this.renderListItems()}</Ons.List>;
+    return (
+      <div className="userList">
+        <Ons.List>{this.renderListItems()}</Ons.List>
+      </div>
+    );
   }
 }
 
