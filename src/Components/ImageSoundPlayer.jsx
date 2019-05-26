@@ -42,6 +42,10 @@ class ImageSoundPlayer extends Component {
     );
   }
 
+
+  // visar varje bild i Feed.jsx
+  // profilbilden och användarnamnet har en onClick som visar alla uppladdarens posts
+
   render() {
     const item = this.props.item;
     const { playing } = this.state;
@@ -49,6 +53,7 @@ class ImageSoundPlayer extends Component {
     return (
       <Ons.Card key={item.time}>
         <div>
+
           <img
             src={item.photoURL}
             onClick={() => this.props.pushPage(item.user)}
@@ -66,6 +71,7 @@ class ImageSoundPlayer extends Component {
           >
             <ons-icon icon={playing ? "pause" : "play"} />
           </button>
+
         </div>
         <audio
           ref={x => {

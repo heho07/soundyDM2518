@@ -229,6 +229,7 @@ class Profile extends Component {
         <ShowUsersPosts
           user={this.state.currentUser}
           shouldShowDeleteButton={true}
+          shouldShowUserName = {false}
         />
       </Ons.Page>
     );

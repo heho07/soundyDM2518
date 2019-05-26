@@ -58,6 +58,7 @@ class Feed extends Component {
   }
 
   // https://www.npmjs.com/package/react-infinite-scroller
+
   renderInfiniteScroller(that) {
     //  console.log(that);
     let items = [];
@@ -71,6 +72,7 @@ class Feed extends Component {
         />
       );
     });
+
     return (
       <InfiniteScroll
         pageStart={0}
@@ -112,6 +114,7 @@ class Navigator extends Component {
     super(props);
   }
 
+
   renderPage(route, navigator) {
     switch (route.component) {
       case "Feed":
@@ -124,18 +127,22 @@ class Navigator extends Component {
           />
         );
 
+
       default:
         // om route inte är Feed så antas det att det är ett user ID och försöker visa detta.
+        // visar även namn samt tillbakaknapp
         return (
-          <Ons.Page key={route.component}>
-            {route.hasBackButton ? (
-              <button onClick={() => navigator.popPage()}>go back</button>
-            ) : (
-              <span />
-            )}
-            <ShowUsersPosts
-              user={{ uid: route.component }}
-              shouldShowDeleteButton={false}
+
+        <Ons.Page key = {route.component.uid}>
+          <div style = {{textAlign:"left"}} >
+            <Ons.BackButton onClick = {() => navigator.popPage()} >go back</Ons.BackButton>
+            <h2 style = {{display:"inline-block"}}  >{route.component.userName} </h2>
+          </div>
+          <ShowUsersPosts 
+            user = {route.component}
+            shouldShowDeleteButton={false}
+            shouldShowUserName = {true}
+
             />
           </Ons.Page>
         );
@@ -150,15 +157,17 @@ class Navigator extends Component {
   render() {
     return (
       <Ons.Page>
-        <Ons.Navigator
-          swipeable
-          renderPage={this.renderPage.bind(this)}
-          initialRoute={{
-            component: "Feed",
-            hasBackButton: false
-          }}
-        />
-      </Ons.Page>
+
+       <Ons.Navigator
+        swipeable
+        renderPage={this.renderPage.bind(this)}
+        initialRoute={{
+          component:{uid:"Feed"},
+          hasBackButton: false
+        }}
+      />
+    </Ons.Page>
+
     );
   }
 }
