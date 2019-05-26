@@ -44,9 +44,7 @@ class TabContainer extends Component {
 
     this.state = {
       currentUser: null,
-
-      index: 0,
-
+      index: 1,
       posts: [
         {
           title: "dog",
@@ -66,12 +64,8 @@ class TabContainer extends Component {
 
       // states for the audio recording
       allSounds: [],
-      
-      // states for infinitescroller
       lastKnownKey: "",
-      hasMore: true,
-
-
+      hasMore: true
     };
   }
 
@@ -198,7 +192,6 @@ class TabContainer extends Component {
               );
               soundData.userName = correctUser ? correctUser.displayName : "-";
               soundData.photoURL = correctUser ? correctUser.photoURL : null;
-              soundData.id = doc.id;
               if (soundData.time !== this.state.lastKnownKey) {
                 allSounds.push(soundData);
               }
@@ -261,13 +254,11 @@ class TabContainer extends Component {
       });
   };
 
-
   changeTabContainerIndex(num){
     this.setState({
       index:num,
     });
   }
-
 
   renderToolbar() {
     return (
@@ -301,7 +292,6 @@ class TabContainer extends Component {
             }
             fetchAdditionalSounds={() => this.fetchAdditionalSounds()}
             hasMore={this.state.hasMore}
-
           />
         );
         break;
