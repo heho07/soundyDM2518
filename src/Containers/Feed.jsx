@@ -129,10 +129,11 @@ class Navigator extends Component {
         return (
           <Ons.Page key={route.component.uid}>
             {route.hasBackButton ? (
-              <button onClick={() => navigator.popPage()}>go back</button>
+              <Ons.Button onClick={() => navigator.popPage()}>go back</Ons.Button>
             ) : (
               <span />
             )}
+            <h2>{route.component.userName}</h2>
             <ShowUsersPosts
               user={route.component}
               shouldShowDeleteButton={false}

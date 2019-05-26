@@ -25,6 +25,7 @@ class ShowUsersPosts extends Component {
   componentDidMount() {
     this.db = firebase.firestore();
     if (this.props.user) {
+      console.log(this.props.user);
       this.getUsersPost(this.props.user);
     }
   }

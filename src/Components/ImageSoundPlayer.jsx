@@ -55,7 +55,7 @@ class ImageSoundPlayer extends Component {
             className="profile-image-feed img-circle"
             alt="profile"
           />
-          <b onClick={() => this.props.pushPage(item.user)}>{item.userName}</b>
+          <b onClick={() => this.props.pushPage({uid:item.user, userName:item.userName})}>{item.userName}</b>
         </div>
         <div className="imageButtonContainer">
           <img src={img} style={{ width: "100%" }} alt="placeholderText" />
