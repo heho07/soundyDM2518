@@ -4,6 +4,7 @@ import CreateUser from "./CreateUser";
 import Loading from "./Loading";
 import TabContainer from "./Containers/TabContainer";
 import ErrorPopUp from "./Containers/ErrorPopUp";
+import ResetPassword from "./ResetPassword";
 //import ShowUsersPosts from "./Containers/ShowUsersPosts";
 
 import { Route } from "react-router-dom";
@@ -85,6 +86,21 @@ class App extends Component {
               />
             )}
           />
+
+          <Route 
+            path = "/resetpassword"
+            exact
+            render = {props => (
+              <ResetPassword
+                {...props}
+                createErrorMessage = {(message, type) => 
+                  this.createErrorMessage(message, type)
+                }
+                cancelErrorMessage = {() => this.cancelErrorMessage()}
+              />
+            )}
+          />
+
           <ErrorPopUp
             type={this.state.errorMessageType}
             isOpen={this.state.errorOccured}

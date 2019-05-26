@@ -191,6 +191,9 @@ class Login extends Component {
         >
           Don't have an account? Click here
         </a>
+
+        <p style = {{marginTop:"2em"}} ><a href = 'javascript:;' onClick = {() => this.props.history.push('resetpassword')}>Forgot your password? Click here</a></p>
+
       </Ons.Page>
     );
   }
