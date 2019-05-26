@@ -47,12 +47,13 @@ class Profile extends Component {
     this.firebaseAuthListener && this.firebaseAuthListener();
   }
 
+  //Loggar ut användaren
   signOut = () => {
     firebase
       .auth()
       .signOut()
       .then(function() {
-        console.log("Signed out completed");
+        //console.log("Signed out completed");
       })
       .catch(function(error) {
         console.log("Error when signing out" + error);
@@ -63,10 +64,11 @@ class Profile extends Component {
       });
   };
 
+  //Set a profile image if the user created account with email+password
   renderProfileImage() {
-    const currentUser = this.state.currentUser; 
+    const currentUser = this.state.currentUser;
     if (currentUser && currentUser.photoURL === null) {
-      console.log(currentUser.userName);
+      //console.log(currentUser.userName);
       return (
         <img
           src="https://t4.ftcdn.net/jpg/02/15/84/43/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
@@ -85,6 +87,7 @@ class Profile extends Component {
     }
   }
 
+  //Upload a new displayname to firebase
   editProfileName() {
     var user = firebase.auth().currentUser;
     this.state.name !== null &&
@@ -104,6 +107,7 @@ class Profile extends Component {
         });
   }
 
+  //Upload and edit profile imgae
   upload = () => {
     var user = firebase.auth().currentUser;
     const ref = this.storageRef.child("profileImages");
@@ -144,6 +148,7 @@ class Profile extends Component {
     }
   };
 
+  //A function to chnage state of button-content when the user clicks on upload image
   selectButtonContent = () => {
     this.setState({
       checkmark: "block",
@@ -156,70 +161,71 @@ class Profile extends Component {
 
     return (
       <Ons.Page className="page">
-        <div className="profilDetails">
-          {this.renderProfileImage()}
-          <div className="profileName">
-            <h2>{currentUser && currentUser.displayName}</h2>
-            <div>
-              <Ons.Button modifier="material" onClick={this.signOut}>
-                Sign out <Ons.Icon icon="sign-out-alt" />
-              </Ons.Button>
+        <div className="top">
+          <div className="profilDetails">
+            {this.renderProfileImage()}
+            <div className="profileName">
+              <h2>{currentUser && currentUser.displayName}</h2>
+              <div>
+                <Ons.Button modifier="material" onClick={this.signOut}>
+                  Sign out <Ons.Icon icon="sign-out-alt" />
+                </Ons.Button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="edit">
-          <div className="editName">
-            <Ons.Input
-              value={this.state.name}
-              onChange={event => {
-                this.setState({ name: event.target.value });
-              }}
-              modifier="underbar"
-              float
-              placeholder="Update Name"
-              className="updateName"
-              requried
-            />
-            <Ons.Fab
-              className="saveButton"
-              onClick={this.editProfileName.bind(this)}
-            >
-              <Ons.Icon icon="save" />
-            </Ons.Fab>
+          <div className="edit">
+            <div className="editName">
+              <Ons.Input
+                value={this.state.name}
+                onChange={event => {
+                  this.setState({ name: event.target.value });
+                }}
+                modifier="underbar"
+                float
+                placeholder="Update Name"
+                className="updateName"
+                requried
+              />
+              <Ons.Fab
+                className="squareButton"
+                onClick={this.editProfileName.bind(this)}
+              >
+                <Ons.Icon icon="save" />
+              </Ons.Fab>
+            </div>
+            <form>
+              <input
+                className="uploadImage"
+                type="file"
+                name="photo"
+                accept="image/*"
+                id="photo"
+                onChange={this.selectButtonContent}
+              />
+              <label htmlFor="photo" className="uploadImage">
+                <span style={{ display: this.state.selectText }}>
+                  Select Image
+                </span>
+                <Ons.Icon
+                  icon="check"
+                  style={{ display: this.state.checkmark }}
+                />
+              </label>
+              <Ons.Button
+                modifier="material"
+                onClick={this.upload}
+                className="uploadImage"
+              >
+                <span style={{ display: this.state.uploadText }}>Upload</span>
+                <Ons.Icon
+                  spin
+                  icon="sync-alt"
+                  style={{ display: this.state.spinner }}
+                />
+              </Ons.Button>
+            </form>
           </div>
-          <form>
-            <input
-              className="uploadImage"
-              type="file"
-              name="photo"
-              accept="image/*"
-              id="photo"
-              onChange={this.selectButtonContent}
-            />
-            <label htmlFor="photo" className="uploadImage">
-              <span style={{ display: this.state.selectText }}>
-                Select Image
-              </span>
-              <Ons.Icon
-                icon="check"
-                style={{ display: this.state.checkmark }}
-              />
-            </label>
-            <Ons.Button
-              modifier="material"
-              onClick={this.upload}
-              className="uploadImage"
-            >
-              <span style={{ display: this.state.uploadText }}>Upload</span>
-              <Ons.Icon
-                spin
-                icon="sync-alt"
-                style={{ display: this.state.spinner }}
-              />
-            </Ons.Button>
-          </form>
         </div>
-
         <ShowUsersPosts
           user={this.state.currentUser}
           shouldShowDeleteButton={true}

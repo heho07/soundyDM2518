@@ -9,7 +9,7 @@ import "firebase/functions";
 import Navigator from "./Feed";
 import Profile from "./Profile";
 import Upload from "./Upload";
-import UsersPosts from "./ShowUsersPosts";
+//import UsersPosts from "./ShowUsersPosts";
 //import AudioTest from '../AudioRecorder/AudioTest';
 
 // imports for OnsenUI
@@ -22,7 +22,7 @@ import "onsenui/css/onsen-css-components.css";
 import config from "../secrets.js";
 
 // ES Modules syntax
-import Unsplash, { toJson } from "unsplash-js";
+import { toJson } from "unsplash-js";
 
 // require syntax
 
@@ -44,7 +44,9 @@ class TabContainer extends Component {
 
     this.state = {
       currentUser: null,
+
       index: 0,
+
       posts: [
         {
           title: "dog",
@@ -117,32 +119,44 @@ class TabContainer extends Component {
       var allSounds = [];
       try {
         await this.db
-        .collection('all-sounds')
-        .orderBy('time', 'desc')
-        .limit(10)
-        .get()
-        .then(querySnapshot => {
-          querySnapshot.forEach(doc => {
-            let soundData = doc.data()
-            const correctUser = usersFromDatabase.find(user => user.uid === soundData.user)
-            soundData.userName = correctUser ? correctUser.displayName : "-"
-            soundData.photoURL = correctUser ? correctUser.photoURL : null
-            soundData.id = doc.id
-            allSounds.push(soundData);
-          })})
-        .then(() => 
-          this.setState({ 
-            allSounds: allSounds,
-            status:"loaded",
-          }, () => this.setState({
-            lastKnownKey: this.state.allSounds[this.state.allSounds.length-1].time,            
-          }))
-        )
-        .catch(error => {
-          this.props.createErrorMessage("Error when fetching new sounds. See the log for more details", "Toast");
-          console.log(error);
-        });
-      } catch(err){
+          .collection("all-sounds")
+          .orderBy("time", "desc")
+          .limit(10)
+          .get()
+          .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+              let soundData = doc.data();
+              const correctUser = usersFromDatabase.find(
+                user => user.uid === soundData.user
+              );
+              soundData.userName = correctUser ? correctUser.displayName : "-";
+              soundData.photoURL = correctUser ? correctUser.photoURL : null;
+              soundData.id = doc.id;
+              allSounds.push(soundData);
+            });
+          })
+          .then(() =>
+            this.setState(
+              {
+                allSounds: allSounds,
+                status: "loaded"
+              },
+              () =>
+                this.setState({
+                  lastKnownKey: this.state.allSounds[
+                    this.state.allSounds.length - 1
+                  ].time
+                })
+            )
+          )
+          .catch(error => {
+            this.props.createErrorMessage(
+              "Error when fetching new sounds. See the log for more details",
+              "Toast"
+            );
+            console.log(error);
+          });
+      } catch (err) {
         this.props.createErrorMessage(err, "Toast");
         console.log(err);
       }
@@ -236,7 +250,7 @@ class TabContainer extends Component {
       .auth()
       .signOut()
       .then(function() {
-        console.log("Signed out completed");
+        //console.log("Signed out completed");
       })
       .catch(error => {
         console.log("Error when signing out" + error);
@@ -252,7 +266,9 @@ class TabContainer extends Component {
   renderToolbar() {
     return (
       <Ons.Toolbar>
-        <div className="center">Soundy</div>
+        <div className="center toolbar__center toolbar__title toolbar--material__center">
+          <img className="logoHeader" src="logo_white.png" alt="logo" />
+        </div>
       </Ons.Toolbar>
     );
   }

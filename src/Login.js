@@ -21,7 +21,7 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    redirectWhenOAuthChanges(this.props.history)
+    redirectWhenOAuthChanges(this.props.history);
   }
 
   signInWithGoogle = () => {
@@ -33,11 +33,11 @@ class Login extends Component {
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
-        console.log("Signed in with google!");
-        console.log(token);
-        console.log(user);
+        //console.log("Signed in with google!");
+        //console.log(token);
+        //console.log(user);
       })
-      .catch((error) => {
+      .catch(error => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -54,7 +54,8 @@ class Login extends Component {
             " email: " +
             email
         );
-        let errorMsg = "There was en error signing in with Google. See the log for detailed information.";
+        let errorMsg =
+          "There was en error signing in with Google. See the log for detailed information.";
         this.props.createErrorMessage(errorMsg, "Toast");
         console.log(credential);
       });
@@ -69,11 +70,11 @@ class Login extends Component {
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
-        console.log("Signed in with Facebook!");
-        console.log(token);
-        console.log(user);
+        //console.log("Signed in with Facebook!");
+        //console.log(token);
+        //console.log(user);
       })
-      .catch((error) => {
+      .catch(error => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -90,7 +91,8 @@ class Login extends Component {
             " email: " +
             email
         );
-        let errorMsg = "There was en error signing in with Facebook. See the log for detailed information.";
+        let errorMsg =
+          "There was en error signing in with Facebook. See the log for detailed information.";
         this.props.createErrorMessage(errorMsg, "Toast");
         console.log(credential);
       });
@@ -102,11 +104,12 @@ class Login extends Component {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .catch(error => {
-        console.log(this.state.email);
-        let errorMsg = ("Error logging in! " + error.code + " " + error.message);
+        //console.log(this.state.email);
+        let errorMsg = "Error logging in! " + error.code + " " + error.message;
         this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
+
 
   resetPassword = () => {
     var auth = firebase.auth();
@@ -122,21 +125,16 @@ class Login extends Component {
 
   }
 
-  renderToolbar() {
-    return (
-      <Ons.Toolbar>
-        <div className="center">Welcome</div>
-      </Ons.Toolbar>
-    );
-  }
 
   render() {
     return (
-      <Ons.Page renderToolbar={this.renderToolbar} className="page">
-        <h1>Soundy</h1>
-          <form onSubmit = {(event) => {
+      <Ons.Page className="page">
+        <img id="logoStartscreen" src="logo.png" alt="Soundy's logotype" />
+        <form
+          onSubmit={event => {
             event.preventDefault();
             this.loginClicked();
+
           }}>
             <p>
                 <Ons.Input
@@ -178,6 +176,7 @@ class Login extends Component {
             <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
           </form>
         <br />
+
         <p>
           <Ons.Button
             className=".fb-google-button"
@@ -198,10 +197,11 @@ class Login extends Component {
             <Ons.Icon icon="facebook" /> Sign in with Facebook
           </Ons.Button>
         </p>
+
         <a href='javascript:;' onClick={() => {this.props.history.push('/create')}}>Don't have an account? Click here</a>
         <p style = {{marginTop:"2em"}} ><a href = 'javascript:;' onClick = {() => this.props.history.push('resetpassword')}>Forgot your password? Click here</a></p>
-      </Ons.Page>
 
+      </Ons.Page>
     );
   }
 }

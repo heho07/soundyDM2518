@@ -16,12 +16,10 @@ class CreateUser extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { email: "", displayName: "",password: "" };
+    this.state = { email: "", displayName: "", password: "" };
   }
 
-  componentDidMount() {
-  }
-
+  componentDidMount() {}
 
   signInWithGoogle = () => {
     firebase
@@ -32,11 +30,11 @@ class CreateUser extends Component {
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
-        console.log("Signed in with google!");
-        console.log(token);
-        console.log(user);
+        //console.log("Signed in with google!");
+        //console.log(token);
+        //console.log(user);
       })
-      .catch((error) => {
+      .catch(error => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -53,7 +51,8 @@ class CreateUser extends Component {
             " email: " +
             email
         );
-        let errorMsg = "There was en error signing in with Google. See the log for detailed information.";
+        let errorMsg =
+          "There was en error signing in with Google. See the log for detailed information.";
         this.props.createErrorMessage(errorMsg, "Toast");
         console.log(credential);
       });
@@ -68,11 +67,11 @@ class CreateUser extends Component {
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
-        console.log("Signed in with Facebook!");
-        console.log(token);
-        console.log(user);
+        //console.log("Signed in with Facebook!");
+        //console.log(token);
+        //console.log(user);
       })
-      .catch((error) => {
+      .catch(error => {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -89,7 +88,8 @@ class CreateUser extends Component {
             " email: " +
             email
         );
-        let errorMsg = "There was en error signing in with Facebook. See the log for detailed information.";
+        let errorMsg =
+          "There was en error signing in with Facebook. See the log for detailed information.";
         this.props.createErrorMessage(errorMsg, "Toast");
         console.log(credential);
       });
@@ -101,104 +101,110 @@ class CreateUser extends Component {
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(userCredentials => {
-        userCredentials.user.updateProfile({displayName: displayName})
+        userCredentials.user.updateProfile({ displayName: displayName });
       })
       .catch(error => {
-        console.log(this.state.email);
-        let errorMsg = ("Error creating user! " + error.code + " " + error.message);
+        //console.log(this.state.email);
+        let errorMsg =
+          "Error creating user! " + error.code + " " + error.message;
         this.props.createErrorMessage(errorMsg, "Toast");
       });
   };
 
-  renderToolbar() {
-    return (
-      <Ons.Toolbar>
-        <div className="center">Welcome</div>
-      </Ons.Toolbar>
-    );
-  }
-
   render() {
     return (
-      <Ons.Page renderToolbar={this.renderToolbar} className="page">
-        <h1>Soundy</h1>
-          <form onSubmit = {(event) => {
+      <Ons.Page className="page">
+        <img id="logoStartscreen" src="logo.png" alt="Soundy's logotype" />
+        <form
+          onSubmit={event => {
             event.preventDefault();
             this.loginClicked();
-          }}>
-            <p>
-                <Ons.Input
-                  value={this.state.email}
-                  onChange={event => {
-                    this.setState({ email: event.target.value });
-                  }}
-                  modifier="underbar"
-                  type="email"
-                  float
-                  placeholder="Email"
-                  style={{ width: "80vw" }}
-                />
-              </p>
-              <p>
-                <Ons.Input
-                  value={this.state.displayName}
-                  onChange={event => {
-                    this.setState({ displayName: event.target.value });
-                  }}
-                  modifier="underbar"
-                  float
-                  placeholder="Display Name"
-                  style={{ width: "80vw" }}
-                />
-              </p>
-              <p>
-                <Ons.Input
-                  value={this.state.password}
-                  onChange={event => {
-                    this.setState({ password: event.target.value });
-                  }}
-                  modifier="underbar"
-                  type="password"
-                  float
-                  placeholder="Password"
-                  style={{ width: "80vw" }}
-                />
-              </p>
-              <br />
-              
-              <p>
-                <Ons.Button
-                  onClick={this.createClick}
-                  modifier="underbar"
-                  style={{ width: "60vw" }}
-                >
-                  Create Account
-                </Ons.Button>
-              </p>
-              <br />
-            <p>
-              <Ons.Button
-                className=".fb-google-button"
-                modifier="underbar"
-                style={{ width: "60vw" }}
-                onClick={this.signInWithGoogle}
-              >
-                Create account with <Ons.Icon icon="google" />
-              </Ons.Button>
-            </p>
-            <p>
-              <Ons.Button
-                className=".fb-google-button"
-                modifier="underbar"
-                style={{ width: "60vw" }}
-                onClick={this.signInWithFacebook}
-              >
-                Create account with <Ons.Icon icon="facebook" />
-              </Ons.Button>
-            </p>
-            <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
-          </form>
-          <a href='javascript:;' onClick={() => {this.props.history.push('/login')}}>Already have an account? Click here</a>
+          }}
+        >
+          <p>
+            <Ons.Input
+              value={this.state.email}
+              onChange={event => {
+                this.setState({ email: event.target.value });
+              }}
+              modifier="underbar"
+              type="email"
+              float
+              placeholder="Email"
+              style={{ width: "80vw" }}
+            />
+          </p>
+          <p>
+            <Ons.Input
+              value={this.state.password}
+              onChange={event => {
+                this.setState({ password: event.target.value });
+              }}
+              modifier="underbar"
+              type="password"
+              float
+              placeholder="Password"
+              style={{ width: "80vw" }}
+            />
+          </p>
+          <p>
+            <Ons.Input
+              value={this.state.displayName}
+              onChange={event => {
+                this.setState({ displayName: event.target.value });
+              }}
+              modifier="underbar"
+              float
+              placeholder="Display Name"
+              style={{ width: "80vw" }}
+            />
+          </p>
+
+          <br />
+
+          <p>
+            <Ons.Button
+              onClick={this.createClick}
+              modifier="underbar"
+              style={{ width: "60vw" }}
+            >
+              Create Account
+            </Ons.Button>
+          </p>
+          <br />
+          <p>
+            <Ons.Button
+              className=".fb-google-button"
+              modifier="underbar"
+              style={{ width: "60vw" }}
+              onClick={this.signInWithGoogle}
+            >
+              Create account with <Ons.Icon icon="google" />
+            </Ons.Button>
+          </p>
+          <p>
+            <Ons.Button
+              className=".fb-google-button"
+              modifier="underbar"
+              style={{ width: "60vw" }}
+              onClick={this.signInWithFacebook}
+            >
+              Create account with <Ons.Icon icon="facebook" />
+            </Ons.Button>
+          </p>
+          <input
+            type="submit"
+            style={{ visibility: "hidden", height: 0, width: 0 }}
+          />
+        </form>
+        <a
+          href="javascript:;"
+          onClick={() => {
+            this.props.history.push("/login");
+          }}
+        >
+          Already have an account? Click here
+        </a>
       </Ons.Page>
     );
   }

@@ -9,57 +9,55 @@ import "onsenui/css/onsen-css-components.css";
 
 class ErrorPopUp extends Component {
   // inherits the posts to show from the TabContainer.jsx
-  constructor(props) {
-    super(props);
-    
+
+  handleCancel() {
+    //console.log("clicked handleCancel");
   }
 
-
-
-  handleCancel(){
-    console.log("clicked handleCancel");
-  }
-
-  renderToast(){
+  renderToast() {
     return (
-        <Ons.Toast isOpen={this.props.isOpen}>
-          <div className="message">
-            {this.props.message}
-          </div>
-          <button onClick={() => this.props.onCancel()}>
-            Dismiss
-          </button>
-        </Ons.Toast>
-      );
-  }
-
-  renderAlertDialog(){
-    return (
-      <Ons.AlertDialog isOpen={this.props.isOpen} onCancel={() => this.props.onCancel()} cancelable>
-       <div className="alert-dialog-title">Warning!</div>
-       <div className="alert-dialog-content">
-          {this.props.message}
-       </div>
-       <div className="alert-dialog-footer">
-         <button onClick={() => this.props.onCancel()} className="alert-dialog-button">
-           Cancel
-         </button>
-         <button onClick={() => this.props.onCancel()} className="alert-dialog-button">
-           Ok
-         </button>
-       </div>
-     </Ons.AlertDialog>
+      <Ons.Toast isOpen={this.props.isOpen}>
+        <div className="message">{this.props.message}</div>
+        <button onClick={() => this.props.onCancel()}>Dismiss</button>
+      </Ons.Toast>
     );
   }
 
-  showError(){
+  renderAlertDialog() {
+    return (
+      <Ons.AlertDialog
+        isOpen={this.props.isOpen}
+        onCancel={() => this.props.onCancel()}
+        cancelable
+      >
+        <div className="alert-dialog-title">Warning!</div>
+        <div className="alert-dialog-content">{this.props.message}</div>
+        <div className="alert-dialog-footer">
+          <button
+            onClick={() => this.props.onCancel()}
+            className="alert-dialog-button"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => this.props.onCancel()}
+            className="alert-dialog-button"
+          >
+            Ok
+          </button>
+        </div>
+      </Ons.AlertDialog>
+    );
+  }
+
+  showError() {
     let toRet;
-    switch(this.props.type){
+    switch (this.props.type) {
       case "AlertDialog":
         toRet = this.renderAlertDialog();
         break;
       case "Toast":
-        toRet =  this.renderToast();
+        toRet = this.renderToast();
         break;
       default:
         toRet = this.renderAlertDialog();
@@ -70,7 +68,7 @@ class ErrorPopUp extends Component {
 
   render() {
     let toReturn = this.showError();
-    return (<span>{toReturn}</span>)
+    return <span>{toReturn}</span>;
   }
 }
 
