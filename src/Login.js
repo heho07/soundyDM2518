@@ -33,9 +33,9 @@ class Login extends Component {
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
-        console.log("Signed in with google!");
-        console.log(token);
-        console.log(user);
+        //console.log("Signed in with google!");
+        //console.log(token);
+        //console.log(user);
       })
       .catch(error => {
         // Handle Errors here.
@@ -70,9 +70,9 @@ class Login extends Component {
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
-        console.log("Signed in with Facebook!");
-        console.log(token);
-        console.log(user);
+        //console.log("Signed in with Facebook!");
+        //console.log(token);
+        //console.log(user);
       })
       .catch(error => {
         // Handle Errors here.
@@ -104,7 +104,7 @@ class Login extends Component {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .catch(error => {
-        console.log(this.state.email);
+        //console.log(this.state.email);
         let errorMsg = "Error logging in! " + error.code + " " + error.message;
         this.props.createErrorMessage(errorMsg, "Toast");
       });
@@ -113,7 +113,7 @@ class Login extends Component {
   render() {
     return (
       <Ons.Page className="page">
-        <img id="logoStartscreen" src="logo.png" />
+        <img id="logoStartscreen" src="logo.png" alt="Soundy's logotype" />
         <form
           onSubmit={event => {
             event.preventDefault();

@@ -12,7 +12,7 @@ import * as firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
 
-import ErrorPopUp from "./ErrorPopUp";
+//import ErrorPopUp from "./ErrorPopUp";
 
 class Upload extends Component {
   constructor(props) {
@@ -63,12 +63,12 @@ class Upload extends Component {
     this.setState({
       record: false
     });
-    console.log(this.state.time);
+    //console.log(this.state.time);
     this.stopTimer();
   };
 
   onData(recordedBlob) {
-    console.log("chunk of real-time data is: ", recordedBlob);
+    //console.log("chunk of real-time data is: ", recordedBlob);
   }
 
   onStop(recordedBlob) {
@@ -116,7 +116,7 @@ class Upload extends Component {
     this.setState({ uploading: true });
     const { uid } = firebase.auth().currentUser;
 
-    console.log(uid);
+    //console.log(uid);
     var timeStamp = +new Date();
     var soundRef = this.storageRef.child("sounds/" + timeStamp);
 
@@ -160,10 +160,7 @@ class Upload extends Component {
   render() {
     const {
       blobURL,
-      audioURL,
-      isRecording,
-      isPaused,
-      title,
+
       uploading
     } = this.state;
     let recordButton;

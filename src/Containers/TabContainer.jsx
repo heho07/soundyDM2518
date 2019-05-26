@@ -9,7 +9,7 @@ import "firebase/functions";
 import Navigator from "./Feed";
 import Profile from "./Profile";
 import Upload from "./Upload";
-import UsersPosts from "./ShowUsersPosts";
+//import UsersPosts from "./ShowUsersPosts";
 //import AudioTest from '../AudioRecorder/AudioTest';
 
 // imports for OnsenUI
@@ -22,7 +22,7 @@ import "onsenui/css/onsen-css-components.css";
 import config from "../secrets.js";
 
 // ES Modules syntax
-import Unsplash, { toJson } from "unsplash-js";
+import { toJson } from "unsplash-js";
 
 // require syntax
 
@@ -243,7 +243,7 @@ class TabContainer extends Component {
       .auth()
       .signOut()
       .then(function() {
-        console.log("Signed out completed");
+        //console.log("Signed out completed");
       })
       .catch(error => {
         console.log("Error when signing out" + error);
@@ -257,8 +257,8 @@ class TabContainer extends Component {
   renderToolbar() {
     return (
       <Ons.Toolbar>
-        <div class="center toolbar__center toolbar__title toolbar--material__center">
-          <img className="logoHeader" src="logo_white.png" />
+        <div className="center toolbar__center toolbar__title toolbar--material__center">
+          <img className="logoHeader" src="logo_white.png" alt="logo" />
         </div>
       </Ons.Toolbar>
     );

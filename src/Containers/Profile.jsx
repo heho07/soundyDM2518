@@ -47,12 +47,13 @@ class Profile extends Component {
     this.firebaseAuthListener && this.firebaseAuthListener();
   }
 
+  //Loggar ut användaren
   signOut = () => {
     firebase
       .auth()
       .signOut()
       .then(function() {
-        console.log("Signed out completed");
+        //console.log("Signed out completed");
       })
       .catch(function(error) {
         console.log("Error when signing out" + error);
@@ -63,10 +64,11 @@ class Profile extends Component {
       });
   };
 
+  //Set a profile image if the user created account with email+password
   renderProfileImage() {
     const currentUser = this.state.currentUser;
     if (currentUser && currentUser.photoURL === null) {
-      console.log(currentUser.userName);
+      //console.log(currentUser.userName);
       return (
         <img
           src="https://t4.ftcdn.net/jpg/02/15/84/43/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
@@ -85,6 +87,7 @@ class Profile extends Component {
     }
   }
 
+  //Upload a new displayname to firebase
   editProfileName() {
     var user = firebase.auth().currentUser;
     this.state.name !== null &&
@@ -104,6 +107,7 @@ class Profile extends Component {
         });
   }
 
+  //Upload and edit profile imgae
   upload = () => {
     var user = firebase.auth().currentUser;
     const ref = this.storageRef.child("profileImages");
@@ -144,6 +148,7 @@ class Profile extends Component {
     }
   };
 
+  //A function to chnage state of button-content when the user clicks on upload image
   selectButtonContent = () => {
     this.setState({
       checkmark: "block",
@@ -182,7 +187,7 @@ class Profile extends Component {
                 requried
               />
               <Ons.Fab
-                className="saveButton"
+                className="squareButton"
                 onClick={this.editProfileName.bind(this)}
               >
                 <Ons.Icon icon="save" />
