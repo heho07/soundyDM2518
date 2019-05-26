@@ -67,7 +67,7 @@ class Feed extends Component {
           item={element}
           key={element.id}
           createErrorMessage={this.props.createErrorMessage}
-          pushPage={userID => this.props.pushPage(userID)}
+          pushPage={user => this.props.pushPage(user)}
         />
       );
     });
@@ -113,12 +113,12 @@ class Navigator extends Component {
   }
 
   renderPage(route, navigator) {
-    switch (route.component) {
+    switch (route.component.uid) {
       case "Feed":
         // skickar med alla props till Feed samt även hur den kan nå ShowUsersPosts
         return (
           <Feed
-            key={route.component}
+            key={route.component.uid}
             {...this.props}
             pushPage={userID => this.pushPage(navigator, userID)}
           />
@@ -127,14 +127,14 @@ class Navigator extends Component {
       default:
         // om route inte är Feed så antas det att det är ett user ID och försöker visa detta.
         return (
-          <Ons.Page key={route.component}>
+          <Ons.Page key={route.component.uid}>
             {route.hasBackButton ? (
               <button onClick={() => navigator.popPage()}>go back</button>
             ) : (
               <span />
             )}
             <ShowUsersPosts
-              user={{ uid: route.component }}
+              user={route.component}
               shouldShowDeleteButton={false}
             />
           </Ons.Page>
@@ -154,7 +154,7 @@ class Navigator extends Component {
           swipeable
           renderPage={this.renderPage.bind(this)}
           initialRoute={{
-            component: "Feed",
+            component: {uid:"Feed"},
             hasBackButton: false
           }}
         />
