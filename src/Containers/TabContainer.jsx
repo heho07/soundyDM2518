@@ -261,7 +261,13 @@ class TabContainer extends Component {
       });
   };
 
-  
+
+  changeTabContainerIndex(num){
+    this.setState({
+      index:num,
+    });
+  }
+
 
   renderToolbar() {
     return (
@@ -326,6 +332,9 @@ class TabContainer extends Component {
                     }
                     updateImagesFromUnsplash={keyWord =>
                       this.updateImagesFromUnsplash(keyWord)
+                    }
+                    changeTabContainerIndex = {(num) =>
+                      this.changeTabContainerIndex(num)
                     }
                   />
                 </Ons.Page>
