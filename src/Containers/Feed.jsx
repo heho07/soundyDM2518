@@ -128,12 +128,15 @@ class Navigator extends Component {
         // om route inte är Feed så antas det att det är ett user ID och försöker visa detta.
         return (
           <Ons.Page key={route.component.uid}>
-            {route.hasBackButton ? (
-              <Ons.Button onClick={() => navigator.popPage()}>go back</Ons.Button>
-            ) : (
-              <span />
-            )}
-            <h2>{route.component.userName}</h2>
+            <div style = {{textAlign:"left"}} >
+              <Ons.BackButton onClick = {() => navigator.popPage()} >go back</Ons.BackButton>
+              <img
+                src={route.component.userImage}
+                className="profile-image-feed img-circle"
+                alt="profile"
+              />
+              <h2 style = {{display:"inline-block"}} >{route.component.userName}</h2>
+            </div>
             <ShowUsersPosts
               user={route.component}
               shouldShowDeleteButton={false}
