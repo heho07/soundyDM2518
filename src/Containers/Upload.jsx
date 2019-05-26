@@ -224,6 +224,7 @@ class Upload extends Component {
             onChange={event => {
               this.setState({ title: event.target.value });
             }}
+            onKeyPress={(event) => {if(event.which == 13){this.uploadRecording()}}}
             modifier="material"
             float
             placeholder="Title"
@@ -236,6 +237,7 @@ class Upload extends Component {
             onChange={event => {
               this.setState({ keyword: event.target.value });
             }}
+            onKeyPress={(event) => {if(event.which == 13){this.uploadRecording()}}}
             modifier="material"
             float
             placeholder="Enter 1 keyword"
