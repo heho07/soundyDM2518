@@ -43,7 +43,9 @@ class Start extends Component {
     return (
       <ons-page id="App">
         <ons-toolbar>
-          <div className="center">Soundy</div>
+          <div className="center">
+            <img scr="logo.png" />
+          </div>
 
           <div className="right">
             <ons-toolbar-button icon="sign-out-alt" onClick={this.signOut} />

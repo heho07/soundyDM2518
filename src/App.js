@@ -4,9 +4,9 @@ import CreateUser from "./CreateUser";
 import Loading from "./Loading";
 import TabContainer from "./Containers/TabContainer";
 import ErrorPopUp from "./Containers/ErrorPopUp";
-import ShowUsersPosts from "./Containers/ShowUsersPosts";
+//import ShowUsersPosts from "./Containers/ShowUsersPosts";
 
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import "./App.css";
 
 class App extends Component {

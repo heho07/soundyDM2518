@@ -6,11 +6,8 @@ import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Pa
 // Webpack CSS import
 import "onsenui/css/onsenui.css";
 import "onsenui/css/onsen-css-components.css";
-import ImageSoundPlayer from "../Components/ImageSoundPlayer";
 
-import ShowUsersPosts from "./ShowUsersPosts";
-
-class Feed extends Component {
+class UserFeed extends Component {
   // inherits the posts to show from the TabContainer.jsx
   constructor(props) {
     super(props);
@@ -58,18 +55,10 @@ class Feed extends Component {
   }
 
   // https://www.npmjs.com/package/react-infinite-scroller
-  renderInfiniteScroller(that) {
-    //  console.log(that);
+  renderInfiniteScroller() {
     let items = [];
     this.props.allSounds.map((element, i) => {
-      items.push(
-        <ImageSoundPlayer
-          item={element}
-          key={element.id}
-          createErrorMessage={this.props.createErrorMessage}
-          pushPage={userID => this.props.pushPage(userID)}
-        />
-      );
+      items.push(this.renderItem(element));
     });
     return (
       <InfiniteScroll
@@ -96,71 +85,48 @@ class Feed extends Component {
     this.props.fetchAdditionalSounds();
   }
 
+  // Each element to be shown in the feed
+  renderItem(item) {
+    let img = item.imgUrl ? item.imgUrl : "https://i.imgur.com/dBmYY4M.png"; // old placeholder image "https://i.imgur.com/hgyXyww.png"
+    return (
+      <Ons.Card key={item.time}>
+        <p>{item.title}</p>
+        <p>Posted by: {item.userName}</p>
+        <center>
+          <img src={img} alt="placeholderText" />
+          <audio controls onWaiting={() => this.handleAudioWaiting()}>
+            <source src={item.url} />
+            <p>
+              Your browser does not support audio. The file can be found at{" "}
+              <a href={item.url}>this link</a>
+            </p>
+          </audio>
+        </center>
+        <p>
+          {new Date(item.time).toDateString()}{" "}
+          {new Date(item.time).toLocaleTimeString()}
+        </p>
+      </Ons.Card>
+    );
+  }
+
+  // Called if the audio player has to wait due to slow internet connection
+  handleAudioWaiting() {
+    this.props.createErrorMessage(
+      "Slow internet connection detected.",
+      "Toast"
+    );
+  }
+
   render() {
     return (
       <Ons.Page>
         {this.renderPullHook()}
+        <button onClick={() => this.props.fetchUsersPosts()}>fetch</button>
         {this.renderInfiniteScroller()}
       </Ons.Page>
     );
   }
 }
 
-//  en klass som antingen visar Feed eller ShowUsersPost
-class Navigator extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  renderPage(route, navigator) {
-    switch (route.component) {
-      case "Feed":
-        // skickar med alla props till Feed samt även hur den kan nå ShowUsersPosts
-        return (
-          <Feed
-            key={route.component}
-            {...this.props}
-            pushPage={userID => this.pushPage(navigator, userID)}
-          />
-        );
-
-      default:
-        // om route inte är Feed så antas det att det är ett user ID och försöker visa detta.
-        return (
-          <Ons.Page key={route.component}>
-            {route.hasBackButton ? (
-              <button onClick={() => navigator.popPage()}>go back</button>
-            ) : (
-              <span />
-            )}
-            <ShowUsersPosts
-              user={{ uid: route.component }}
-              shouldShowDeleteButton={false}
-            />
-          </Ons.Page>
-        );
-    }
-  }
-
-  // lägger till en route i navigatorns stack
-  pushPage(navigator, route) {
-    navigator.pushPage({ component: route, hasBackButton: true });
-  }
-
-  render() {
-    return (
-      <Ons.Page>
-        <Ons.Navigator
-          swipeable
-          renderPage={this.renderPage.bind(this)}
-          initialRoute={{
-            component: "Feed",
-            hasBackButton: false
-          }}
-        />
-      </Ons.Page>
-    );
-  }
-}
-
-export default Navigator;
+export default UserFeed;

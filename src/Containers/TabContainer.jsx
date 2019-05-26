@@ -6,10 +6,10 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/functions";
 
-import Feed from "./Feed";
+import Navigator from "./Feed";
 import Profile from "./Profile";
 import Upload from "./Upload";
-import UsersPosts from "./ShowUsersPosts";
+//import UsersPosts from "./ShowUsersPosts";
 //import AudioTest from '../AudioRecorder/AudioTest';
 
 // imports for OnsenUI
@@ -22,7 +22,7 @@ import "onsenui/css/onsen-css-components.css";
 import config from "../secrets.js";
 
 // ES Modules syntax
-import Unsplash, { toJson } from "unsplash-js";
+import { toJson } from "unsplash-js";
 
 // require syntax
 
@@ -44,7 +44,7 @@ class TabContainer extends Component {
 
     this.state = {
       currentUser: null,
-      index: 2,
+      index: 1,
       posts: [
         {
           title: "dog",
@@ -125,6 +125,7 @@ class TabContainer extends Component {
               );
               soundData.userName = correctUser ? correctUser.displayName : "-";
               soundData.photoURL = correctUser ? correctUser.photoURL : null;
+              soundData.id = doc.id;
               allSounds.push(soundData);
             });
           })
@@ -242,7 +243,7 @@ class TabContainer extends Component {
       .auth()
       .signOut()
       .then(function() {
-        console.log("Signed out completed");
+        //console.log("Signed out completed");
       })
       .catch(error => {
         console.log("Error when signing out" + error);
@@ -253,10 +254,18 @@ class TabContainer extends Component {
       });
   };
 
+  changeTabContainerIndex(num){
+    this.setState({
+      index:num,
+    });
+  }
+
   renderToolbar() {
     return (
       <Ons.Toolbar>
-        <div className="center">Soundy</div>
+        <div className="center toolbar__center toolbar__title toolbar--material__center">
+          <img className="logoHeader" src="logo_white.png" alt="logo" />
+        </div>
       </Ons.Toolbar>
     );
   }
@@ -274,7 +283,7 @@ class TabContainer extends Component {
         break;
       case "loaded":
         feedPage = (
-          <Feed
+          <Navigator
             posts={this.state.posts}
             allSounds={this.state.allSounds}
             fetchAllSounds={() => this.fetchAllSounds()}
@@ -285,7 +294,6 @@ class TabContainer extends Component {
             hasMore={this.state.hasMore}
           />
         );
-
         break;
       default:
         feedPage = <p>something wrong</p>;
@@ -314,6 +322,9 @@ class TabContainer extends Component {
                     }
                     updateImagesFromUnsplash={keyWord =>
                       this.updateImagesFromUnsplash(keyWord)
+                    }
+                    changeTabContainerIndex = {(num) =>
+                      this.changeTabContainerIndex(num)
                     }
                   />
                 </Ons.Page>

@@ -24,6 +24,9 @@ class ShowUsersPosts extends Component {
 
   componentDidMount() {
     this.db = firebase.firestore();
+    if (this.props.user) {
+      this.getUsersPost(this.props.user);
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -32,6 +35,7 @@ class ShowUsersPosts extends Component {
     } else {
       if (nextProps.user) {
         this.getUsersPost(nextProps.user);
+        return false;
       }
       return true
     }
@@ -50,6 +54,9 @@ class ShowUsersPosts extends Component {
         posts.push(documentData);
 
         //Lägg till de promise man får i en lista
+      });
+      posts.sort((a, b) => {
+        return b.time - a.time;
       });
       this.setState({ listOfPosts: posts, hasFetched: true });
     });
@@ -82,9 +89,18 @@ class ShowUsersPosts extends Component {
     return this.state.listOfPosts.map((post, index) => (
       <Ons.ListItem key={post.time}>
         <div className="left">
-          <img src={post.imgUrl} className="list-item__thumbnail" />
+          <img
+            src={post.imgUrl}
+            className="list-item__thumbnail"
+            alt="thumbnail"
+          />
         </div>
-        <div className="center">{post.title}</div>
+        <div className="center">
+          <strong>
+            {post.title}
+            <i> #{post.keyword}</i>
+          </strong>
+        </div>
 
         {this.props.shouldShowDeleteButton && (
           <div className="right">
@@ -102,7 +118,11 @@ class ShowUsersPosts extends Component {
   }
 
   render() {
-    return <Ons.List>{this.renderListItems()}</Ons.List>;
+    return (
+      <div className="userList">
+        <Ons.List>{this.renderListItems()}</Ons.List>
+      </div>
+    );
   }
 }
 
