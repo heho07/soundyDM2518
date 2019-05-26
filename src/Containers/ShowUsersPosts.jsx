@@ -47,7 +47,6 @@ class ShowUsersPosts extends Component {
       let posts = [];
       querySnapshot.forEach(doc => {
         let documentData = doc.data();
-
         posts.push(documentData);
 
         //Lägg till de promise man får i en lista
@@ -60,7 +59,6 @@ class ShowUsersPosts extends Component {
   };
 
   renderListItems() {
-
     return this.state.listOfPosts.map(post => (
       <Ons.ListItem key={post.time}>
         <div className="left">

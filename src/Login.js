@@ -110,22 +110,6 @@ class Login extends Component {
       });
   };
 
-
-  resetPassword = () => {
-    var auth = firebase.auth();
-    var emailAddress = this.state.email;
-
-    auth.sendPasswordResetEmail(emailAddress).then(function() {
-      // Email sent.
-      console.log("Sent email");
-      this.props.createErrorMessage("Email sent for password reset!", "Toast");
-    }).catch(function(error) {
-      // An error happened.
-    });
-
-  }
-
-
   render() {
     return (
       <Ons.Page className="page">
@@ -134,48 +118,49 @@ class Login extends Component {
           onSubmit={event => {
             event.preventDefault();
             this.loginClicked();
-
-          }}>
-            <p>
-                <Ons.Input
-                  value={this.state.email}
-                  onChange={event => {
-                    this.setState({ email: event.target.value });
-                  }}
-                  type="email"
-                  modifier="underbar"
-                  float
-                  placeholder="Email"
-                  style={{ width: "80vw" }}
-                />
-              </p>
-              <p>
-                <Ons.Input
-                  value={this.state.password}
-                  onChange={event => {
-                    this.setState({ password: event.target.value });
-                  }}
-                  modifier="underbar"
-                  type="password"
-                  float
-                  placeholder="Password"
-                  style={{ width: "80vw" }}
-                />
-              </p>
-              <br />
-              <p>
-                <Ons.Button
-                  onClick={this.loginClicked}
-                  modifier="underbar"
-                  style={{ width: "60vw" }}
-                >
-                  Log in
-                </Ons.Button>
-                
-              </p>
-            <input type = "submit" style = {{visibility:"hidden", height:0, width:0}}/>
-          </form>
-        <br />
+          }}
+        >
+          <p>
+            <Ons.Input
+              value={this.state.email}
+              onChange={event => {
+                this.setState({ email: event.target.value });
+              }}
+              type="email"
+              modifier="underbar"
+              float
+              placeholder="Email"
+              style={{ width: "80vw" }}
+            />
+          </p>
+          <p>
+            <Ons.Input
+              value={this.state.password}
+              onChange={event => {
+                this.setState({ password: event.target.value });
+              }}
+              modifier="underbar"
+              type="password"
+              float
+              placeholder="Password"
+              style={{ width: "80vw" }}
+            />
+          </p>
+          <div className="border" />
+          <p>
+            <Ons.Button
+              onClick={this.loginClicked}
+              modifier="underbar"
+              style={{ width: "60vw" }}
+            >
+              Log in
+            </Ons.Button>
+          </p>
+          <input
+            type="submit"
+            style={{ visibility: "hidden", height: 0, width: 0 }}
+          />
+        </form>
 
         <p>
           <Ons.Button
@@ -197,10 +182,15 @@ class Login extends Component {
             <Ons.Icon icon="facebook" /> Sign in with Facebook
           </Ons.Button>
         </p>
-
-        <a href='javascript:;' onClick={() => {this.props.history.push('/create')}}>Don't have an account? Click here</a>
-        <p style = {{marginTop:"2em"}} ><a href = 'javascript:;' onClick = {() => this.props.history.push('resetpassword')}>Forgot your password? Click here</a></p>
-
+        <br />
+        <a
+          href="javascript:;"
+          onClick={() => {
+            this.props.history.push("/create");
+          }}
+        >
+          Don't have an account? Click here
+        </a>
       </Ons.Page>
     );
   }
