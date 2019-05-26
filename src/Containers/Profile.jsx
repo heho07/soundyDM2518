@@ -6,9 +6,10 @@ import * as firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/storage";
 import "firebase/firestore";
+import 'firebase/functions';
 
 import * as Ons from "react-onsenui"; // Import everything and use it as 'Ons.Page', 'Ons.Button'
-//import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
+import * as ons from "onsenui"; // This needs to be imported to bootstrap the components.
 
 // Webpack CSS import
 import "onsenui/css/onsenui.css";
@@ -27,8 +28,12 @@ class Profile extends Component {
       spinner: "none",
       selectText: "inherent",
       uploadText: "inherent",
+      deletingUser: false,
       listOfPosts: []
     };
+
+    this.removeUser = firebase.functions().httpsCallable('removeUser');
+
   }
 
   componentDidMount() {
@@ -64,6 +69,29 @@ class Profile extends Component {
       });
   };
 
+  showRemoveAccountConfirmation = () => {
+    ons.notification.confirm('Are you sure you want to delete your account?')
+    .then(selected => {
+      //Selected is 1 for OK and 0 for Cancel
+      if(selected){
+        this.removeAccount()
+      }
+    })
+  }
+
+  removeAccount = () => {
+    this.setState({deletingUser: true})
+    const {uid} = this.state.currentUser;
+    console.log(uid)
+    this.removeUser({uid}).then(result => {
+      if(result.data.completed){
+        this.signOut()
+      } else {
+        this.props.createErrorMessage("Error when removing account", "Toast");
+      }
+    })
+  };
+  
   //Set a profile image if the user created account with email+password
   renderProfileImage() {
     const currentUser = this.state.currentUser;
@@ -158,72 +186,81 @@ class Profile extends Component {
 
   render() {
     const currentUser = this.state.currentUser;
+    if(this.state.deletingUser){
+      return (
+      <div style={{'paddingTop':'50%', 'fontSize':'2rem'}}>
+        Deleting...
+      </div>);
+    }
 
     return (
       <Ons.Page className="page">
         <div className="top">
           <div className="profilDetails">
-            {this.renderProfileImage()}
-            <div className="profileName">
+            <div className="profileNameAndImageContainer">
+              {this.renderProfileImage()}
               <h2>{currentUser && currentUser.displayName}</h2>
-              <div>
+            </div>
+            <div className="signOutRemoveContainer">
                 <Ons.Button modifier="material" onClick={this.signOut}>
                   Sign out <Ons.Icon icon="sign-out-alt" />
                 </Ons.Button>
+                <Ons.Button modifier="material" onClick={this.showRemoveAccountConfirmation} style={{backgroundColor: 'red'}}>
+                  Remove account <Ons.Icon icon="trash" />
+                </Ons.Button>
               </div>
-            </div>
-          </div>
-          <div className="edit">
-            <div className="editName">
-              <Ons.Input
-                value={this.state.name}
-                onChange={event => {
-                  this.setState({ name: event.target.value });
-                }}
-                modifier="underbar"
-                float
-                placeholder="Update Name"
-                className="updateName"
-                requried
-              />
-              <Ons.Fab
-                className="squareButton"
-                onClick={this.editProfileName.bind(this)}
-              >
-                <Ons.Icon icon="save" />
-              </Ons.Fab>
-            </div>
-            <form>
-              <input
-                className="uploadImage"
-                type="file"
-                name="photo"
-                accept="image/*"
-                id="photo"
-                onChange={this.selectButtonContent}
-              />
-              <label htmlFor="photo" className="uploadImage">
-                <span style={{ display: this.state.selectText }}>
-                  Select Image
-                </span>
-                <Ons.Icon
-                  icon="check"
-                  style={{ display: this.state.checkmark }}
+            <div className="edit">
+              <div className="editName">
+                <Ons.Input
+                  value={this.state.name}
+                  onChange={event => {
+                    this.setState({ name: event.target.value });
+                  }}
+                  modifier="underbar"
+                  float
+                  placeholder="Update Name"
+                  className="updateName"
+                  requried
                 />
-              </label>
-              <Ons.Button
-                modifier="material"
-                onClick={this.upload}
-                className="uploadImage"
-              >
-                <span style={{ display: this.state.uploadText }}>Upload</span>
-                <Ons.Icon
-                  spin
-                  icon="sync-alt"
-                  style={{ display: this.state.spinner }}
+                <Ons.Fab
+                  className="squareButton"
+                  onClick={this.editProfileName.bind(this)}
+                >
+                  <Ons.Icon icon="save" />
+                </Ons.Fab>
+              </div>
+              <form>
+                <input
+                  className="uploadImage"
+                  type="file"
+                  name="photo"
+                  accept="image/*"
+                  id="photo"
+                  onChange={this.selectButtonContent}
                 />
-              </Ons.Button>
-            </form>
+                <label htmlFor="photo" className="uploadImage">
+                  <span style={{ display: this.state.selectText }}>
+                    Select Image
+                  </span>
+                  <Ons.Icon
+                    icon="check"
+                    style={{ display: this.state.checkmark }}
+                  />
+                </label>
+                <Ons.Button
+                  modifier="material"
+                  onClick={this.upload}
+                  className="uploadImage"
+                >
+                  <span style={{ display: this.state.uploadText }}>Upload</span>
+                  <Ons.Icon
+                    spin
+                    icon="sync-alt"
+                    style={{ display: this.state.spinner }}
+                  />
+                </Ons.Button>
+              </form>
+            </div>
           </div>
         </div>
         <ShowUsersPosts
