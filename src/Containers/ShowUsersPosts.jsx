@@ -37,7 +37,7 @@ class ShowUsersPosts extends Component {
         this.getUsersPost(nextProps.user);
         return false;
       }
-      return true
+      return true;
     }
   }
 
@@ -63,27 +63,28 @@ class ShowUsersPosts extends Component {
   };
 
   showDeletePostConfirmation = (post, index) => {
-    ons.notification.confirm('Are you sure you want to delete this post?')
-    .then(selected => {
-      //Selected is 1 for OK and 0 for Cancel
-      if(selected){
-        this.deletePost(post, index)
-      }
-    })
-  }
+    ons.notification
+      .confirm("Are you sure you want to delete this post?")
+      .then(selected => {
+        //Selected is 1 for OK and 0 for Cancel
+        if (selected) {
+          this.deletePost(post, index);
+        }
+      });
+  };
 
   deletePost = (post, index) => {
     //Delete post
-    post.showSpinnerOnButton = true
+    post.showSpinnerOnButton = true;
     this.state.listOfPosts[index].showSpinnerOnButton = true;
-    this.forceUpdate()
-    const {id, storageUri} = post
-    this.removeOnePost({id, storageUri}).then(result => {
-      if(result.data.completed){
-        this.setState({hasFetched: false})
+    this.forceUpdate();
+    const { id, storageUri } = post;
+    this.removeOnePost({ id, storageUri }).then(result => {
+      if (result.data.completed) {
+        this.setState({ hasFetched: false });
       }
-    })
-  }
+    });
+  };
 
   renderListItems() {
     return this.state.listOfPosts.map((post, index) => (
@@ -106,10 +107,12 @@ class ShowUsersPosts extends Component {
           <div className="right">
             <Ons.Fab
               onClick={() => this.showDeletePostConfirmation(post, index)}
-              className="saveButton">
+              className="squareButton"
+            >
               <Ons.Icon
                 spin={!!post.showSpinnerOnButton}
-                icon={post.showSpinnerOnButton ? "spinner" : "trash"} />
+                icon={post.showSpinnerOnButton ? "spinner" : "trash"}
+              />
             </Ons.Fab>
           </div>
         )}
