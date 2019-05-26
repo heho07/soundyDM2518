@@ -47,8 +47,7 @@ class Upload extends Component {
   }
 
   componentDidMount = () => {
-    var storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
-    this.storageRef = storage.ref();
+    this.storage = firebase.app().storage("gs://soundy-dm2518.appspot.com/");
     this.db = firebase.firestore();
   };
 
@@ -118,43 +117,38 @@ class Upload extends Component {
 
     //console.log(uid);
     var timeStamp = +new Date();
-    var soundRef = this.storageRef.child("sounds/" + timeStamp);
-
     this.props.updateImagesFromUnsplash(keyword).then(imgUrl => {
-      soundRef
-        .put(audioBlob)
-        .then(snapshot => {
-          //It is now uploaded to storage
-          soundRef.getDownloadURL().then(downloadURL => {
-            this.db
-              .collection("all-sounds")
-              .add({
-                //Add to database
-                url: downloadURL,
-                user: uid,
-                time: timeStamp,
-                title: title,
-                keyword: keyword,
-                imgUrl: imgUrl
-              })
-              .then(
-                this.setState({
-                  audioBlob: null,
-                  blobURL: "",
-                  keyword: "",
-                  title: "",
-                  uploading: false
-                }, () => this.props.changeTabContainerIndex(0)
-                )
-              );
-          });
+      console.log(title);
+      this.db.collection('all-sounds').add({
+        //Add to database
+        user: uid,
+        time: timeStamp,
+        title: title,
+        keyword: keyword,
+        imgUrl: imgUrl
+      }).then(soundDocumentRef => {
+        var filePath = 'sounds/' + firebase.auth().currentUser.uid + '/' + soundDocumentRef.id;
+        this.storage.ref(filePath).put(audioBlob).then(fileSnapshot => {
+          fileSnapshot.ref.getDownloadURL().then(url => {
+            soundDocumentRef.update({
+              url: url,
+              storageUri: fileSnapshot.metadata.fullPath
+            }).then(this.setState({
+              audioBlob: null,
+              blobURL: "",
+              keyword: "",
+              title: "",
+              uploading: false
+            }, () => this.props.changeTabContainerIndex(0)))
+          })
         })
-        // For some reason, the catch block below isn't reached when an error occures.
-        // Solved it by adding another type of check earlier in the function
-        .catch(error => {
-          console.log("ERROR: " + error.message);
-          this.props.createErrorMessage(error.message, "Toast");
-        });
+      })
+    })
+    // For some reason, the catch block below isn't reached when an error occures.
+    // Solved it by adding another type of check earlier in the function
+    .catch(error => {
+      console.log('ERROR: ' + error.message);
+      this.props.createErrorMessage(error.message, "Toast");
     });
   };
 

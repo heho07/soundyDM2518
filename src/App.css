@@ -18,7 +18,7 @@
 /*To get the two container (image and name/sign out) side by side*/
 .profilDetails {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   padding-bottom: 2%;
 }
 
@@ -31,11 +31,34 @@ p {
 }
 
 /*Center profilename and button*/
-.profileName {
+.profileNameAndImageContainer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
+  width: 100%
+}
+
+.profileName ons-button {
+  margin: 0.25rem;
+}
+
+.signOutRemoveContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 3%;
+}
+
+.signOutRemoveContainer ons-button{
+  width: 97%;
+  margin-top: 3%;
+}
+
+.bottomProfile {
+  margin-top: 0.5rem;
+  overflow: auto;
 }
 
 /*Forces the placeholder for input-field to be a bit ower the line*/
