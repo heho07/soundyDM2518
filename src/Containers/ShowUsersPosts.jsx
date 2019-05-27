@@ -123,8 +123,16 @@ class ShowUsersPosts extends Component {
 
   render() {
     return (
-      <div className="userList">
-        <Ons.List>{this.renderListItems()}</Ons.List>
+      <div>
+        <Ons.Fab
+          className="squareButton"
+          onClick={() => this.setState({hasFetched: false})}
+          >
+        <Ons.Icon icon="sync" />
+        </Ons.Fab>
+        <div className="userList">
+          <Ons.List>{this.renderListItems()}</Ons.List>
+        </div>
       </div>
     );
   }
